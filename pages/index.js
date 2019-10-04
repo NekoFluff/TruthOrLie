@@ -8,27 +8,27 @@ export default class CampaignIndex extends Component {
   state = {};
 
   static async getInitialProps() {
-    // const campaigns = await factory.methods.getDeployedCampaigns().call();
-    // console.log(campaigns[0]);
-    // return { campaigns };
+    const campaigns = await factory.methods.getDeployedTopics().call();
+    console.log(campaigns[0]);
+    return { campaigns };
     return {};
   }
 
-  // renderCampaigns() {
-  //   const items = this.props.campaigns.map(address => {
-  //     return {
-  //       header: address,
-  //       description: (
-  //         <Link route={`/campaigns/${address}`}>
-  //           <a>View Campaign</a>
-  //         </Link>
-  //       ),
-  //       fluid: true
-  //     };
-  //   });
+  renderCampaigns() {
+    const items = this.props.campaigns.map(address => {
+      return {
+        header: address,
+        description: (
+          <Link route={`/campaigns/${address}`}>
+            <a>View Campaign</a>
+          </Link>
+        ),
+        fluid: true
+      };
+    });
 
-  //   return <Card.Group items={items} />;
-  // }
+    return <Card.Group items={items} />;
+  }
 
   render() {
     return (
