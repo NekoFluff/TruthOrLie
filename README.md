@@ -16,3 +16,13 @@ npm run
 "dev": Starts up a local node server
 "build": next build
 "start": next star
+
+## Technologies Utilized
+
+- Next.js (server-side rendering)
+- Next-routes (routing for next)
+- React
+- Semantic-ui (for react components and css)
+- solc (compile solidity code into bytecode and abi)
+- web3 (connect to different providers and abi's)
+- hd-wallet (connect to user's wallet)
