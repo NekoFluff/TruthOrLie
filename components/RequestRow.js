@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
-import { Table, Button } from 'semantic-ui-react';
-import web3 from '../ethereum/web3';
-import Campaign from '../ethereum/campaign';
-import campaign from '../ethereum/campaign';
+import React, { Component } from "react";
+import { Table, Button } from "semantic-ui-react";
+import web3 from "../ethereum/web3";
+import Campaign from "../ethereum/campaign";
 
 class RequestRow extends Component {
-  state = {  }
+  state = {};
 
   onApprove = async () => {
     const campaign = Campaign(this.props.address);
@@ -14,7 +13,7 @@ class RequestRow extends Component {
     await campaign.methods.approveRequest(this.props.id).send({
       from: accounts[0]
     });
-  }
+  };
 
   onFinalize = async () => {
     const campaign = Campaign(this.props.address);
@@ -23,37 +22,42 @@ class RequestRow extends Component {
     await campaign.methods.finalizeRequest(this.props.id).send({
       from: accounts[0]
     });
-  }
+  };
 
-  render() { 
+  render() {
     const { Row, Cell } = Table;
     const { request, id, contributorCount } = this.props;
     const readyToFinalize = request.approvalCount > contributorCount / 2;
 
-    return ( 
-      <Row disabled={request.complete} positive={readyToFinalize && !request.complete}>
+    return (
+      <Row
+        disabled={request.complete}
+        positive={readyToFinalize && !request.complete}
+      >
         <Cell>{id}</Cell>
         <Cell>{request.description}</Cell>
-        <Cell>{web3.utils.fromWei(request.value, 'ether')}</Cell>
+        <Cell>{web3.utils.fromWei(request.value, "ether")}</Cell>
         <Cell>{request.recipient}</Cell>
-        <Cell>{request.approvalCount}/{contributorCount}</Cell>
         <Cell>
-          {
-            request.complete ? null : (
-            <Button color="green" basic onClick={this.onApprove}>Approve</Button>
-            )
-          }
+          {request.approvalCount}/{contributorCount}
         </Cell>
         <Cell>
-          {
-            request.complete ? null : (
-            <Button color="teal" basic onClick={this.onFinalize}>Finalize</Button>
-            )
-          }
+          {request.complete ? null : (
+            <Button color="green" basic onClick={this.onApprove}>
+              Approve
+            </Button>
+          )}
+        </Cell>
+        <Cell>
+          {request.complete ? null : (
+            <Button color="teal" basic onClick={this.onFinalize}>
+              Finalize
+            </Button>
+          )}
         </Cell>
       </Row>
     );
   }
 }
- 
+
 export default RequestRow;

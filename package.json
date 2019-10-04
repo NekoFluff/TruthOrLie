@@ -14,17 +14,17 @@
   "author": "Alexander S. Nou",
   "license": "ISC",
   "dependencies": {
-    "@truffle/hdwallet-provider": "^1.0.18",
+    "@truffle/hdwallet-provider": "^1.0.20",
     "@zeit/next-css": "^1.0.1",
     "fs-extra": "^8.1.0",
-    "mocha": "^6.2.0",
-    "next": "^9.0.6",
+    "mocha": "^6.2.1",
+    "next": "^9.0.7",
     "next-routes": "^1.4.2",
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.1",
-    "solc": "^0.5.11",
+    "solc": "^0.5.12",
     "web3": "^1.2.1"
   }
 }

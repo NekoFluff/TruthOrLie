@@ -1,13 +1,13 @@
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 const Web3 = require("web3");
-const compiledTopic = require("./build/Topic.json");
+const compiledFactory = require("./build/TopicFactory.json");
 
 const mnemonic =
   "screen ugly basket extend hole nurse first hood permit adult payment defense";
 
 const provider = new HDWalletProvider(
   mnemonic,
-  "https://rinkeby.infura.io/v3/097a68f1563e4f988a17962bc97df336"
+  "https://rinkeby.infura.io/v3/18ff1d353a884068a84b06afb9b5fcf3"
 );
 
 const web3 = new Web3(provider);
@@ -20,9 +20,9 @@ const deploy = async () => {
   console.log("Attempting to deploy from account #0:", accounts[0]);
 
   // Create new instance of the contract
-  const factory = await new web3.eth.Contract(compiledTopic.abi)
+  const factory = await new web3.eth.Contract(compiledFactory.abi)
     .deploy({
-      data: "0x" + compiledTopic.evm.bytecode.object,
+      data: "0x" + compiledFactory.evm.bytecode.object,
       arguments: []
     })
     .send({
