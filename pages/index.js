@@ -10,7 +10,7 @@ export default class CampaignIndex extends Component {
 
   static async getInitialProps() {
     const topics = await factory.methods.getDeployedTopics().call();
-    console.log(topics[0]);
+    console.log("First Topic:", topics[0]);
     return { topics };
   }
 
@@ -34,6 +34,7 @@ export default class CampaignIndex extends Component {
     return (
       <CommonPage>
         <h3>Open Topics</h3>
+
         <Link route="/topics/new">
           <a>
             <Button
@@ -45,6 +46,13 @@ export default class CampaignIndex extends Component {
             />
           </a>
         </Link>
+        <Message icon>
+          <Icon name="circle notched" loading />
+          <Message.Content>
+            <Message.Header>Just one second</Message.Header>
+            We are fetching that content for you.
+          </Message.Content>
+        </Message>
         {this.renderTopics()}
       </CommonPage>
     );

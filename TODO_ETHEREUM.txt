@@ -1,0 +1,11 @@
+TODO LIST
+--------------
+Time period for topic
+Manually ending voting period
+Reputation contract to keep track of user reputations.
+If there are no voters, send money back to owner
+
+SEMI-COMPLETE
+--------------
+Creator investment in topic (to entice users to vote)
+Improve Money Distribution (User now claims)

@@ -7,14 +7,7 @@ contract Topic {
         address creator;
         uint voteCount;
     }
-
-    //TODO: Time period for topic
-    //TODO: Manually ending voting period
-    //DONE - TODO: Creator investment in topic (to entice users to vote)
-    //SEMI-DONE TODO: Improve Money Distribution (User now claims)
-    //TODO: Reputation contract to keep track of user reputations.
-    //TODO: If there are no voters, send money back to owner
-
+    
     string public content;
     address public creator;
     bool public isPublic;

@@ -9,7 +9,7 @@ if (typeof window !== "undefined" && typeof window.web3 !== "undefined") {
 } else {
   // On the server (or if the user doesn't use metamask with their browser)
   console.log("Using rinkeby.infura web3");
-  npm;
+
   const provider = new Web3.providers.HttpProvider(
     "https://rinkeby.infura.io/v3/18ff1d353a884068a84b06afb9b5fcf3"
   );
