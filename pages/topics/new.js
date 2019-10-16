@@ -17,7 +17,7 @@ class NewTopic extends Component {
 
   onSubmit = async event => {
     event.preventDefault();
-    //TODO: Popup
+    //TODO: Double confirmation button OR Popup https://react.semantic-ui.com/modules/popup/
     try {
       // Start the loading circle and reset the error message
       this.setState({ loading: true, errorMessage: "" });

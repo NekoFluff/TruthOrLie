@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, Button } from "semantic-ui-react";
+import { Card, Button, Message, Icon } from "semantic-ui-react";
 // import 'semantic-ui-css/semantic.min.css';
 import CommonPage from "../components/CommonPage";
 import { Link } from "../routes";
@@ -34,11 +34,17 @@ export default class CampaignIndex extends Component {
     return (
       <CommonPage>
         <h3>Open Topics</h3>
-
+        <Message icon style={{ marginTop: "10px" }}>
+          <Icon name="circle notched" loading />
+          <Message.Content>
+            <Message.Header>Just one second</Message.Header>
+            We are fetching that content for you.
+          </Message.Content>
+        </Message>
         <Link route="/topics/new">
           <a>
             <Button
-              floated="right"
+              fluid
               content="Create New Topic"
               icon="add"
               primary
@@ -46,13 +52,7 @@ export default class CampaignIndex extends Component {
             />
           </a>
         </Link>
-        <Message icon>
-          <Icon name="circle notched" loading />
-          <Message.Content>
-            <Message.Header>Just one second</Message.Header>
-            We are fetching that content for you.
-          </Message.Content>
-        </Message>
+
         {this.renderTopics()}
       </CommonPage>
     );

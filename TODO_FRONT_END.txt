@@ -1,2 +1,3 @@
-New Topic
+New Topic Page
 - Find accounts for user
+- Steps at the top of the page https://react.semantic-ui.com/elements/step/
