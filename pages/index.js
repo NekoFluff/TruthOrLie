@@ -6,16 +6,21 @@ import { Link } from "../routes";
 import factory from "../ethereum/factory";
 
 export default class CampaignIndex extends Component {
-  state = {};
+  state = {
+    topics: [],
+    items: [],
+    retrievingTopics: true
+  };
 
   static async getInitialProps() {
-    const topics = await factory.methods.getDeployedTopics().call();
-    console.log("First Topic:", topics[0]);
-    return { topics };
+    return { topics: [], items: [] }
   }
 
-  renderTopics() {
-    const items = this.props.topics.map(address => {
+  async componentDidMount() {
+    this.setState({ retrievingTopics: true })
+    const topics = await factory.methods.getDeployedTopics().call();
+    console.log("First Topic:", topics[0]);
+    const items = topics.map(address => {
       return {
         header: address,
         description: (
@@ -26,25 +31,20 @@ export default class CampaignIndex extends Component {
         fluid: true
       };
     });
-
-    return <Card.Group items={items} />;
+    // return { topics, items };
+    this.setState({ topics, items, retrievingTopics: false })
   }
 
   render() {
     return (
       <CommonPage>
         <h3>Open Topics</h3>
-        <Message icon style={{ marginTop: "10px" }}>
-          <Icon name="circle notched" loading />
-          <Message.Content>
-            <Message.Header>Just one second</Message.Header>
-            We are fetching that content for you.
-          </Message.Content>
-        </Message>
-        <Link route="/topics/new">
+        
+        <Link route="/topics/new" >
           <a>
             <Button
               fluid
+              style={{marginBottom: "10px"}}
               content="Create New Topic"
               icon="add"
               primary
@@ -53,7 +53,16 @@ export default class CampaignIndex extends Component {
           </a>
         </Link>
 
-        {this.renderTopics()}
+        <Message icon style={{ marginTop: "10px" }} hidden={!this.state.retrievingTopics}>
+          <Icon name="circle notched" loading />
+          <Message.Content>
+            <Message.Header>Just one second</Message.Header>
+            We are fetching that content for you.
+          </Message.Content>
+        </Message>
+
+        <Card.Group items={this.state.items} />
+        {/* {this.renderTopics()} */}
       </CommonPage>
     );
   }
