@@ -1,3 +1,25 @@
 New Topic Page
 - Find accounts for user
-- Steps at the top of the page https://react.semantic-ui.com/elements/step/
+- Steps at the top of the page (shopping) https://react.semantic-ui.com/elements/step/
+
+
+- Use segments to separate sections on summary page https://react.semantic-ui.com/elements/segment/
+
+
+
+
+
+
+
+
+
+- Accordion for FAQ page: https://react.semantic-ui.com/modules/accordion/
+
+- Sidebar for something? https://react.semantic-ui.com/modules/sidebar/
+
+- Tabs... https://react.semantic-ui.com/modules/tab/
+
+- Use PLACEHOLDER AND transition group to show more topics... https://react.semantic-ui.com/elements/placeholder/#types-grid https://react.semantic-ui.com/modules/transition/
+
+
+- Use STATISTICS + CARDS when viewing information on a Topic  https://react.semantic-ui.com/views/statistic/#variations-horizontal-group https://react.semantic-ui.com/views/card/#types-group-props
