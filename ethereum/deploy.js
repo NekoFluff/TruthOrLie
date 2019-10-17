@@ -33,4 +33,3 @@ const deploy = async () => {
 };
 
 deploy();
-// Deployed at 0x6486E7528EAEe9785De27C14F3Ff54AB95C79B9F

@@ -12,7 +12,17 @@ contract TopicFactory {
         deployedTopics.push(address(newTopic));
     }
 
-    function getDeployedTopics() public view returns (address[] memory) {
-        return deployedTopics;
+    function getNumberOfDeployedContracts() public view returns (uint) {
+        return deployedTopics.length;
+    }
+
+    function getContracts(uint startIndex, uint endIndex) public view returns (address[] memory) {
+        uint diff = endIndex - startIndex;
+        address[] memory topics = new address[](endIndex-startIndex);
+
+        for (uint i = 0; i < diff; i++) {
+            topics[i] = (deployedTopics[startIndex + i]);
+        }
+        return topics;
     }
 }

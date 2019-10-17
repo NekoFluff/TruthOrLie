@@ -161,6 +161,10 @@ contract Topic {
         msg.sender.transfer(address(this).balance);
     }
 
+    function getDetails() public view returns (address, bool, uint, uint, bool) {
+        return (creator, isPublic, minimumInvestment, endTime, isCompleted)
+    }
+
 
     // function distributeMoney() public _creatorOnly {
     //     require(isCompleted == true, 'The period for the Topic must have ended in order to redistribute the money.');
