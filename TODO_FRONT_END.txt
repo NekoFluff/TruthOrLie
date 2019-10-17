@@ -1,10 +1,12 @@
 New Topic Page
-- Find accounts for user
-- Steps at the top of the page (shopping) https://react.semantic-ui.com/elements/step/
+- ~~~~ Find accounts for user
+- ~~~~ Steps at the top of the page (shopping) https://react.semantic-ui.com/elements/step/
+- ~~~~ Use segments to separate sections on summary page https://react.semantic-ui.com/elements/segment/
 
 
-- Use segments to separate sections on summary page https://react.semantic-ui.com/elements/segment/
-
+- Work on Topic selection
+- Argument creation
+- Voting
 
 
 
