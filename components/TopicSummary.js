@@ -59,24 +59,27 @@ class TopicSummary extends Component {
 
   renderTopicSummary() {
     return (
-      <Segment raised>
-        <Label
-          as="a"
-          color="red"
-          ribbon
-          onClick={this.props.returnToTopicScreen}
-        >
-          Go Back
-        </Label>
-        <span>Your Topic</span>
-        <Divider></Divider>
-        <Container style={{ marginBottom: "20px" }} textAlign="center">
-          <b>Truth or Lie?</b>
-          <p>"{this.props.topicContent}"</p>
-        </Container>
+      <React.Fragment>
+        <h2>Is this right?</h2>
+        <Segment raised>
+          <Label
+            as="a"
+            color="red"
+            ribbon
+            onClick={this.props.returnToTopicScreen}
+          >
+            Go Back
+          </Label>
+          <span>Your Topic</span>
+          <Divider></Divider>
+          <Container style={{ marginBottom: "20px" }} textAlign="center">
+            <b>Truth or Lie?</b>
+            <p>"{this.props.topicContent}"</p>
+          </Container>
 
-        {this.renderTopicCardGroup()}
-      </Segment>
+          {this.renderTopicCardGroup()}
+        </Segment>
+      </React.Fragment>
     );
   }
 

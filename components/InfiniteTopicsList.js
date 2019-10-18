@@ -15,7 +15,7 @@ import {
 } from "semantic-ui-react";
 import factory from "../ethereum/factory";
 import { Link } from "../routes";
-import topic from "../ethereum/topic";
+import Topic from "../ethereum/topic";
 
 export default class InfiniteTopicsList extends Component {
   state = {
@@ -78,36 +78,14 @@ export default class InfiniteTopicsList extends Component {
 
       for (var i = 0; i < maxCopies; i++) {
         const address = topicAddresses[i];
-        const topicContract = topic(address)
-        // const text = topicContract.methods.content().call()
-        console.log(topicContract.methods)
+        const topicContract = Topic(address)
         const text = await topicContract.methods.content().call()
-        console.log(text);
         appendList.push({
           header: address,
           description: text,
           // meta: address
         });
       }
-      // topicAddresses.forEach(async (address) => {
-      //   const topicContract = topic(address)
-      //   // const text = topicContract.methods.content().call()
-      //   console.log(topicContract.methods)
-      //   const text = await topicContract.methods.content().call()
-      //   console.log(text);
-      //   appendList.push(
-      //     // text
-      //     address
-      //   );
-      // })
-
-
-      // for (var i = 0; i < maxCopies; i++) {
-      //   const topicAddress = await factory.methods
-      //     .getNumberOfDeployedContracts()
-      //     .call();
-      //   appendList.push(topicAddress);
-      // }
 
       // Combine the lists
       const newTopicList = this.state.topics.concat(appendList);
@@ -120,6 +98,8 @@ export default class InfiniteTopicsList extends Component {
 
     return (
       <React.Fragment>
+        <h4>{`${this.state.loadingTopicIndex} ${this.state.loadingTopicIndex == 1 ? 'Topic' : 'Topics'} Loaded`}</h4>
+
         <Message
           icon
           style={{ marginTop: "10px" }}

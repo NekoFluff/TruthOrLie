@@ -162,7 +162,7 @@ contract Topic {
     }
 
     function getDetails() public view returns (address, bool, uint, uint, bool) {
-        return (creator, isPublic, minimumInvestment, endTime, isCompleted)
+        return (creator, isPublic, minimumInvestment, endTime, isCompleted);
     }
 
 

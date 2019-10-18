@@ -3,7 +3,7 @@ import TopicFactory from "./build/TopicFactory.json";
 
 const instance = new web3.eth.Contract(
   TopicFactory.abi,
-  "0x74FD7F04b022Aa56222c272D23F57c306520aE32"
+  "0x34d3A9B38b4102fcf2C33d2c9096b0De3DEabe7c"
 );
 
 export default instance;
