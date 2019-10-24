@@ -46,6 +46,10 @@ class BillingForm extends Component {
     this.setState({ accountsList });
   };
 
+  updateReduxState = () => {
+    this.props.chooseBilling(this.state.data);
+  }
+
   onBillingNext = (event) => {
     console.log(this.state)
 
@@ -58,8 +62,7 @@ class BillingForm extends Component {
         });
         throw new Error("You must select an account before proceeding");
       }
-
-      this.props.chooseBilling(this.state.data);
+      this.updateReduxState();
       this.props.onBillingNext();
     } catch (err) {
       this.setState({ errorMessage: err.message });
@@ -76,7 +79,7 @@ class BillingForm extends Component {
             // style={{ marginBottom: "10px"} }
             primary
             disabled={this.state.loading}
-            onClick={this.props.onBackClick}
+            onClick={() => {this.updateReduxState(); this.props.onBackClick()}}
           >
             Back
           </Button>

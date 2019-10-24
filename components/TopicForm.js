@@ -23,12 +23,16 @@ class TopicForm extends Component {
     this.setState({ data: this.props.data})
   }
 
+  updateReduxState = () => {
+    this.props.newTopic(this.state.data)
+  }
+
   onFormNext = async event => {
     event.preventDefault();
     //TODO: Double confirmation button OR Popup https://react.semantic-ui.com/modules/popup/
     this.setState({ loading: true })
     try {
-      this.props.newTopic(this.state.data)
+      this.updateReduxState()
 
       if (this.props.onFormNext != null) 
         this.props.onFormNext()
@@ -48,7 +52,7 @@ class TopicForm extends Component {
             // style={{ marginBottom: "10px"} }
             primary
             disabled={this.state.loading}
-            onClick={this.props.onBackClick}
+            onClick={() => {this.updateReduxState(); this.props.onBackClick()}}
           >
             Back
           </Button>
