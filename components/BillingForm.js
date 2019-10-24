@@ -1,25 +1,39 @@
 import React, { Component } from "react";
-
+import { Form, Button, Message, Dropdown } from "semantic-ui-react";
+import web3 from './../ethereum/web3';
+import { chooseBilling } from "./../redux/actions";
+import { connect } from 'react-redux';
 class BillingForm extends Component {
   state = {
     errorMessage: "",
     accountsList: [],
-    accountSelectionError: "",
-
+    
     // Information to be passed
-    selectedAccount: "",
-    initialTopicValue: "",
-
+    data: {
+      selectedAccount: "",
+      initialTopicValue: ""
+    },
+    
+    // Errors
+    initialTopicValueError: "",
+    accountSelectionError: "",
+    aaa: "asdasd",
     loading: false
   };
 
   async componentDidMount() {
-    console.log("Billing Form mounted:", this.state);
+    this.setState({ data: this.props.data})
     await this.retrieveAccounts();
   }
 
   retrieveAccounts = async () => {
     const accounts = await web3.eth.getAccounts();
+    if (accounts == null || accounts.length == 0) {
+      this.setState({
+        accountSelectionError: "There are no available accounts."
+      });
+      return;
+    }
 
     let accountsList = accounts.map(acc => {
       return {
@@ -29,18 +43,14 @@ class BillingForm extends Component {
       };
     });
 
-    if (accounts.length == 0) {
-      this.setState({
-        accountSelectionError: "There are no available accounts."
-      });
-    }
-
     this.setState({ accountsList });
   };
 
-  onBillingNext() {
+  onBillingNext = (event) => {
+    console.log(this.state)
+
     event.preventDefault();
-    const { selectedAccount } = this.state.selectedAccount;
+    const { selectedAccount } = this.state.data;
     try {
       if (selectedAccount == "") {
         this.setState({
@@ -48,21 +58,23 @@ class BillingForm extends Component {
         });
         throw new Error("You must select an account before proceeding");
       }
+
+      this.props.chooseBilling(this.state.data);
+      this.props.onBillingNext();
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
     this.setState({ loading: false });
-    this.props.onBillingNext();
   }
 
   render() {
+    const { initialTopicValue, selectedAccount } = this.state.data;
     return (
       <React.Fragment>
         {this.props.backButtonVisible && (
           <Button
             // style={{ marginBottom: "10px"} }
             primary
-            // loading={this.state.loading}
             disabled={this.state.loading}
             onClick={this.props.onBackClick}
           >
@@ -77,19 +89,23 @@ class BillingForm extends Component {
               placeholder="Select an Account"
               fluid
               selection
+              value={selectedAccount}
               options={this.state.accountsList}
               onChange={(event, { value }) => {
                 this.setState({
                   accountSelectionError: "",
-                  selectedAccount: value
+                  data: {
+                    ...this.state.data,
+                    selectedAccount: value
+                  }
                 });
               }}
             />
           </Form.Field>
           <Form.Input
             error={
-              this.state.initalTopicValueError != "" && {
-                content: this.state.initalTopicValueError,
+              this.state.initialTopicValueError != "" && {
+                content: this.state.initialTopicValueError,
                 pointing: "below"
               }
             }
@@ -99,9 +115,9 @@ class BillingForm extends Component {
             labelPosition="right"
             placeholder="How much do you want to invest in this topic? (Entice more users to participate)"
             type="number"
-            value={this.state.initialTopicValue}
+            value={initialTopicValue}
             onChange={event => {
-              this.setState({ initialTopicValue: event.target.value });
+              this.setState({ data: {...this.state.data, initialTopicValue: event.target.value }});
             }}
           />
 
@@ -124,4 +140,12 @@ class BillingForm extends Component {
   }
 }
 
-export default BillingForm;
+const mapStateToProps = state => {
+  console.log("Billing state:", state.billing)
+  return { data: state.billing || {} }
+}
+
+export default connect(
+  mapStateToProps,
+  { chooseBilling }
+)(BillingForm);

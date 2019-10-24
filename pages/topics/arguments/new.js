@@ -9,36 +9,22 @@ class NewTopic extends Component {
   state = {
     phase: 1,
 
-    // Topic
-    topicInformation: {
-      topicContent: "",
-      minimumInvestment: "",
-      hoursAvailable: ""
-    },
-
     // Topic-specific errors
     minimumInvestmentError: "",
     activeTimeError: "",
     initalTopicValueError: ""
   };
 
-  onFormNext = async event => {
-    event.preventDefault();
-    //TODO: Double confirmation button OR Popup https://react.semantic-ui.com/modules/popup/
-    try {
-      await this.retrieveAccounts();
-      this.setState({ phase: 2, errorMessage: "" });
-    } catch (err) {
-      this.setState({ errorMessage: err.message });
-    }
-    this.setState({ loading: false });
-  };
+  onFormNext = () => {
+    this.setState({ phase: 2, errorMessage: ""});
+  }
 
-  onBillingNext() {
+  onBillingNext = () => {
     this.setState({ phase: 3, errorMessage: "" });
   }
 
   onBackClick = () => {
+    console.log("Back button clicked")
     this.setState({ phase: Math.max(1, this.state.phase - 1) });
   };
 
@@ -46,7 +32,7 @@ class NewTopic extends Component {
     if (this.state.phase == 1)
       return (
         <TopicForm
-          onBlackClick={this.onBackClick}
+          onBackClick={this.onBackClick}
           backButtonVisible={this.state.phase > 1}
           onFormNext={this.onFormNext}
         />
@@ -54,16 +40,15 @@ class NewTopic extends Component {
     else if (this.state.phase == 2)
       return (
         <BillingForm
-          onBlackClick={this.onBackClick}
+          onBackClick={this.onBackClick}
           backButtonVisible={this.state.phase > 1}
-          onBillingNext={onBillingNext}
-          {...this.state.billingInformation}
+          onBillingNext={this.onBillingNext}
         />
       );
     else
       return (
         <TopicSummary
-          onBlackClick={this.onBackClick}
+          onBackClick={this.onBackClick}
           backButtonVisible={this.state.phase > 1}
           returnToTopicScreen={() => {
             this.setState({ phase: 1 });
@@ -71,8 +56,6 @@ class NewTopic extends Component {
           returnToBillingScreen={() => {
             this.setState({ phase: 2 });
           }}
-          {...this.state.billingInformation}
-          {...this.state.topicInformation}
         />
       );
   }

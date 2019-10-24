@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Router } from "../routes";
 import factory from "../ethereum/factory";
 import web3 from "../ethereum/web3";
+import { connect } from 'react-redux';
 
 import {
   Grid,
@@ -15,9 +16,12 @@ import {
   Message
 } from "semantic-ui-react";
 
+
+
 class TopicSummary extends Component {
   state = {
-    loading: false
+    loading: false,
+    errorMessage: ""
   };
 
   renderTopicCardGroup() {
@@ -171,4 +175,12 @@ class TopicSummary extends Component {
   }
 }
 
-export default TopicSummary;
+const mapStateToProps = state => {
+  console.log("[Topic Summary] New Topic state: ", state.newTopic)
+  console.log("[Topic Summary] Billing state: ", state.billing)
+  return { ...state.newTopic, ...state.billing }
+}
+
+export default connect(
+  mapStateToProps
+)(TopicSummary);
