@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 class BillingForm extends Component {
-  state = { 
-    
+  state = {
     errorMessage: "",
     accountsList: [],
     accountSelectionError: "",
@@ -12,14 +11,14 @@ class BillingForm extends Component {
     initialTopicValue: "",
 
     loading: false
-   }
+  };
 
-   async componentDidMount() {
+  async componentDidMount() {
     console.log("Billing Form mounted:", this.state);
     await this.retrieveAccounts();
   }
 
-   retrieveAccounts = async () => {
+  retrieveAccounts = async () => {
     const accounts = await web3.eth.getAccounts();
 
     let accountsList = accounts.map(acc => {
@@ -41,22 +40,35 @@ class BillingForm extends Component {
 
   onBillingNext() {
     event.preventDefault();
-    const {selectedAccount} = this.state.selectedAccount
+    const { selectedAccount } = this.state.selectedAccount;
     try {
       if (selectedAccount == "") {
-        this.setState({ accountSelectionError: "You must select an account before proceeding"});
-        throw new Error("You must select an account before proceeding")
+        this.setState({
+          accountSelectionError: "You must select an account before proceeding"
+        });
+        throw new Error("You must select an account before proceeding");
       }
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
     this.setState({ loading: false });
-    this.props.onBillingNext()
+    this.props.onBillingNext();
   }
 
-  render() { 
+  render() {
     return (
       <React.Fragment>
+        {this.props.backButtonVisible && (
+          <Button
+            // style={{ marginBottom: "10px"} }
+            primary
+            // loading={this.state.loading}
+            disabled={this.state.loading}
+            onClick={this.props.onBackClick}
+          >
+            Back
+          </Button>
+        )}
         <h2>What account would you like to use?</h2>
         <Form onSubmit={this.onBillingNext} error={!!this.state.errorMessage}>
           <Form.Field>
@@ -66,7 +78,12 @@ class BillingForm extends Component {
               fluid
               selection
               options={this.state.accountsList}
-              onChange={(event, {value}) => {this.setState({ accountSelectionError: "", selectedAccount: value })}}
+              onChange={(event, { value }) => {
+                this.setState({
+                  accountSelectionError: "",
+                  selectedAccount: value
+                });
+              }}
             />
           </Form.Field>
           <Form.Input
@@ -88,7 +105,6 @@ class BillingForm extends Component {
             }}
           />
 
-
           <Message
             error
             header="Oops! Something went wrong"
@@ -106,8 +122,6 @@ class BillingForm extends Component {
       </React.Fragment>
     );
   }
-
-  
 }
- 
+
 export default BillingForm;

@@ -26,7 +26,7 @@ class TopicSummary extends Component {
         header: `Min Investment per User: ${this.props.minimumInvestment} Wei`,
         description:
           "This is the minimum amount of wei a user needs to contribute in order to contribute to this Topic. It serves as a barrier to entry for users. Increasing this value encourages users to perform a better investigation on the subject prior to voting.",
-        meta: "How confident should a user be prior to participating?",
+        meta: "How confident should a user be prior to participating?"
       },
       {
         header: `Uptime: ${this.props.hoursAvailable} Hours`,
@@ -60,6 +60,17 @@ class TopicSummary extends Component {
   renderTopicSummary() {
     return (
       <React.Fragment>
+        {this.props.backButtonVisible && (
+          <Button
+            // style={{ marginBottom: "10px"} }
+            primary
+            // loading={this.state.loading}
+            disabled={this.state.loading}
+            onClick={this.props.onBackClick}
+          >
+            Back
+          </Button>
+        )}
         <h2>Is this right?</h2>
         <Segment raised>
           <Label
@@ -134,10 +145,7 @@ class TopicSummary extends Component {
 
   render() {
     return (
-      <Form
-        onSubmit={this.onConfirm}
-        error={!!this.state.errorMessage}
-      >
+      <Form onSubmit={this.onConfirm} error={!!this.state.errorMessage}>
         <Grid columns={1} stackable>
           <Grid.Column>{this.renderTopicSummary()}</Grid.Column>
 
@@ -145,10 +153,10 @@ class TopicSummary extends Component {
         </Grid>
 
         <Message
-            error
-            header="Oops! Something went wrong"
-            content={this.state.errorMessage}
-          />
+          error
+          header="Oops! Something went wrong"
+          content={this.state.errorMessage}
+        />
         <Button
           primary
           floated={"right"}
