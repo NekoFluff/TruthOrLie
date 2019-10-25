@@ -7,12 +7,7 @@ import BillingForm from "../../components/BillingForm";
 
 class NewTopic extends Component {
   state = {
-    phase: 1,
-
-    // Topic-specific errors
-    minimumInvestmentError: "",
-    activeTimeError: "",
-    initalTopicValueError: ""
+    phase: 1
   };
 
   onFormNext = () => {

@@ -1,7 +1,7 @@
 import React from "react";
 import { Icon, Step } from "semantic-ui-react";
 
-const NewTopicSteps = props => {
+const NewArgumentSteps = props => {
   let activeIndex = props["active"] || 0;
 
   return (
@@ -9,8 +9,8 @@ const NewTopicSteps = props => {
       <Step active={activeIndex > 0}>
         <Icon name="paragraph" />
         <Step.Content>
-          <Step.Title>Topic</Step.Title>
-          <Step.Description>Write your Topic</Step.Description>
+          <Step.Title>Argument</Step.Title>
+          <Step.Description>Argue your stance</Step.Description>
         </Step.Content>
       </Step>
 
@@ -32,4 +32,4 @@ const NewTopicSteps = props => {
   );
 };
 
-export default NewTopicSteps;
+export default NewArgumentSteps;

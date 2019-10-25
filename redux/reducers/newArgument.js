@@ -1,14 +1,13 @@
-import { NEW_TOPIC } from "../actionTypes";
+import { NEW_ARGUMENT } from "../actionTypes";
 
 const initialState = {
-  topicContent: "",
-  minimumInvestment: "",
-  hoursAvailable: ""
+  argument: "",
+  isTrue: ""
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case NEW_TOPIC: {
+    case NEW_ARGUMENT: {
       return action.payload;
     }
     default:

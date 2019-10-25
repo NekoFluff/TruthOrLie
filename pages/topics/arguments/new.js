@@ -1,19 +1,42 @@
 import React, { Component } from "react";
 import CommonPage from "../../../components/CommonPage";
-import NewTopicSteps from "../../../components/NewTopicSteps";
-import TopicForm from "../../../components/TopicForm";
-import TopicSummary from "../../../components/TopicSummary";
-import BillingForm from "../../../components/BillingForm";
+import ArgumentForm from "../../../components/ArgumentForm.js";
+import NewArgumentSteps from './../../../components/NewArgumentSteps';
+import ArgumentBillingForm from "../../../components/ArgumentBillingForm";
+import Topic from "../../../ethereum/topic";
+import ArgumentSummary from "../../../components/ArgumentSummary";
 
-class NewTopic extends Component {
+class NewArgument extends Component {
   state = {
-    phase: 1,
-
-    // Topic-specific errors
-    minimumInvestmentError: "",
-    activeTimeError: "",
-    initalTopicValueError: ""
+    phase: 1
   };
+
+  static async getInitialProps(props) {
+    const topic = Topic(props.query.address);
+    const details = await topic.methods.getDetails().call();
+    const text = await topic.methods.content().call();
+
+    // return {
+    //   address: props.query.address,
+    //   minimumContribution: details["minimumContribution"],
+    //   balance: details["balance"],
+    //   requestCount: details["requestCount"],
+    //   contributorCount: details["contributorCount"],
+    //   manager: details["manager"]
+    // };
+    // TODO: Remove information fetch? I only seem to use the address....
+    console.log("[New Argument] Topic Details:", details);
+    return {
+      address: props.query.address,
+      text: text,
+      creator: details[0],
+      isPublic: details[1],
+      minimumInvestment: details[2],
+      unixTimestamp: details[3],
+      isCompleted: details[4]
+    }
+  }
+
 
   onFormNext = () => {
     this.setState({ phase: 2, errorMessage: ""});
@@ -31,7 +54,7 @@ class NewTopic extends Component {
   renderContent() {
     if (this.state.phase == 1)
       return (
-        <TopicForm
+        <ArgumentForm
           onBackClick={this.onBackClick}
           backButtonVisible={this.state.phase > 1}
           onFormNext={this.onFormNext}
@@ -39,15 +62,16 @@ class NewTopic extends Component {
       );
     else if (this.state.phase == 2)
       return (
-        <BillingForm
+        <ArgumentBillingForm
           onBackClick={this.onBackClick}
           backButtonVisible={this.state.phase > 1}
           onBillingNext={this.onBillingNext}
+          minimumInvestment={this.props.minimumInvestment}
         />
       );
     else
       return (
-        <TopicSummary
+        <ArgumentSummary
           onBackClick={this.onBackClick}
           backButtonVisible={this.state.phase > 1}
           returnToTopicScreen={() => {
@@ -56,6 +80,7 @@ class NewTopic extends Component {
           returnToBillingScreen={() => {
             this.setState({ phase: 2 });
           }}
+          topicAddress={this.props.address}
         />
       );
   }
@@ -63,11 +88,11 @@ class NewTopic extends Component {
   render() {
     return (
       <CommonPage>
-        <NewTopicSteps active={this.state.phase} />
+        <NewArgumentSteps active={this.state.phase}/>
         {this.renderContent()}
       </CommonPage>
     );
   }
 }
 
-export default NewTopic;
+export default NewArgument;

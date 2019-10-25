@@ -1,4 +1,4 @@
-import { NEW_TOPIC, CHOOSE_BILLING } from './actionTypes';
+import { NEW_TOPIC, CHOOSE_BILLING, NEW_ARGUMENT } from './actionTypes';
 
 
 export const newTopic = content => ({
@@ -11,9 +11,10 @@ export const chooseBilling = content => ({
   payload: content
 })
 
-// export const toggleTodo = id => ({
-//   type: TOGGLE_TODO,
-//   payload: { id }
-// });
+export const newArgument = content => ({
+  type: NEW_ARGUMENT,
+  payload: content
+})
+
 
 // export const setFilter = filter => ({ type: SET_FILTER, payload: { filter } });

@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Form, Button, Message, Dropdown } from "semantic-ui-react";
-import web3 from './../ethereum/web3';
-import { chooseBilling } from "./../redux/actions";
+import web3 from '../ethereum/web3';
+import { chooseBilling } from "../redux/actions";
 import { connect } from 'react-redux';
-class BillingForm extends Component {
+class ArgumentBillingForm extends Component {
   state = {
     errorMessage: "",
     accountsList: [],
@@ -58,7 +58,7 @@ class BillingForm extends Component {
           accountSelectionError: "You must select an account before proceeding"
         });
         throw new Error("You must select an account before proceeding");
-      }
+      } 
       this.updateReduxState();
       this.props.onBillingNext();
     } catch (err) {
@@ -82,7 +82,7 @@ class BillingForm extends Component {
           </Button>
         )}
         <Form onSubmit={this.onBillingNext} error={!!this.state.errorMessage}>
-        <Form.Field>
+          <Form.Field>
             <b>What account would you like to use?</b>
             <Dropdown
               error={this.state.accountSelectionError != ""}
@@ -102,7 +102,8 @@ class BillingForm extends Component {
               }}
             />
           </Form.Field>
-          <Form.Input
+          {/* This is unnecesssary. People will vote on an argument in another screen. */}
+          {/* <Form.Input
             error={
               this.state.initialTopicValueError != "" && {
                 content: this.state.initialTopicValueError,
@@ -111,15 +112,15 @@ class BillingForm extends Component {
             }
             fluid
             required
-            label="Initial Topic Value (ether)"
+            label="Investment (wei)"
             labelPosition="right"
-            placeholder="How much do you want to invest in this topic? (Entice more users to participate)"
+            placeholder={`How much do you want to invest in this topic? (minimum ${this.props.minimumInvestment} wei)`}
             type="number"
             value={initialTopicValue}
             onChange={event => {
               this.setState({ data: {...this.state.data, initialTopicValue: event.target.value }});
             }}
-          />
+          /> */}
 
           <Message
             error
@@ -148,4 +149,4 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   { chooseBilling }
-)(BillingForm);
+)(ArgumentBillingForm);

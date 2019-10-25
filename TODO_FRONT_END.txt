@@ -4,9 +4,15 @@ New Topic Page
 - ~~~~ Use segments to separate sections on summary page https://react.semantic-ui.com/elements/segment/
 
 
-- Work on Topic selection
-- Argument creation
-- Voting
+- ~~~~~ Work on Topic selection
+- Argument creation (almost)
+
+- !!! Time remaining on each topic...
+- !!! color code infinite list of topics
+- !!! A 'Your argument section'
+- Voting (Put money at stake!)
+
+- Reputation system
 
 
 

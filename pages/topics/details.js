@@ -2,10 +2,9 @@ import React, { Component } from "react";
 import CommonPage from "./../../components/CommonPage";
 import Topic from "../../ethereum/topic";
 import { Card, Grid, Button, Segment } from "semantic-ui-react";
-import web3 from "../../ethereum/web3";
 // import ContributeForm from "./../../components/ContributeForm";
 import { Link } from "../../routes";
-import InfiniteArgumentsList from './../../components/InfiniteArgumentsList';
+import InfiniteArgumentsList from "./../../components/InfiniteArgumentsList";
 
 class TopicDetails extends Component {
   state = {};
@@ -15,7 +14,6 @@ class TopicDetails extends Component {
     const details = await topic.methods.getDetails().call();
     const text = await topic.methods.content().call();
 
-
     // return {
     //   address: props.query.address,
     //   minimumContribution: details["minimumContribution"],
@@ -24,7 +22,7 @@ class TopicDetails extends Component {
     //   contributorCount: details["contributorCount"],
     //   manager: details["manager"]
     // };
-    console.log("Details:", details);
+    console.log("Topic Details:", details);
     return {
       address: props.query.address,
       text: text,
@@ -33,20 +31,33 @@ class TopicDetails extends Component {
       minimumInvestment: details[2],
       unixTimestamp: details[3],
       isCompleted: details[4]
-
-    }
+    };
   }
 
-  timeConverter(UNIX_timestamp){
+  timeConverter(UNIX_timestamp) {
     const date = new Date(UNIX_timestamp * 1000);
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
     const year = date.getFullYear();
     const month = months[date.getMonth()];
     const day = date.getDate();
     const hour = date.getHours();
     const min = date.getMinutes();
     const sec = date.getSeconds();
-    const time = day + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+    const time =
+      day + " " + month + " " + year + " " + hour + ":" + min + ":" + sec;
     return time;
   }
 
@@ -58,7 +69,7 @@ class TopicDetails extends Component {
       isPublic,
       creator,
       unixTimestamp
-    } = this.props
+    } = this.props;
 
     const items = [
       {
@@ -75,13 +86,15 @@ class TopicDetails extends Component {
       },
       {
         header: "Completed?",
-        meta: "If already completed, users may no longer participate in the discussion.",
+        meta:
+          "If already completed, users may no longer participate in the discussion.",
         description: `${isCompleted}`,
         style: { overflowWrap: "break-word" }
       },
       {
         header: "Public",
-        meta: "If the Topic has not been made public yet, it is not possible to participate just yet.",
+        meta:
+          "If the Topic has not been made public yet, it is not possible to participate just yet.",
         description: `${isPublic}`,
         style: { overflowWrap: "break-word" }
       },
@@ -102,13 +115,15 @@ class TopicDetails extends Component {
         meta: "At what time/date the discussion ends.",
         description: `${this.timeConverter(unixTimestamp)}`,
         style: { overflowWrap: "break-word" }
-      },
-    ]
-    return (<Card.Group>
-      {items.map((item) => {
-        return (<Card key={item.header} raised {...item}/>)
-      })}
-    </Card.Group>)
+      }
+    ];
+    return (
+      <Card.Group>
+        {items.map(item => {
+          return <Card key={item.header} raised {...item} />;
+        })}
+      </Card.Group>
+    );
   }
 
   render() {
@@ -128,22 +143,22 @@ class TopicDetails extends Component {
 
           <Grid.Row>
             <Grid.Column width={11}>
-            <Segment>
-              <Card
-                fluid
-                raised
-                header={"Topic"}
-                meta={"Is this the Truth or a Lie?"}
-                description={this.props.text}
-                style={{ overflowWrap: "break-word" }}
+              <Segment>
+                <Card
+                  fluid
+                  raised
+                  header={"Topic"}
+                  meta={"Is this the Truth or a Lie?"}
+                  description={this.props.text}
+                  style={{ overflowWrap: "break-word" }}
                 />
                 <Link route={`/topics/${this.props.address}/arguments/new`}>
-                <a>
-                  <Button primary>Make an Argument</Button>
-                </a>
-              </Link>
+                  <a>
+                    <Button primary>Make an Argument</Button>
+                  </a>
+                </Link>
               </Segment>
-                <InfiniteArgumentsList topicAddress={this.props.address}/>
+              <InfiniteArgumentsList topicAddress={this.props.address} />
             </Grid.Column>
 
             <Grid.Column width={5}>
