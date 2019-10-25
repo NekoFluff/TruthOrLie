@@ -26,23 +26,29 @@ class ArgumentForm extends Component {
   };
 
   static async getInitialProps(props) {
-    const topic = Topic(props.query.address);
-    const details = await topic.methods.getDetails().call();
-    const text = await topic.methods.content().call();
+    try {
+      const topic = Topic(props.query.address);
+      const details = await topic.methods.getDetails().call();
+      const text = await topic.methods.content().call();
 
-    console.log("Topic Details:", details);
-    return {
-      address: props.query.address,
-      text: text,
-      creator: details[0],
-      isPublic: details[1],
-      minimumInvestment: details[2],
-      unixTimestamp: details[3],
-      isCompleted: details[4]
+      console.log("Topic Details:", details);
+      return {
+        address: props.query.address,
+        text: text,
+        creator: details[0],
+        isPublic: details[1],
+        minimumInvestment: details[2],
+        unixTimestamp: details[3],
+        isCompleted: details[4]
+      };
+    } catch (err) {
+      console.log("[ArgumentForm.js] An error has occured:", err);
     }
+
+    return {
+      address: props.query.address
+    };
   }
-
-
 
   componentDidMount() {
     this.setState({ data: this.props.data });
@@ -53,21 +59,21 @@ class ArgumentForm extends Component {
   };
 
   onFormNext = async event => {
-
-    const { isTrue, argument } = this.state.data; 
+    const { isTrue, argument } = this.state.data;
 
     event.preventDefault();
     //TODO: Double confirmation button OR Popup https://react.semantic-ui.com/modules/popup/
     this.setState({ loading: true });
     try {
       if (isTrue === "") {
-        throw new Error("You must select either 'Truth' or 'Lie'")
+        throw new Error("You must select either 'Truth' or 'Lie'");
       } else if (argument.length == 0) {
-        throw new Error("You must include some text in your argument. Otherwise, what is there to agree or disagree with?")
+        throw new Error(
+          "You must include some text in your argument. Otherwise, what is there to agree or disagree with?"
+        );
       }
 
       this.updateReduxState();
-      
 
       if (this.props.onFormNext != null) this.props.onFormNext();
     } catch (err) {
@@ -77,7 +83,7 @@ class ArgumentForm extends Component {
   };
 
   handleCheckboxChange = (e, { value }) => {
-    this.setState({ data: {...this.state.data, isTrue: value }});
+    this.setState({ data: { ...this.state.data, isTrue: value } });
   };
 
   render() {

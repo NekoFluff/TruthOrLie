@@ -1,17 +1,15 @@
 import _ from "lodash";
 import React, { Component, createRef } from "react";
 import {
-  Divider,
   Grid,
   Icon,
   Message,
-  Card,
-  Segment,
   Ref,
-  Visibility
+  Visibility,
+  Segment
 } from "semantic-ui-react";
-import { Link } from "../routes";
 import Topic from "../ethereum/topic";
+import ArgumentCardGroup from "./ArgumentCardGroup";
 
 export default class InfiniteArgumentsList extends Component {
   state = {
@@ -38,50 +36,68 @@ export default class InfiniteArgumentsList extends Component {
   contextRef = createRef();
 
   async componentDidMount() {
-    await this.reloadArgumentItems();
+    try {
+      await this.reloadArgumentItems();
+    } catch (err) {
+      console.log("[InfiniteArgumentList.js] An error has occured:", err);
+    }
   }
 
   async reloadArgumentItems() {
     this.setState({ retrievingArguments: true });
-    const topicContract = Topic(this.props.topicAddress)
-    const totalArgumentCount = await topicContract.methods.getArgumentCount().call();
+    const topicContract = Topic(this.props.topicAddress);
+    const totalArgumentCount = await topicContract.methods
+      .getArgumentCount()
+      .call();
     this.setState({ totalArgumentCount });
 
-    await this.fetchArguments()
+    try {
+      await this.fetchArguments();
+    } catch (err) {
+      console.log("[InfiniteArgumentsList.js] An error has occured:", err);
+    }
     this.setState({ retrievingArguments: false });
   }
 
   handleUpdate = async (e, { calculations }) => {
     this.setState({ calculations });
-    await this.fetchArguments()
+
+    try {
+      await this.fetchArguments();
+    } catch (err) {
+      console.log("[InfiniteArgumentsList.js] An error has occured:", err);
+    }
   };
-  
+
   async fetchArguments() {
-    const {loadingArgumentIndex: loadingArgumentIndex, totalArgumentCount: totalArgumentCount} = this.state;
+    const {
+      loadingArgumentIndex: loadingArgumentIndex,
+      totalArgumentCount: totalArgumentCount
+    } = this.state;
     if (
       this.state.calculations.bottomVisible &&
       loadingArgumentIndex < totalArgumentCount
     ) {
-      const maxCopies = Math.min(
-        5,
-        totalArgumentCount - loadingArgumentIndex
-      );
-      
+      const maxCopies = Math.min(5, totalArgumentCount - loadingArgumentIndex);
+
       // Create a list of the objects to retrieve
       var appendList = [];
-      this.setState({loadingArgumentIndex: loadingArgumentIndex + maxCopies})
-      
+      this.setState({ loadingArgumentIndex: loadingArgumentIndex + maxCopies });
+
       const topic = Topic(this.props.topicAddress);
 
       for (var i = 0; i < maxCopies; i++) {
-        const text = await topic.methods.arguments(loadingArgumentIndex + i).call()
+        const argument = await topic.methods
+          .arguments(loadingArgumentIndex + i)
+          .call();
         appendList.push({
-          header: text["isTrue"] + `  [${text["voteCount"]} votes]`,
-          description: text["content"],
-          meta: "Posted by: " + text["creator"]
-          // description: text,
+          header: argument["isTrue"] + `  [${argument["voteCount"]} votes]`,
+          description: argument["content"],
+          meta: "Posted by: " + argument["creator"],
+          creator: argument["creator"]
+          // description: argument,
         });
-        console.log('ARGUMENT OBJECT:', text);
+        console.log("[InfiniteArgumentList.js] ARGUMENT OBJECT:", argument);
       }
 
       // Combine the lists
@@ -93,7 +109,9 @@ export default class InfiniteArgumentsList extends Component {
   render() {
     return (
       <React.Fragment>
-        <h4>{`${this.state.loadingArgumentIndex - 1} ${this.state.loadingArgumentIndex == 2 ? "Argument" : "Arguments"} Shown`}</h4>
+        <h4>{`${this.state.loadingArgumentIndex - 1} ${
+          this.state.loadingArgumentIndex == 2 ? "Argument" : "Arguments"
+        } Shown`}</h4>
         <Message
           icon
           style={{ marginTop: "10px" }}
@@ -111,12 +129,10 @@ export default class InfiniteArgumentsList extends Component {
             <Grid.Column>
               <Visibility onUpdate={this.handleUpdate}>
                 <Segment>
-                  {this.state.arguments.map((props, index, images) => (
-                    <React.Fragment key={index}>
-                      <Card fluid {...props} extra={(<Link route={`/topics/${props.header}`}><a>View Argument</a></Link>)}/>
-                      {index !== images.length - 1 && <Divider />}
-                    </React.Fragment>
-                  ))}
+                  <ArgumentCardGroup
+                    topicAddress={this.props.topicAddress}
+                    arguments={this.state.arguments}
+                  />
                 </Segment>
               </Visibility>
             </Grid.Column>

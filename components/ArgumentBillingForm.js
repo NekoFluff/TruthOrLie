@@ -1,19 +1,19 @@
 import React, { Component } from "react";
 import { Form, Button, Message, Dropdown } from "semantic-ui-react";
-import web3 from '../ethereum/web3';
+import web3 from "../ethereum/web3";
 import { chooseBilling } from "../redux/actions";
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 class ArgumentBillingForm extends Component {
   state = {
     errorMessage: "",
     accountsList: [],
-    
+
     // Information to be passed
     data: {
       selectedAccount: "",
       initialTopicValue: ""
     },
-    
+
     // Errors
     initialTopicValueError: "",
     accountSelectionError: "",
@@ -21,8 +21,12 @@ class ArgumentBillingForm extends Component {
   };
 
   async componentDidMount() {
-    this.setState({ data: this.props.data})
-    await this.retrieveAccounts();
+    this.setState({ data: this.props.data });
+    try {
+      await this.retrieveAccounts();
+    } catch (err) {
+      console.log("[ArgumentBillingForm.js] An error has occured: ", err);
+    }
   }
 
   retrieveAccounts = async () => {
@@ -47,9 +51,9 @@ class ArgumentBillingForm extends Component {
 
   updateReduxState = () => {
     this.props.chooseBilling(this.state.data);
-  }
+  };
 
-  onBillingNext = (event) => {
+  onBillingNext = event => {
     event.preventDefault();
     const { selectedAccount } = this.state.data;
     try {
@@ -58,14 +62,14 @@ class ArgumentBillingForm extends Component {
           accountSelectionError: "You must select an account before proceeding"
         });
         throw new Error("You must select an account before proceeding");
-      } 
+      }
       this.updateReduxState();
       this.props.onBillingNext();
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
     this.setState({ loading: false });
-  }
+  };
 
   render() {
     const { initialTopicValue, selectedAccount } = this.state.data;
@@ -73,10 +77,13 @@ class ArgumentBillingForm extends Component {
       <React.Fragment>
         {this.props.backButtonVisible && (
           <Button
-            style={{ marginBottom: "10px"} }
+            style={{ marginBottom: "10px" }}
             primary
             disabled={this.state.loading}
-            onClick={() => {this.updateReduxState(); this.props.onBackClick()}}
+            onClick={() => {
+              this.updateReduxState();
+              this.props.onBackClick();
+            }}
           >
             Back
           </Button>
@@ -142,9 +149,9 @@ class ArgumentBillingForm extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log("Billing state:", state.billing)
-  return { data: state.billing || {} }
-}
+  console.log("Billing state:", state.billing);
+  return { data: state.billing || {} };
+};
 
 export default connect(
   mapStateToProps,

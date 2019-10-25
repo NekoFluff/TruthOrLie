@@ -1,19 +1,19 @@
 import React, { Component } from "react";
 import { Form, Button, Message, Dropdown } from "semantic-ui-react";
-import web3 from './../ethereum/web3';
+import web3 from "./../ethereum/web3";
 import { chooseBilling } from "./../redux/actions";
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 class BillingForm extends Component {
   state = {
     errorMessage: "",
     accountsList: [],
-    
+
     // Information to be passed
     data: {
       selectedAccount: "",
       initialTopicValue: ""
     },
-    
+
     // Errors
     initialTopicValueError: "",
     accountSelectionError: "",
@@ -21,8 +21,13 @@ class BillingForm extends Component {
   };
 
   async componentDidMount() {
-    this.setState({ data: this.props.data})
-    await this.retrieveAccounts();
+    this.setState({ data: this.props.data });
+
+    try {
+      await this.retrieveAccounts();
+    } catch (err) {
+      console.log("[BillingForm.js] An error has occured:", err);
+    }
   }
 
   retrieveAccounts = async () => {
@@ -47,9 +52,9 @@ class BillingForm extends Component {
 
   updateReduxState = () => {
     this.props.chooseBilling(this.state.data);
-  }
+  };
 
-  onBillingNext = (event) => {
+  onBillingNext = event => {
     event.preventDefault();
     const { selectedAccount } = this.state.data;
     try {
@@ -65,7 +70,7 @@ class BillingForm extends Component {
       this.setState({ errorMessage: err.message });
     }
     this.setState({ loading: false });
-  }
+  };
 
   render() {
     const { initialTopicValue, selectedAccount } = this.state.data;
@@ -73,16 +78,19 @@ class BillingForm extends Component {
       <React.Fragment>
         {this.props.backButtonVisible && (
           <Button
-            style={{ marginBottom: "10px"} }
+            style={{ marginBottom: "10px" }}
             primary
             disabled={this.state.loading}
-            onClick={() => {this.updateReduxState(); this.props.onBackClick()}}
+            onClick={() => {
+              this.updateReduxState();
+              this.props.onBackClick();
+            }}
           >
             Back
           </Button>
         )}
         <Form onSubmit={this.onBillingNext} error={!!this.state.errorMessage}>
-        <Form.Field>
+          <Form.Field>
             <b>What account would you like to use?</b>
             <Dropdown
               error={this.state.accountSelectionError != ""}
@@ -117,7 +125,12 @@ class BillingForm extends Component {
             type="number"
             value={initialTopicValue}
             onChange={event => {
-              this.setState({ data: {...this.state.data, initialTopicValue: event.target.value }});
+              this.setState({
+                data: {
+                  ...this.state.data,
+                  initialTopicValue: event.target.value
+                }
+              });
             }}
           />
 
@@ -141,9 +154,9 @@ class BillingForm extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log("Billing state:", state.billing)
-  return { data: state.billing || {} }
-}
+  console.log("Billing state:", state.billing);
+  return { data: state.billing || {} };
+};
 
 export default connect(
   mapStateToProps,

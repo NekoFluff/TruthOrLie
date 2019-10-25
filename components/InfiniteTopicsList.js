@@ -16,6 +16,7 @@ import {
 import factory from "../ethereum/factory";
 import { Link } from "../routes";
 import Topic from "../ethereum/topic";
+import { timestampToString } from "./../helpers/date";
 
 export default class InfiniteTopicsList extends Component {
   state = {
@@ -47,43 +48,44 @@ export default class InfiniteTopicsList extends Component {
 
   async reloadTopicItems() {
     this.setState({ retrievingTopics: true });
-    const totalTopicCount = parseInt(await factory.methods
-      .getNumberOfDeployedContracts()
-      .call());
+    const totalTopicCount = parseInt(
+      await factory.methods.getNumberOfDeployedContracts().call()
+    );
     this.setState({ totalTopicCount });
-    await this.fetchTopics()
+    await this.fetchTopics();
     this.setState({ retrievingTopics: false });
   }
 
   handleUpdate = async (e, { calculations }) => {
     this.setState({ calculations });
-    await this.fetchTopics()
+    await this.fetchTopics();
   };
-  
+
   async fetchTopics() {
-    const {loadingTopicIndex, totalTopicCount} = this.state;
+    const { loadingTopicIndex, totalTopicCount } = this.state;
     if (
       this.state.calculations.bottomVisible &&
       loadingTopicIndex < totalTopicCount
     ) {
-      const maxCopies = Math.min(
-        5,
-        totalTopicCount - loadingTopicIndex
-      );
-      
+      const maxCopies = Math.min(5, totalTopicCount - loadingTopicIndex);
+
       // Create a list of the objects to retrieve
       var appendList = [];
-      this.setState({loadingTopicIndex: loadingTopicIndex + maxCopies})
-      const topicAddresses = await factory.methods.getContracts(loadingTopicIndex, loadingTopicIndex + maxCopies).call();
+      this.setState({ loadingTopicIndex: loadingTopicIndex + maxCopies });
+      const topicAddresses = await factory.methods
+        .getContracts(loadingTopicIndex, loadingTopicIndex + maxCopies)
+        .call();
 
       for (var i = 0; i < maxCopies; i++) {
         const address = topicAddresses[i];
-        const topicContract = Topic(address)
-        const text = await topicContract.methods.content().call()
+        const topicContract = Topic(address);
+        const text = await topicContract.methods.content().call();
+        const details = await topicContract.methods.getDetails().call();
         appendList.push({
           header: address,
           description: text,
           // meta: address
+          meta: "Ends: " + timestampToString(details[3])
         });
       }
 
@@ -98,7 +100,9 @@ export default class InfiniteTopicsList extends Component {
 
     return (
       <React.Fragment>
-        <h4>{`${this.state.loadingTopicIndex} ${this.state.loadingTopicIndex == 1 ? 'Topic' : 'Topics'} Loaded`}</h4>
+        <h4>{`${this.state.loadingTopicIndex} ${
+          this.state.loadingTopicIndex == 1 ? "Topic" : "Topics"
+        } Loaded`}</h4>
 
         <Message
           icon
@@ -118,7 +122,15 @@ export default class InfiniteTopicsList extends Component {
                 <Segment>
                   {this.state.topics.map((props, index, images) => (
                     <React.Fragment key={index}>
-                      <Card fluid {...props} extra={(<Link route={`/topics/${props.header}`}><a>View Topic</a></Link>)}/>
+                      <Card
+                        fluid
+                        {...props}
+                        extra={
+                          <Link route={`/topics/${props.header}`}>
+                            <a>View Topic</a>
+                          </Link>
+                        }
+                      />
                       {index !== images.length - 1 && <Divider />}
                     </React.Fragment>
                   ))}

@@ -16,7 +16,7 @@ contract Topic {
     Argument[] public arguments;
 
     mapping(address => uint) public voted;
-    mapping(address => bool) public createdArgument;
+    mapping(address => uint) public createdArgument;
     address payable[] public truthVoters; //TODO: Remove?
     address payable[] public lieVoters; // TODO: Remove?
 
@@ -84,7 +84,7 @@ contract Topic {
 
     function createArgument(string memory argumentContent, bool belief) public _mustBeWithinTimeFrame {
         // require(isPublic == true || msg.sender == address(factory), 'The Topic has not been made public by the creator yet.');
-        require(createdArgument[msg.sender] == false, 'You have already created an argument.');
+        require(createdArgument[msg.sender] == 0, 'You have already created an argument.');
 
         Argument memory newArgument = Argument({
             content: argumentContent,
@@ -93,8 +93,8 @@ contract Topic {
             voteCount: 0
         });
         arguments.push(newArgument);
+        createdArgument[msg.sender] = getArgumentCount() - 1;
 
-        createdArgument[msg.sender] = true;
     }
 
     function modifyArgument(uint argumentIndex, string memory newContent) public _mustBeWithinTimeFrame _publicOnly {
