@@ -98,10 +98,10 @@ export default class InfiniteTopicsList extends Component {
           header: address,
           description: text,
           // meta: address
-          meta: "Ends: " + timestampToString(details[3]),
-          timestamp: details[3]
+          meta: "Ends: " + timestampToString(details[2]),
+          timestamp: details[2]
         });
-        console.log("End Date:", timestampToDate(details[3]));
+        console.log("End Date:", timestampToDate(details[2]));
       }
 
       // Combine the lists

@@ -9,7 +9,7 @@ export default props => {
         <a className="item">TruthOrLie</a>
       </Link>
       <Menu.Menu position="right">
-        <Link route="/">
+        <Link route="/mine/topics">
           <a className="item">My Topics</a>
         </Link>
         <Link route="/topics/new">

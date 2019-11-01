@@ -36,10 +36,9 @@ class ArgumentForm extends Component {
         address: props.query.address,
         text: text,
         creator: details[0],
-        isPublic: details[1],
-        minimumInvestment: details[2],
-        unixTimestamp: details[3],
-        isCompleted: details[4]
+        minimumInvestment: details[1],
+        unixTimestamp: details[2],
+        isCompleted: details[3]
       };
     } catch (err) {
       console.log("[ArgumentForm.js] An error has occured:", err);

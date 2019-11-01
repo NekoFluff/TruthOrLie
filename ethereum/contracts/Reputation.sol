@@ -12,19 +12,20 @@ contract Reputation {
     
     address public owner;
     uint public rep;
-    Topic[] activeTopics;
-    Topic[] inactiveTopics;
-
+    Topic[] topics;
 
     modifier _ownerOnly() {
         require(msg.sender == owner, 'You must be the creator of this Topic in order to do this.');
         _;
     }
 
-    function() external payable {}
-
     constructor(address sender) public {
         rep = 100;
         owner = sender;
+    }
+
+    function addTopic(Topic topic) public _ownerOnly {
+        require(topic.creator() == owner, "Must be the creator of the Topic in order to add it.");
+        topics.push(topic);
     }
 }
