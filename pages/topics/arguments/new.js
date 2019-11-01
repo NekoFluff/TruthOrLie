@@ -12,29 +12,33 @@ class NewArgument extends Component {
   };
 
   static async getInitialProps(props) {
-    const topic = Topic(props.query.address);
-    const details = await topic.methods.getDetails().call();
-    const text = await topic.methods.content().call();
+    try {
+      const topic = Topic(props.query.address);
+      const details = await topic.methods.getDetails().call();
+      const text = await topic.methods.content().call();
 
-    // return {
-    //   address: props.query.address,
-    //   minimumContribution: details["minimumContribution"],
-    //   balance: details["balance"],
-    //   requestCount: details["requestCount"],
-    //   contributorCount: details["contributorCount"],
-    //   manager: details["manager"]
-    // };
-    // TODO: Remove information fetch? I only seem to use the address and text....
-    console.log("[New Argument] Topic Details:", details);
-    return {
-      address: props.query.address,
-      text: text,
-      creator: details[0],
-      isPublic: details[1],
-      minimumInvestment: details[2],
-      unixTimestamp: details[3],
-      isCompleted: details[4]
-    };
+      // return {
+      //   address: props.query.address,
+      //   minimumContribution: details["minimumContribution"],
+      //   balance: details["balance"],
+      //   requestCount: details["requestCount"],
+      //   contributorCount: details["contributorCount"],
+      //   manager: details["manager"]
+      // };
+      // TODO: Remove information fetch? I only seem to use the address and text....
+      console.log("[New Argument] Topic Details:", details);
+      return {
+        address: props.query.address,
+        text: text,
+        creator: details[0],
+        isPublic: details[1],
+        minimumInvestment: details[2],
+        unixTimestamp: details[3],
+        isCompleted: details[4]
+      };
+    } catch (err) {
+      console.log("[New Argument (new.js)] An error has occured:", err);
+    }
   }
 
   onFormNext = () => {

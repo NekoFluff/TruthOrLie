@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Router } from "../routes";
-import factory from "../ethereum/factory";
+import factory from "../ethereum/topicFactory";
 import web3 from "../ethereum/web3";
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 
 import {
   Grid,
@@ -15,8 +15,6 @@ import {
   Container,
   Message
 } from "semantic-ui-react";
-
-
 
 class TopicSummary extends Component {
   state = {
@@ -176,11 +174,9 @@ class TopicSummary extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log("[Topic Summary] New Topic state: ", state.newTopic)
-  console.log("[Topic Summary] Billing state: ", state.billing)
-  return { ...state.newTopic, ...state.billing }
-}
+  console.log("[Topic Summary] New Topic state: ", state.newTopic);
+  console.log("[Topic Summary] Billing state: ", state.billing);
+  return { ...state.newTopic, ...state.billing };
+};
 
-export default connect(
-  mapStateToProps
-)(TopicSummary);
+export default connect(mapStateToProps)(TopicSummary);

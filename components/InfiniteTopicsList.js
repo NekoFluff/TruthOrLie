@@ -13,10 +13,10 @@ import {
   Ref,
   Visibility
 } from "semantic-ui-react";
-import factory from "../ethereum/factory";
+import factory from "../ethereum/topicFactory";
 import { Link } from "../routes";
 import Topic from "../ethereum/topic";
-import { timestampToString } from "./../helpers/date";
+import { timestampToString, timestampToDate } from "./../helpers/date";
 
 export default class InfiniteTopicsList extends Component {
   state = {
@@ -43,22 +43,35 @@ export default class InfiniteTopicsList extends Component {
   contextRef = createRef();
 
   async componentDidMount() {
-    await this.reloadTopicItems();
+    try {
+      await this.reloadTopicItems();
+    } catch (err) {
+      console.log("[InfiniteTopicsList.js] An error has occured:", err);
+    }
   }
 
   async reloadTopicItems() {
-    this.setState({ retrievingTopics: true });
-    const totalTopicCount = parseInt(
-      await factory.methods.getNumberOfDeployedContracts().call()
-    );
-    this.setState({ totalTopicCount });
-    await this.fetchTopics();
-    this.setState({ retrievingTopics: false });
+    try {
+      this.setState({ retrievingTopics: true });
+      const totalTopicCount = parseInt(
+        await factory.methods.getNumberOfDeployedContracts().call()
+      );
+      this.setState({ totalTopicCount });
+      await this.fetchTopics();
+      this.setState({ retrievingTopics: false });
+    } catch (err) {
+      console.log("[InfiniteTopicsList.js] An error has occured:", err);
+    }
   }
 
   handleUpdate = async (e, { calculations }) => {
     this.setState({ calculations });
-    await this.fetchTopics();
+
+    try {
+      await this.fetchTopics();
+    } catch (err) {
+      console.log("[InfiniteTopicsList.js] An error has occured:", err);
+    }
   };
 
   async fetchTopics() {
@@ -85,8 +98,10 @@ export default class InfiniteTopicsList extends Component {
           header: address,
           description: text,
           // meta: address
-          meta: "Ends: " + timestampToString(details[3])
+          meta: "Ends: " + timestampToString(details[3]),
+          timestamp: details[3]
         });
+        console.log("End Date:", timestampToDate(details[3]));
       }
 
       // Combine the lists
@@ -120,13 +135,19 @@ export default class InfiniteTopicsList extends Component {
             <Grid.Column>
               <Visibility onUpdate={this.handleUpdate}>
                 <Segment>
-                  {this.state.topics.map((props, index, images) => (
+                  {this.state.topics.map((topic, index, images) => (
                     <React.Fragment key={index}>
                       <Card
+                        color={
+                          timestampToDate(topic.timestamp).getTime() >
+                          new Date().getTime()
+                            ? "green"
+                            : "red"
+                        }
                         fluid
-                        {...props}
+                        {...topic}
                         extra={
-                          <Link route={`/topics/${props.header}`}>
+                          <Link route={`/topics/${topic.header}`}>
                             <a>View Topic</a>
                           </Link>
                         }
