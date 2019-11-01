@@ -13,12 +13,12 @@ import {
   Ref,
   Visibility
 } from "semantic-ui-react";
-import factory from "../ethereum/topicFactory";
 import { Link } from "../routes";
 import Topic from "../ethereum/topic";
 import { timestampToString, timestampToDate } from "./../helpers/date";
+import Reputation from "../ethereum/reputation";
 
-export default class InfiniteTopicsList extends Component {
+export default class UserInfiniteTopicList extends Component {
   state = {
     calculations: {
       direction: "none",
@@ -46,21 +46,23 @@ export default class InfiniteTopicsList extends Component {
     try {
       await this.reloadTopicItems();
     } catch (err) {
-      console.log("[InfiniteTopicsList.js] An error has occured:", err);
+      console.log("[UserInfiniteTopicList.js] An error has occured:", err);
     }
   }
 
   async reloadTopicItems() {
     try {
       this.setState({ retrievingTopics: true });
+      const reputationContract = Reputation(this.props.reputationAddress);
+
       const totalTopicCount = parseInt(
-        await factory.methods.getNumberOfDeployedContracts().call()
+        await reputationContract.methods.getNumberOfTopics().call()
       );
       this.setState({ totalTopicCount });
       await this.fetchTopics();
       this.setState({ retrievingTopics: false });
     } catch (err) {
-      console.log("[InfiniteTopicsList.js] An error has occured:", err);
+      console.log("[UserInfiniteTopicList.js] An error has occured:", err);
     }
   }
 
@@ -70,7 +72,7 @@ export default class InfiniteTopicsList extends Component {
     try {
       await this.fetchTopics();
     } catch (err) {
-      console.log("[InfiniteTopicsList.js] An error has occured:", err);
+      console.log("[UserInfiniteTopicList.js] An error has occured:", err);
     }
   };
 
@@ -85,8 +87,10 @@ export default class InfiniteTopicsList extends Component {
       // Create a list of the objects to retrieve
       var appendList = [];
       this.setState({ loadingTopicIndex: loadingTopicIndex + maxCopies });
-      const topicAddresses = await factory.methods
-        .getContracts(loadingTopicIndex, loadingTopicIndex + maxCopies)
+      const reputationContract = Reputation(this.props.reputationAddress);
+
+      const topicAddresses = await reputationContract.methods
+        .getTopics(loadingTopicIndex, loadingTopicIndex + maxCopies)
         .call();
 
       for (var i = 0; i < maxCopies; i++) {

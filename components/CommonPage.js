@@ -4,8 +4,7 @@ import { Container } from "semantic-ui-react";
 import { Provider } from "react-redux";
 import store from "../redux/store";
 import Head from "next/head";
-
-
+import CreateReputation from "./CreateReputation.js";
 
 class CommonPage extends Component {
   state = {};
@@ -26,6 +25,7 @@ class CommonPage extends Component {
           </Head>
 
           <Header />
+          <CreateReputation />
           {this.props.children}
           <h1>TODO: Footer</h1>
         </Container>

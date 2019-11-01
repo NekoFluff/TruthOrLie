@@ -7,8 +7,8 @@ contract ReputationFactory {
     mapping(address => address) public deployedReputations;
 
     function createReputation() public {
-        // require(deployedReputations[address] == 0, "A reputation contract has already been created for you.")
-        
+        require(deployedReputations[msg.sender] == address(0x0), "A reputation contract has already been created for you.");
+
         Reputation newReputation = new Reputation(msg.sender);
         deployedReputations[msg.sender] = address(newReputation);
         deployedReputationCount += 1;
