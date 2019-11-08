@@ -9,29 +9,28 @@ export default class CampaignIndex extends Component {
   state = {};
 
   static async getInitialProps() {
-    return { topics: [], items: [] }
+    return { topics: [], items: [] };
   }
 
   renderTopics() {
-
     return (
       <React.Fragment>
-        <InfiniteTopicsList/>
+        <InfiniteTopicsList />
         <Card.Group items={this.state.items} />
       </React.Fragment>
-    )
+    );
   }
 
   render() {
     return (
-      <CommonPage>
+      <React.Fragment>
         <h3>Open Topics</h3>
-        
-        <Link route="/topics/new" >
+
+        <Link route="/topics/new">
           <a>
             <Button
               fluid
-              style={{marginBottom: "10px"}}
+              style={{ marginBottom: "10px" }}
               content="Create New Topic"
               icon="add"
               primary
@@ -41,7 +40,7 @@ export default class CampaignIndex extends Component {
         </Link>
 
         {this.renderTopics()}
-      </CommonPage>
+      </React.Fragment>
     );
   }
 }

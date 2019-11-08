@@ -1,96 +1,86 @@
 import React, { Component } from "react";
 import CommonPage from "../../../components/CommonPage";
-import ArgumentForm from "../../../components/ArgumentForm.js";
-import NewArgumentSteps from "./../../../components/NewArgumentSteps";
-import ArgumentBillingForm from "../../../components/ArgumentBillingForm";
-import Topic from "../../../ethereum/topic";
-import ArgumentSummary from "../../../components/ArgumentSummary";
+import VoteForm from "../../../components/VoteForm";
+import { Grid, Segment, Divider, Container, Button } from "semantic-ui-react";
+import { Link } from "../../../routes";
 
 class NewArgument extends Component {
   state = {
-    phase: 1
+    argumentisTrue: "Unable to retrieve argumentIsTrue from local storage.",
+    argumentText: "Unable to retrieve argument text from local storage."
   };
 
   static async getInitialProps(props) {
-    const topic = Topic(props.query.address);
-    const details = await topic.methods.getDetails().call();
-    const text = await topic.methods.content().call();
-
+    // const topic = Topic(props.query.address);
+    // const details = await topic.methods.getDetails().call();
+    // const text = await topic.methods.content().call();
+    // // TODO: Remove information fetch? I only seem to use the address and text....
+    // console.log("[New Argument] Topic Details:", details);
     // return {
     //   address: props.query.address,
-    //   minimumContribution: details["minimumContribution"],
-    //   balance: details["balance"],
-    //   requestCount: details["requestCount"],
-    //   contributorCount: details["contributorCount"],
-    //   manager: details["manager"]
+    //   text: text,
+    //   creator: details[0],
+    //   minimumInvestment: details[1],
+    //   unixTimestamp: details[2],
+    //   isCompleted: details[3]
     // };
-    // TODO: Remove information fetch? I only seem to use the address and text....
-    console.log("[New Argument] Topic Details:", details);
-    return {
-      address: props.query.address,
-      text: text,
-      creator: details[0],
-      minimumInvestment: details[1],
-      unixTimestamp: details[2],
-      isCompleted: details[3]
-    };
+
+    return {};
   }
 
-  onFormNext = () => {
-    this.setState({ phase: 2, errorMessage: "" });
-  };
-
-  onBillingNext = () => {
-    this.setState({ phase: 3, errorMessage: "" });
-  };
-
-  onBackClick = () => {
-    console.log("Back button clicked");
-    this.setState({ phase: Math.max(1, this.state.phase - 1) });
-  };
-
-  renderContent() {
-    if (this.state.phase == 1)
-      return (
-        <ArgumentForm
-          onBackClick={this.onBackClick}
-          backButtonVisible={this.state.phase > 1}
-          onFormNext={this.onFormNext}
-          topicContent={this.props.text}
-        />
-      );
-    else if (this.state.phase == 2)
-      return (
-        <ArgumentBillingForm
-          onBackClick={this.onBackClick}
-          backButtonVisible={this.state.phase > 1}
-          onBillingNext={this.onBillingNext}
-          minimumInvestment={this.props.minimumInvestment}
-        />
-      );
-    else
-      return (
-        <ArgumentSummary
-          topicContent={this.props.text}
-          onBackClick={this.onBackClick}
-          backButtonVisible={this.state.phase > 1}
-          returnToTopicScreen={() => {
-            this.setState({ phase: 1 });
-          }}
-          returnToBillingScreen={() => {
-            this.setState({ phase: 2 });
-          }}
-          topicAddress={this.props.address}
-        />
-      );
+  componentDidMount() {
+    this.setState({
+      argumentIsTrue: localStorage.getItem("argumentIsTrue"),
+      argumentText: localStorage.getItem("argumentText")
+    });
   }
+
+  renderDetails = () => {
+    return (
+      <React.Fragment>
+        <Segment raised style={{ marginTop: "10px" }}>
+          <span>The Topic</span>
+          <Divider></Divider>
+          <Container style={{ marginBottom: "20px" }} textAlign="center">
+            <p>"{this.props.topicContent}"</p>
+          </Container>
+        </Segment>
+
+        <Segment raised>
+          <span>The Argument</span>
+          <Divider></Divider>
+          <Container style={{ marginBottom: "20px" }} textAlign="left">
+            <b>The topic is {this.state.argumentIsTrue}</b>
+            <p>"{this.state.argumentText}"</p>
+          </Container>
+        </Segment>
+      </React.Fragment>
+    );
+  };
 
   render() {
     return (
-      <CommonPage>
-        <NewArgumentSteps active={this.state.phase} />
-        {this.renderContent()}
-      </CommonPage>
+      <Grid columns={2} divided>
+        <Grid.Row>
+          <Grid.Column width={10}>{this.renderDetails()}</Grid.Column>
+
+          <Grid.Column width={6}>
+            <VoteForm
+              topicDetails={"Topic Details"}
+              argumentDetails={"Argument Details"}
+            />
+          </Grid.Column>
+        </Grid.Row>
+        {/* <Grid.Row>
+            <Grid.Column>
+              <Link route={`/deadlink`}>
+                <a>
+                  <Button primary>Temp Dead Link</Button>
+                </a>
+              </Link>
+            </Grid.Column>
+          </Grid.Row> */}
+      </Grid>
     );
   }
 }

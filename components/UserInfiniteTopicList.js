@@ -7,8 +7,8 @@ import {
   Message,
   Card,
   Segment,
-  Sticky,
   Table,
+  Button,
   Ref,
   Visibility
 } from "semantic-ui-react";
@@ -16,24 +16,10 @@ import { Link } from "../routes";
 import Topic from "../ethereum/topic";
 import { timestampToString, timestampToDate } from "./../helpers/date";
 import Reputation from "../ethereum/reputation";
+import { connect } from "react-redux";
 
-export default class UserInfiniteTopicList extends Component {
+class UserInfiniteTopicList extends Component {
   state = {
-    calculations: {
-      direction: "none",
-      height: 0,
-      width: 0,
-      topPassed: false,
-      bottomPassed: false,
-      pixelsPassed: 0,
-      percentagePassed: 0,
-      topVisible: false,
-      bottomVisible: true,
-      fits: false,
-      passing: false,
-      onScreen: false,
-      offScreen: false
-    },
     topics: [],
     totalTopicCount: 0,
     retrievingTopics: true,
@@ -137,120 +123,40 @@ export default class UserInfiniteTopicList extends Component {
           </Message.Content>
         </Message>
         <Ref innerRef={this.contextRef}>
-          {/* <Grid columns={2}> */}
-          <Grid columns={1}>
-            <Grid.Column>
-              <Visibility onUpdate={this.handleUpdate}>
-                <Segment>
-                  {this.state.topics.map((topic, index, images) => (
-                    <React.Fragment key={index}>
-                      <Card
-                        color={
-                          timestampToDate(topic.timestamp).getTime() >
-                          new Date().getTime()
-                            ? "green"
-                            : "red"
-                        }
-                        fluid
-                        {...topic}
-                        extra={
-                          <Link route={`/topics/${topic.header}`}>
-                            <a>View Topic</a>
-                          </Link>
-                        }
-                      />
-                      {index !== images.length - 1 && <Divider />}
-                    </React.Fragment>
-                  ))}
-                </Segment>
-              </Visibility>
-            </Grid.Column>
-
-            {/* <Grid.Column>
-              <Sticky context={this.contextRef}>
-                <Table celled>
-                  <Table.Header>
-                    <Table.Row>
-                      <Table.HeaderCell>Calculation</Table.HeaderCell>
-                      <Table.HeaderCell>Value</Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Header>
-                  <Table.Body>
-                    <Table.Row>
-                      <Table.Cell>direction</Table.Cell>
-                      <Table.Cell>{calculations.direction}</Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>pixelsPassed</Table.Cell>
-                      <Table.Cell>
-                        {calculations.pixelsPassed.toFixed()}px
-                      </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>percentagePassed</Table.Cell>
-                      <Table.Cell>
-                        {(calculations.percentagePassed * 100).toFixed()}%
-                      </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>fits</Table.Cell>
-                      <Table.Cell>{calculations.fits.toString()}</Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>width</Table.Cell>
-                      <Table.Cell>{calculations.width.toFixed()}px</Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>height</Table.Cell>
-                      <Table.Cell>{calculations.height.toFixed()}px</Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>onScreen</Table.Cell>
-                      <Table.Cell>
-                        {calculations.onScreen.toString()}
-                      </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>offScreen</Table.Cell>
-                      <Table.Cell>
-                        {calculations.offScreen.toString()}
-                      </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>passing</Table.Cell>
-                      <Table.Cell>{calculations.passing.toString()}</Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>topVisible</Table.Cell>
-                      <Table.Cell>
-                        {calculations.topVisible.toString()}
-                      </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>bottomVisible</Table.Cell>
-                      <Table.Cell>
-                        {calculations.bottomVisible.toString()}
-                      </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>topPassed</Table.Cell>
-                      <Table.Cell>
-                        {calculations.topPassed.toString()}
-                      </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>bottomPassed</Table.Cell>
-                      <Table.Cell>
-                        {calculations.bottomPassed.toString()}
-                      </Table.Cell>
-                    </Table.Row>
-                  </Table.Body>
-                </Table>
-              </Sticky>
-            </Grid.Column> */}
-          </Grid>
+          <Visibility onUpdate={this.handleUpdate}>
+            <Segment>
+              {this.state.topics.map((topic, index, images) => (
+                <React.Fragment key={index}>
+                  <Card
+                    color={
+                      timestampToDate(topic.timestamp).getTime() >
+                      new Date().getTime()
+                        ? "green"
+                        : "red"
+                    }
+                    fluid
+                    {...topic}
+                    extra={
+                      <React.Fragment>
+                        <Link route={`/topics/${topic.header}`}>
+                          <a>View Topic</a>
+                        </Link>
+                      </React.Fragment>
+                    }
+                  />
+                  {index !== images.length - 1 && <Divider />}
+                </React.Fragment>
+              ))}
+            </Segment>
+          </Visibility>
         </Ref>
       </React.Fragment>
     );
   }
 }
+
+const mapStateToProps = state => {
+  return { reputationAddress: state.reputation.reputationAddress };
+};
+
+export default connect(mapStateToProps)(UserInfiniteTopicList);

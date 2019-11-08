@@ -1,7 +1,15 @@
 import React, { Component } from "react";
+import { Container } from "semantic-ui-react";
 
 class Timer extends Component {
-  state = { secondsRemaining: -1 };
+  state = {
+    secondsRemaining: -1,
+    seconds: 0,
+    minutes: 0,
+    hours: 0,
+    days: 0,
+    timeHasPassed: false
+  };
 
   componentDidMount() {
     this.initializeState();
@@ -40,26 +48,35 @@ class Timer extends Component {
 
     if (secondsRemaining <= 0) {
       clearInterval(this.intervalHandle);
+      this.setState({ timeHasPassed: true });
     }
   };
 
   startCountDown() {
-    this.intervalHandle = setInterval(this.tick, 1000);
+    if (!this.state.timeHasPassed) {
+      this.intervalHandle = setInterval(this.tick, 1000);
+    }
   }
 
   render() {
     return (
-      <h1>
-        {this.doubleDigit(this.state.days) +
-          "D " +
-          this.doubleDigit(this.state.hours) +
-          "H " +
-          this.doubleDigit(this.state.minutes) +
-          "M " +
-          this.doubleDigit(this.state.seconds) +
-          "S "}
-        Remaining
-      </h1>
+      <Container style={{ marginTop: "10px" }} textAlign="center">
+        {this.state.timeHasPassed ? (
+          <h1>Topic has expired.</h1>
+        ) : (
+          <h1>
+            {this.doubleDigit(this.state.days) +
+              "D " +
+              this.doubleDigit(this.state.hours) +
+              "H " +
+              this.doubleDigit(this.state.minutes) +
+              "M " +
+              this.doubleDigit(this.state.seconds) +
+              "S "}
+            Remaining
+          </h1>
+        )}
+      </Container>
     );
   }
 

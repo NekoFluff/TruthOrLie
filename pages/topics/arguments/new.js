@@ -91,10 +91,10 @@ class NewArgument extends Component {
 
   render() {
     return (
-      <CommonPage>
+      <React.Fragment>
         <NewArgumentSteps active={this.state.phase} />
         {this.renderContent()}
-      </CommonPage>
+      </React.Fragment>
     );
   }
 }

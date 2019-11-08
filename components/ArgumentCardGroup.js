@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Segment, Card, Divider } from "semantic-ui-react";
+import { Card, Divider, Button } from "semantic-ui-react";
 import { Link } from "../routes";
 
 class ArgumentCardGroup extends Component {
@@ -17,7 +17,17 @@ class ArgumentCardGroup extends Component {
                 <Link
                   route={`/topics/${this.props.topicAddress}/arguments/${props.creator}/vote`}
                 >
-                  <a>Vote</a>
+                  <Button
+                    onClick={() => {
+                      localStorage.setItem("argumentText", props.description);
+                      localStorage.setItem("argumentIsTrue", props.isTrue);
+                      console.log(
+                        "Updated local storage with argument details"
+                      );
+                    }}
+                  >
+                    Vote
+                  </Button>
                 </Link>
               }
             />

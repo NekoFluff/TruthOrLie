@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Router } from "../routes";
 import Topic from "../ethereum/topic";
-import { connect } from 'react-redux';
-import web3 from './../ethereum/web3';
+import { connect } from "react-redux";
+import web3 from "./../ethereum/web3";
 
 import {
   Grid,
@@ -16,8 +16,6 @@ import {
   Message
 } from "semantic-ui-react";
 
-
-
 class TopicSummary extends Component {
   state = {
     loading: false,
@@ -28,8 +26,7 @@ class TopicSummary extends Component {
     const items = [
       {
         header: `You said: ${this.props.isTrue}`,
-        description:
-          "Your belief.",
+        description: "Your belief."
       },
       {
         header: `Your argument`,
@@ -45,8 +42,7 @@ class TopicSummary extends Component {
     const items = [
       {
         header: `Selected Account: ${this.props.selectedAccount}`,
-        description:
-          "The account that will author this Argument.",
+        description: "The account that will author this Argument.",
         meta: "Did you make sure to select the correct account?"
       }
     ];
@@ -122,16 +118,13 @@ class TopicSummary extends Component {
           "No account selected. Please go back to the Billing screen and choose an account."
         );
       }
-      console.log("Topic Address:", this.props.topicAddress)
+      console.log("Topic Address:", this.props.topicAddress);
       const topic = Topic(this.props.topicAddress);
       await topic.methods
-        .createArgument(
-          this.props.argument,
-          this.props.isTrue === "Truth"
-        )
+        .createArgument(this.props.argument, this.props.isTrue === "Truth")
         .send({
-          from: this.props.selectedAccount,
-          value: this.props.initialTopicValue
+          from: this.props.selectedAccount
+          // value: this.props.initialTopicValue // We don't send money when making an argument
         });
       Router.pushRoute(`/topics/${this.props.topicAddress}`);
     } catch (err) {
@@ -169,11 +162,9 @@ class TopicSummary extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log("[Topic Summary] New Argument state: ", state.newArgument)
-  console.log("[Topic Summary] Billing state: ", state.billing)
-  return { ...state.newArgument, ...state.billing }
-}
+  console.log("[Topic Summary] New Argument state: ", state.newArgument);
+  console.log("[Topic Summary] Billing state: ", state.billing);
+  return { ...state.newArgument, ...state.billing };
+};
 
-export default connect(
-  mapStateToProps
-)(TopicSummary);
+export default connect(mapStateToProps)(TopicSummary);

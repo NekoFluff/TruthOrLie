@@ -183,8 +183,10 @@ class TopicDetails extends Component {
   };
 
   render() {
+    const topicExpired =
+      timestampToDate(this.props.unixTimestamp) <= new Date().getTime();
     return (
-      <CommonPage>
+      <React.Fragment>
         <Timer targetDate={timestampToDate(this.props.unixTimestamp)}></Timer>
         <h3>Topic Details</h3>
         <Grid columns={2} divided>
@@ -202,7 +204,11 @@ class TopicDetails extends Component {
                 {this.state.userArgument == "" ? (
                   <Link route={`/topics/${this.props.address}/arguments/new`}>
                     <a>
-                      <Button primary>Make an Argument</Button>
+                      <Button disabled={topicExpired} primary>
+                        {topicExpired
+                          ? "Can't make an argument. Topic expired."
+                          : "Make an Argument"}
+                      </Button>
                     </a>
                   </Link>
                 ) : (
@@ -222,7 +228,7 @@ class TopicDetails extends Component {
             </Grid.Column>
           </Grid.Row>
         </Grid>
-      </CommonPage>
+      </React.Fragment>
     );
   }
 }

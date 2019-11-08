@@ -11,15 +11,15 @@ class NewTopic extends Component {
   };
 
   onFormNext = () => {
-    this.setState({ phase: 2, errorMessage: ""});
-  }
+    this.setState({ phase: 2, errorMessage: "" });
+  };
 
   onBillingNext = () => {
     this.setState({ phase: 3, errorMessage: "" });
-  }
+  };
 
   onBackClick = () => {
-    console.log("Back button clicked")
+    console.log("Back button clicked");
     this.setState({ phase: Math.max(1, this.state.phase - 1) });
   };
 
@@ -57,10 +57,10 @@ class NewTopic extends Component {
 
   render() {
     return (
-      <CommonPage>
+      <React.Fragment>
         <NewTopicSteps active={this.state.phase} />
         {this.renderContent()}
-      </CommonPage>
+      </React.Fragment>
     );
   }
 }

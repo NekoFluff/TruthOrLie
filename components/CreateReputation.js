@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import reputationFactory from "../ethereum/reputationFactory";
 import web3 from "./../ethereum/web3";
 import { Button, Header, Icon, Modal, Message, Label } from "semantic-ui-react";
+import { connect } from "react-redux";
+import { updateReputationAddress } from "./../redux/actions";
 
 class CreateReputation extends Component {
   state = {
     accounts: [],
-    reputationAddress: "",
     finishedLoading: false,
     modalOpen: true,
     creatingReputationContract: false,
@@ -35,7 +36,13 @@ class CreateReputation extends Component {
       const reputationAddress = await reputationFactory.methods
         .deployedReputations(accounts[0])
         .call();
-      this.setState({ reputationAddress });
+
+      // Only update if the reputation address is different
+      if (this.props.reputationAddress != reputationAddress) {
+        this.props.updateReputationAddress({
+          reputationAddress: reputationAddress
+        });
+      }
     } catch (err) {
       console.log("[CreateReputation.js] Error: ", err);
     }
@@ -68,45 +75,61 @@ class CreateReputation extends Component {
 
   renderForm = () => {
     if (
-      this.state.reputationAddress ==
+      this.props.reputationAddress ==
       "0x0000000000000000000000000000000000000000"
     ) {
       return (
-        <Modal open={this.state.modalOpen} basic size="small">
-          <Header icon="archive" content="New User" />
-          <Modal.Content>
-            <p>
-              Hi, it seems like you are using a new ethereum address. You will
-              need a new <b>Reputation Contract</b> in order to use this
-              application. Would you like to create one now?
-            </p>
-            <br />
-            <p>
-              (It will take a small amount of ether to create the Reputation
-              Contract and get started.)
-            </p>
-          </Modal.Content>
-          <Modal.Actions>
-            <Button
-              disabled={this.state.creatingReputationContract}
-              onClick={this.onCancel}
-              basic
+        <React.Fragment>
+          <div>
+            <Label
+              as="a"
               color="red"
-              inverted
+              onClick={() => {
+                this.setState({ modalOpen: true });
+              }}
+              image
             >
-              <Icon name="remove" /> No
-            </Button>
-            <Button
-              disabled={this.state.creatingReputationContract}
-              loading={this.state.creatingReputationContract}
-              onClick={this.onConfirm}
-              color="green"
-              inverted
-            >
-              <Icon name="checkmark" /> Yes
-            </Button>
-          </Modal.Actions>
-        </Modal>
+              {/* <Label color="blue"> */}
+              Reputation Address:
+              <Label.Detail> Click here to create </Label.Detail>
+            </Label>
+          </div>
+          <Modal open={this.state.modalOpen} basic size="small">
+            <Header icon="archive" content="New User" />
+            <Modal.Content>
+              <p>
+                Hi, it seems like you are using a new ethereum address. You will
+                need a new <b>Reputation Contract</b> in order to use this
+                application. Would you like to create one now?
+              </p>
+              <br />
+              <p>
+                (It will take a small amount of ether to create the Reputation
+                Contract and get started.)
+              </p>
+            </Modal.Content>
+            <Modal.Actions>
+              <Button
+                disabled={this.state.creatingReputationContract}
+                onClick={this.onCancel}
+                basic
+                color="red"
+                inverted
+              >
+                <Icon name="remove" /> No
+              </Button>
+              <Button
+                disabled={this.state.creatingReputationContract}
+                loading={this.state.creatingReputationContract}
+                onClick={this.onConfirm}
+                color="green"
+                inverted
+              >
+                <Icon name="checkmark" /> Yes
+              </Button>
+            </Modal.Actions>
+          </Modal>
+        </React.Fragment>
       );
     }
   };
@@ -125,7 +148,7 @@ class CreateReputation extends Component {
           />
         );
       } else if (
-        this.state.reputationAddress !=
+        this.props.reputationAddress !=
         "0x0000000000000000000000000000000000000000"
       ) {
         return (
@@ -133,7 +156,7 @@ class CreateReputation extends Component {
             <Label as="a" color="blue" image>
               {/* <Label color="blue"> */}
               Reputation Address:
-              <Label.Detail>{this.state.reputationAddress}</Label.Detail>
+              <Label.Detail>{this.props.reputationAddress}</Label.Detail>
             </Label>
           </div>
         );
@@ -144,4 +167,12 @@ class CreateReputation extends Component {
   }
 }
 
-export default CreateReputation;
+const mapStateToProps = state => {
+  console.log("New Reputation state: ", state.reputation);
+  return { reputationAddress: state.reputation.reputationAddress };
+};
+
+export default connect(
+  mapStateToProps,
+  { updateReputationAddress }
+)(CreateReputation);
