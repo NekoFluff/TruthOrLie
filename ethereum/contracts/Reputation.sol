@@ -24,8 +24,8 @@ contract Reputation {
         owner = sender;
     }
 
-    function addTopic(address payable topicAddress) public _ownerOnly {
-        require(Topic(topicAddress).creator() == owner, "Must be the creator of the Topic in order to add it.");
+    function addTopic(address payable topicAddress, address sender) public {
+        require(Topic(topicAddress).creator() == sender, "Must be the creator of the Topic in order to add it.");
         topics.push(topicAddress);
     }
 

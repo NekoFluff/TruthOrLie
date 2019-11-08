@@ -10,7 +10,7 @@ class MyTopics extends Component {
         <h1>My Topics</h1>
         {/* TODO: REDUX TO STORE REPUTATION ADDRESS (CREATE_REPUTATION.JS) */}
         <UserInfiniteTopicList
-          reputationAddress={"0x3f0985e6C3F8ffb296F525A1012abF3ad4Dd8A61"}
+          reputationAddress={"0xb6c869a5514362ac31d42073ac9e430b7543c890"}
         />
       </CommonPage>
     );

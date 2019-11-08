@@ -3,7 +3,6 @@ import React, { Component, createRef } from "react";
 import {
   Divider,
   Grid,
-  Image,
   Icon,
   Message,
   Card,
@@ -138,7 +137,8 @@ export default class UserInfiniteTopicList extends Component {
           </Message.Content>
         </Message>
         <Ref innerRef={this.contextRef}>
-          <Grid columns={2}>
+          {/* <Grid columns={2}> */}
+          <Grid columns={1}>
             <Grid.Column>
               <Visibility onUpdate={this.handleUpdate}>
                 <Segment>
@@ -166,7 +166,7 @@ export default class UserInfiniteTopicList extends Component {
               </Visibility>
             </Grid.Column>
 
-            <Grid.Column>
+            {/* <Grid.Column>
               <Sticky context={this.contextRef}>
                 <Table celled>
                   <Table.Header>
@@ -247,7 +247,7 @@ export default class UserInfiniteTopicList extends Component {
                   </Table.Body>
                 </Table>
               </Sticky>
-            </Grid.Column>
+            </Grid.Column> */}
           </Grid>
         </Ref>
       </React.Fragment>
