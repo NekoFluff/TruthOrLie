@@ -18,6 +18,7 @@ contract Topic {
     mapping(address => uint) public createdArgument;
     address payable[] public truthVoters; //TODO: Remove?
     address payable[] public lieVoters; // TODO: Remove?
+    mapping(address => uint) public reputationStake;
 
     bool public isCompleted;
     uint public majority;

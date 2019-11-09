@@ -7,7 +7,9 @@ import { Link } from "../../../routes";
 class NewArgument extends Component {
   state = {
     argumentisTrue: "Unable to retrieve argumentIsTrue from local storage.",
-    argumentText: "Unable to retrieve argument text from local storage."
+    argumentText: "Unable to retrieve argument text from local storage.",
+    topicText: "0",
+    topicMinimumInvestment: -1
   };
 
   static async getInitialProps(props) {
@@ -24,25 +26,31 @@ class NewArgument extends Component {
     //   unixTimestamp: details[2],
     //   isCompleted: details[3]
     // };
-
-    return {};
+    return {
+      topicAddress: props.query.address
+    };
   }
 
   componentDidMount() {
     this.setState({
+      topicText: localStorage.getItem("topicText"),
+      minimumInvestment: localStorage.getItem("topicMinimumInvestment"),
       argumentIsTrue: localStorage.getItem("argumentIsTrue"),
-      argumentText: localStorage.getItem("argumentText")
+      argumentText: localStorage.getItem("argumentText"),
+      argumentIndex: localStorage.getItem("argumentIndex")
     });
   }
 
   renderDetails = () => {
+    const { topicText } = this.state;
+
     return (
       <React.Fragment>
         <Segment raised style={{ marginTop: "10px" }}>
           <span>The Topic</span>
           <Divider></Divider>
           <Container style={{ marginBottom: "20px" }} textAlign="center">
-            <p>"{this.props.topicContent}"</p>
+            <p>"{topicText}"</p>
           </Container>
         </Segment>
 
@@ -59,6 +67,7 @@ class NewArgument extends Component {
   };
 
   render() {
+    const { minimumInvestment, argumentIndex } = this.state;
     return (
       <Grid columns={2} divided>
         <Grid.Row>
@@ -66,8 +75,9 @@ class NewArgument extends Component {
 
           <Grid.Column width={6}>
             <VoteForm
-              topicDetails={"Topic Details"}
-              argumentDetails={"Argument Details"}
+              minimumInvestment={minimumInvestment}
+              argumentIndex={argumentIndex}
+              topicAddress={this.props.topicAddress}
             />
           </Grid.Column>
         </Grid.Row>

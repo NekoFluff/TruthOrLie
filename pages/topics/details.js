@@ -30,16 +30,7 @@ class TopicDetails extends Component {
       const details = await topic.methods.getDetails().call();
       const text = await topic.methods.content().call();
 
-      // return {
-      //   address: props.query.address,
-      //   minimumContribution: details["minimumContribution"],
-      //   balance: details["balance"],
-      //   requestCount: details["requestCount"],
-      //   contributorCount: details["contributorCount"],
-      //   manager: details["manager"]
-      // };
-      console.log("Topic Details:", details);
-      return {
+      const topicDetails = {
         address: props.query.address,
         text: text,
         creator: details[0],
@@ -47,9 +38,20 @@ class TopicDetails extends Component {
         unixTimestamp: details[2],
         isCompleted: details[3]
       };
+      console.log("[details.js] Topic Details:", details, topicDetails);
+
+      return topicDetails;
     } catch (err) {
       console.log("[Topic Details (details.js)] An error has occured:", err);
     }
+  }
+
+  componentDidMount() {
+    localStorage.setItem("topicText", this.props.text);
+    localStorage.setItem(
+      "topicMinimumInvestment",
+      this.props.minimumInvestment
+    );
   }
 
   renderMetadata() {

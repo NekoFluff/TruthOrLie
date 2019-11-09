@@ -20,7 +20,11 @@ class ArgumentCardGroup extends Component {
                   <Button
                     onClick={() => {
                       localStorage.setItem("argumentText", props.description);
-                      localStorage.setItem("argumentIsTrue", props.isTrue);
+                      localStorage.setItem("argumentIsTrue", props.istrue);
+                      localStorage.setItem(
+                        "argumentIndex",
+                        props.argumentindex
+                      );
                       console.log(
                         "Updated local storage with argument details"
                       );

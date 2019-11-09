@@ -1,124 +1,104 @@
 import React, { Component } from "react";
-import {
-  Form,
-  Button,
-  Message,
-  Segment,
-  TextArea,
-  Checkbox
-} from "semantic-ui-react";
+import { Form, Button, Message, Segment, Input } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { newArgument } from "../redux/actions";
 import Topic from "../ethereum/topic";
+import web3 from "../ethereum/web3";
 
 class VoteForm extends Component {
   state = {
     errorMessage: "",
     data: {
-      wei: "",
+      wei: 0,
+      reputation: 0,
       account: ""
     },
 
     loading: false
   };
 
-  static async getInitialProps(props) {
-    try {
-      const topic = Topic(props.query.address);
-      const details = await topic.methods.getDetails().call();
-      const text = await topic.methods.content().call();
-
-      console.log("Topic Details:", details);
-      return {
-        address: props.query.address,
-        text: text,
-        creator: details[0],
-        minimumInvestment: details[1],
-        unixTimestamp: details[2],
-        isCompleted: details[3]
-      };
-    } catch (err) {
-      console.log("[VoteForm.js] An error has occured:", err);
-    }
-
-    return {
-      address: props.query.address
-    };
-  }
-
-  componentDidMount() {
-    this.setState({ data: this.props.data });
-  }
-
-  onFormNext = async event => {
-    const { isTrue, argument } = this.state.data;
-
+  onFormSubmit = async event => {
+    console.log("[VoteForm.js] Topic Address:", this.props);
+    var { minimumInvestment, topicAddress, argumentIndex } = this.props;
+    const { wei, reputation } = this.state.data;
+    minimumInvestment = parseInt(minimumInvestment); // Ensure this is a number
     event.preventDefault();
 
     //TODO: Double confirmation button OR Popup https://react.semantic-ui.com/modules/popup/
     this.setState({ loading: true });
     try {
-      if (isTrue === "") {
-        throw new Error("You must select either 'Truth' or 'Lie'");
-      } else if (argument.length == 0) {
+      if (minimumInvestment < 0) {
+        throw new Error("Critical Issue: Minimim investment < 0?");
+      } else if (wei < minimumInvestment) {
         throw new Error(
-          "You must include some text in your argument. Otherwise, what is there to agree or disagree with?"
+          `You must contribute at least ${minimumInvestment} wei.`
         );
+      } else if (reputation < 0) {
+        throw new Error("Cannot invest negative reputation.");
       }
 
-      this.updateReduxState();
+      // Attempt to vote for an argument.
+      const accounts = await web3.eth.getAccounts();
+      const topicContract = Topic(topicAddress);
+      await topicContract.methods.vote(argumentIndex).send({
+        from: accounts[0],
+        value: wei
+      });
 
-      if (this.props.onFormNext != null) this.props.onFormNext();
+      if (this.props.onFormSubmit != null) this.props.onFormSubmit();
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
     this.setState({ loading: false });
   };
 
-  handleCheckboxChange = (e, { value }) => {
-    this.setState({ data: { ...this.state.data, isTrue: value } });
-  };
-
   render() {
-    const { isTrue, argument } = this.state.data;
-
+    const { wei, reputation, account } = this.state.data;
+    const { minimumInvestment } = this.props;
     return (
       <Segment raised>
-        <Form onSubmit={this.onFormNext} error={!!this.state.errorMessage}>
+        <Form onSubmit={this.onFormSubmit} error={!!this.state.errorMessage}>
           <Form.Field>
-            <b>Is this topic True?</b>
+            <b>Voting Details</b>
           </Form.Field>
           <Form.Field>
-            <Checkbox
-              radio
-              label="Truth"
-              name="checkboxRadioGroup"
-              value="Truth"
-              checked={isTrue === "Truth"}
-              onChange={this.handleCheckboxChange}
-            />
+            <Input
+              fluid
+              required
+              label={`Investment (wei) minimum ${minimumInvestment}`}
+              labelPosition="right"
+              placeholder="How much are you willing to bet?"
+              type="number"
+              value={wei}
+              onChange={event => {
+                this.setState({
+                  data: {
+                    ...this.state.data,
+                    wei: parseInt(event.target.value)
+                  }
+                });
+              }}
+            ></Input>
           </Form.Field>
           <Form.Field>
-            <Checkbox
-              radio
-              label="Lie"
-              name="checkboxRadioGroup"
-              value="Lie"
-              checked={isTrue === "Lie"}
-              onChange={this.handleCheckboxChange}
-            />
+            <Input
+              fluid
+              required
+              label="Investment (reputation)"
+              labelPosition="right"
+              placeholder="Put your reputation at stake."
+              type="number"
+              value={reputation}
+              onChange={event => {
+                this.setState({
+                  data: {
+                    ...this.state.data,
+                    reputation: parseInt(event.target.value)
+                  }
+                });
+              }}
+            ></Input>
           </Form.Field>
-          <TextArea
-            rows={8}
-            value={argument}
-            placeholder="Your argument goes here. Let's try and stick to the facts."
-            onChange={(event, { value }) => {
-              this.setState({
-                data: { ...this.state.data, argument: value }
-              });
-            }}
-          ></TextArea>
-
           <Message
             error
             header="Oops! Something went wrong"
@@ -131,7 +111,7 @@ class VoteForm extends Component {
             loading={this.state.loading}
             disabled={this.state.loading}
           >
-            Next
+            Vote
           </Button>
         </Form>
       </Segment>
@@ -139,12 +119,4 @@ class VoteForm extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  console.log("New Argument state: ", state.newArgument);
-  return { data: state.newArgument || {} };
-};
-
-export default connect(
-  mapStateToProps,
-  { newArgument }
-)(VoteForm);
+export default VoteForm;

@@ -10,8 +10,9 @@ New Topic Page
 - ~~~~ Time remaining on each topic...
 - ~~~~ A 'Your argument section'
 - ~~~~ color code infinite list of topics
-- !!! Voting (Put money at stake!)
-- !!! Reputation system
+- ~~~~ Voting (Put money at stake!)
+- ~~~~ Reputation system (store reputation)
+- !!! Voting (Put reputation at stake)
 - Viewing topics voted on (using reputation contract)
 - !!! Claiming 
 - Better UI for investment amount
