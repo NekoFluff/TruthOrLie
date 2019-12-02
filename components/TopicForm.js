@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Form, Button, Message } from "semantic-ui-react";
-import { connect } from 'react-redux'
-import { newTopic } from './../redux/actions';
+import { connect } from "react-redux";
+import { newTopic } from "./../redux/actions";
 
 class TopicForm extends Component {
   state = {
@@ -20,22 +20,21 @@ class TopicForm extends Component {
   };
 
   componentDidMount() {
-    this.setState({ data: this.props.data})
+    this.setState({ data: this.props.data });
   }
 
   updateReduxState = () => {
-    this.props.newTopic(this.state.data)
-  }
+    this.props.newTopic(this.state.data);
+  };
 
   onFormNext = async event => {
     event.preventDefault();
     //TODO: Double confirmation button OR Popup https://react.semantic-ui.com/modules/popup/
-    this.setState({ loading: true })
+    this.setState({ loading: true });
     try {
-      this.updateReduxState()
+      this.updateReduxState();
 
-      if (this.props.onFormNext != null) 
-        this.props.onFormNext()
+      if (this.props.onFormNext != null) this.props.onFormNext();
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
@@ -52,7 +51,10 @@ class TopicForm extends Component {
             // style={{ marginBottom: "10px"} }
             primary
             disabled={this.state.loading}
-            onClick={() => {this.updateReduxState(); this.props.onBackClick()}}
+            onClick={() => {
+              this.updateReduxState();
+              this.props.onBackClick();
+            }}
           >
             Back
           </Button>
@@ -73,7 +75,9 @@ class TopicForm extends Component {
             type="string"
             value={topicContent}
             onChange={event => {
-              this.setState( { data: {...this.state.data, topicContent: event.target.value} });
+              this.setState({
+                data: { ...this.state.data, topicContent: event.target.value }
+              });
             }}
           />
           <Form.Input
@@ -85,12 +89,17 @@ class TopicForm extends Component {
             }
             fluid
             required
-            label="Minimum Investment per Voter (wei)"
+            label="Minimum Investment per Voter (ether)"
             placeholder="How much should each person be required to invest in order to partipate?"
             type="number"
             value={minimumInvestment}
             onChange={event => {
-              this.setState({ data: {...this.state.data, minimumInvestment: event.target.value} });
+              this.setState({
+                data: {
+                  ...this.state.data,
+                  minimumInvestment: event.target.value
+                }
+              });
             }}
           />
           <Form.Input
@@ -107,7 +116,9 @@ class TopicForm extends Component {
             type="number"
             value={hoursAvailable}
             onChange={event => {
-              this.setState({ data: {...this.state.data, hoursAvailable: event.target.value} });
+              this.setState({
+                data: { ...this.state.data, hoursAvailable: event.target.value }
+              });
             }}
           />
 
@@ -131,11 +142,8 @@ class TopicForm extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log("New Topic state: ", state.newTopic)
-  return { data: state.newTopic || {} }
-}
+  console.log("New Topic state: ", state.newTopic);
+  return { data: state.newTopic || {} };
+};
 
-export default connect(
-  mapStateToProps,
-  { newTopic }
-)(TopicForm);
+export default connect(mapStateToProps, { newTopic })(TopicForm);

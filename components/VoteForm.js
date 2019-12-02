@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Form, Button, Message, Segment, Input } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { newArgument } from "../redux/actions";
+import { Router } from "../routes";
 import Topic from "../ethereum/topic";
 import web3 from "../ethereum/web3";
 
@@ -9,7 +10,7 @@ class VoteForm extends Component {
   state = {
     errorMessage: "",
     data: {
-      wei: 0,
+      ether: 0.0,
       reputation: 0,
       account: ""
     },
@@ -20,7 +21,8 @@ class VoteForm extends Component {
   onFormSubmit = async event => {
     console.log("[VoteForm.js] Topic Address:", this.props);
     var { minimumInvestment, topicAddress, argumentIndex } = this.props;
-    const { wei, reputation } = this.state.data;
+    const { ether, reputation } = this.state.data;
+
     minimumInvestment = parseInt(minimumInvestment); // Ensure this is a number
     event.preventDefault();
 
@@ -29,9 +31,9 @@ class VoteForm extends Component {
     try {
       if (minimumInvestment < 0) {
         throw new Error("Critical Issue: Minimim investment < 0?");
-      } else if (wei < minimumInvestment) {
+      } else if (ether < minimumInvestment) {
         throw new Error(
-          `You must contribute at least ${minimumInvestment} wei.`
+          `You must contribute at least ${minimumInvestment} ether.`
         );
       } else if (reputation < 0) {
         throw new Error("Cannot invest negative reputation.");
@@ -40,12 +42,14 @@ class VoteForm extends Component {
       // Attempt to vote for an argument.
       const accounts = await web3.eth.getAccounts();
       const topicContract = Topic(topicAddress);
-      await topicContract.methods.vote(argumentIndex).send({
+      await topicContract.methods.vote(argumentIndex, reputation).send({
         from: accounts[0],
-        value: wei
+        value: web3.utils.toWei(String(ether), "ether")
       });
 
       if (this.props.onFormSubmit != null) this.props.onFormSubmit();
+
+      Router.replaceRoute(`/topics/${topicAddress}`);
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
@@ -53,7 +57,7 @@ class VoteForm extends Component {
   };
 
   render() {
-    const { wei, reputation, account } = this.state.data;
+    const { ether, reputation, account } = this.state.data;
     const { minimumInvestment } = this.props;
     return (
       <Segment raised>
@@ -65,16 +69,16 @@ class VoteForm extends Component {
             <Input
               fluid
               required
-              label={`Investment (wei) minimum ${minimumInvestment}`}
+              label={`Investment (ether) minimum ${minimumInvestment}`}
               labelPosition="right"
               placeholder="How much are you willing to bet?"
               type="number"
-              value={wei}
+              value={ether}
               onChange={event => {
                 this.setState({
                   data: {
                     ...this.state.data,
-                    wei: parseInt(event.target.value)
+                    ether: parseFloat(event.target.value)
                   }
                 });
               }}

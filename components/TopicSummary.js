@@ -25,9 +25,9 @@ class TopicSummary extends Component {
   renderTopicCardGroup() {
     const items = [
       {
-        header: `Min Investment per User: ${this.props.minimumInvestment} Wei`,
+        header: `Min Investment per User: ${this.props.minimumInvestment} ether`,
         description:
-          "This is the minimum amount of wei a user needs to contribute in order to contribute to this Topic. It serves as a barrier to entry for users. Increasing this value encourages users to perform a better investigation on the subject prior to voting.",
+          "This is the minimum amount of ether a user needs to contribute in order to contribute to this Topic. It serves as a barrier to entry for users. Increasing this value encourages users to perform a better investigation on the subject prior to voting.",
         meta: "How confident should a user be prior to participating?"
       },
       {

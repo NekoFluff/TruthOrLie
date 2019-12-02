@@ -3,6 +3,8 @@ pragma solidity ^0.5.10;
 import './Topic.sol';
 
 contract Reputation {
+    address reputationFactoryAddress;
+
     struct Argument {
         string content; // The argument in words
         bool isTrue; // Whether this argument thinks the statement is true or false.
@@ -19,7 +21,13 @@ contract Reputation {
         _;
     }
 
-    constructor(address sender) public {
+    modifier _reputationFactoryOnly() {
+        require(msg.sender == reputationFactoryAddress, 'Only the reputation factory can invoke this function.');
+        _;
+    }
+
+    constructor(address repFactoryAddress, address sender) public {
+        reputationFactoryAddress = repFactoryAddress;
         rep = 100;
         owner = sender;
     }
@@ -41,5 +49,14 @@ contract Reputation {
             tempTopics[i] = address(topics[startIndex + i]);
         }
         return tempTopics;
+    }
+
+    function addReputation(uint addRep) public _reputationFactoryOnly {
+        rep += addRep;
+    }
+
+    function spendReputation(uint removeRep) public _reputationFactoryOnly {
+        require(rep >= removeRep, "You don't have enough rep to give away.");
+        rep -= removeRep;
     }
 }
