@@ -9,7 +9,7 @@
     "deploy": "node ./ethereum/deploy",
     "dev": "node server.js",
     "build": "next build",
-    "start": "node server.js -p $PORT"
+    "start": "NODE_ENV=production node server.js"
   },
   "author": "Alexander S. Nou",
   "license": "ISC",
