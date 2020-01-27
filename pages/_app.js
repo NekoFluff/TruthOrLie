@@ -2,7 +2,17 @@ import React from "react";
 import App from "next/app";
 import CommonPage from "./../components/CommonPage";
 
+// Log browser history
+// import { createBrowserHistory } from "history";
+// const history = createBrowserHistory();
 
+// // Initialize google analytics page view tracking
+// history.listen(location => {
+//   ReactGA.set({ page: location.pathname }); // Update the user's current page
+//   ReactGA.pageview(location.pathname); // Record a pageview for the given page
+// });
+
+// The application
 class MyApp extends App {
   // Only uncomment this method if you have blocking data requirements for
   // every single page in your application. This disables the ability to
@@ -18,6 +28,7 @@ class MyApp extends App {
 
   render() {
     const { Component, pageProps } = this.props;
+
     return (
       <CommonPage>
         <Component {...pageProps}></Component>

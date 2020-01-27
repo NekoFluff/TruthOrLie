@@ -4,6 +4,7 @@ import { Card, Button } from "semantic-ui-react";
 import CommonPage from "../components/CommonPage";
 import InfiniteTopicsList from "../components/InfiniteTopicsList";
 import { Link } from "../routes";
+import ReactGA from "react-ga";
 
 export default class CampaignIndex extends Component {
   state = {};
