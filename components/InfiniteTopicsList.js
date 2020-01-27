@@ -163,7 +163,7 @@ export default class InfiniteTopicsList extends Component {
             </Grid.Column>
 
             <Grid.Column>
-              <Sticky context={this.contextRef}>
+              {/* <Sticky context={this.contextRef}> */}
                 <Table celled>
                   <Table.Header>
                     <Table.Row>
@@ -242,7 +242,7 @@ export default class InfiniteTopicsList extends Component {
                     </Table.Row>
                   </Table.Body>
                 </Table>
-              </Sticky>
+              {/* </Sticky> */}
             </Grid.Column>
           </Grid>
         </Ref>
