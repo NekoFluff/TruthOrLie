@@ -134,7 +134,7 @@ export default class InfiniteTopicsList extends Component {
           </Message.Content>
         </Message>
         <Ref innerRef={this.contextRef}>
-          <Grid columns={2}>
+          <Grid columns={1}>
             <Grid.Column>
               <Visibility onUpdate={this.handleUpdate}>
                 <Segment>
@@ -162,8 +162,7 @@ export default class InfiniteTopicsList extends Component {
               </Visibility>
             </Grid.Column>
 
-            <Grid.Column>
-              {/* <Sticky context={this.contextRef}> */}
+            {/* <Grid.Column>
                 <Table celled>
                   <Table.Header>
                     <Table.Row>
@@ -242,8 +241,7 @@ export default class InfiniteTopicsList extends Component {
                     </Table.Row>
                   </Table.Body>
                 </Table>
-              {/* </Sticky> */}
-            </Grid.Column>
+            </Grid.Column> */}
           </Grid>
         </Ref>
       </React.Fragment>
