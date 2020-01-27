@@ -20,15 +20,15 @@ app.prepare().then(() => {
     return handle(req, res)
   })
 
-  server.all('*', (req, res) => {
-    console.log("Homomorhpic Encryption STAR");
+  // server.all('*', (req, res) => {
+  //   console.log("Homomorhpic Encryption STAR");
 
-    return handle(req, res)
-  })
+  //   return handle(req, res)
+  // })
 
-  server.use(handler).listen(3000, err => {
+  server.use(handler).listen(port, err => {
     if (err) throw err;
-    console.log("Ready on localhost:3000");
+    console.log(`Ready on localhost:${port}`);
   });
 })
 
