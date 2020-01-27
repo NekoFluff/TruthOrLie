@@ -18,10 +18,10 @@ const express = require("express");
 app.prepare().then(() => {
   const server = express();
 
-  // Redirect to https on production
+  // Middleware to redirect http to https on production
   if (process.env.NODE_ENV === "production") {
     server.use((req, res, next) => {
-      if (req.header("x-forwarded-proto")) {
+      if (req.header("x-forwarded-proto") != "https") {
         res.redirect(`https://${req.header("host")}${req.url}`);
       } else {
         next();
