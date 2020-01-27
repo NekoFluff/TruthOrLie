@@ -20,7 +20,7 @@ app.prepare().then(() => {
 
   // Redirect to https on production
   if (process.env.NODE_ENV === "production") {
-    app.use((req, res, next) => {
+    server.use((req, res, next) => {
       if (req.header("x-forwarded-proto")) {
         res.redirect(`https://${req.header("host")}${req.url}`);
       } else {
