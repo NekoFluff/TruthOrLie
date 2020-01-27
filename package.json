@@ -16,6 +16,7 @@
   "dependencies": {
     "@truffle/hdwallet-provider": "^1.0.23",
     "@zeit/next-css": "^1.0.1",
+    "express": "^4.17.1",
     "fs-extra": "^8.1.0",
     "mocha": "^6.2.2",
     "moment": "^2.24.0",

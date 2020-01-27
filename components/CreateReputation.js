@@ -58,10 +58,10 @@ class CreateReputation extends Component {
   };
 
   onConfirm = async () => {
-    this.setState({ creatingReputationContract: true });
-
+    
     // Create a new reputation contract for the user
     try {
+      this.setState({ creatingReputationContract: true });
       await reputationFactory.methods.createReputation().send({
         from: this.state.accounts[0]
       });
