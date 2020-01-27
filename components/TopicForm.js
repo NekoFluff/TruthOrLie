@@ -1,7 +1,10 @@
 import React, { Component } from "react";
-import { Form, Button, Message } from "semantic-ui-react";
+import { Form, Button, Message, Container } from "semantic-ui-react";
 import { connect } from 'react-redux'
 import { newTopic } from './../redux/actions';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 
 class TopicForm extends Component {
   state = {
@@ -9,7 +12,8 @@ class TopicForm extends Component {
     data: {
       topicContent: "a",
       minimumInvestment: "1",
-      hoursAvailable: ""
+      hoursAvailable: "",
+      startDate: new Date()
     },
 
     // Errors
@@ -42,6 +46,12 @@ class TopicForm extends Component {
     this.setState({ loading: false });
   };
 
+  handleDateChange = date => {
+    this.setState({
+      data: { ...this.state.data, startDate: date }
+    });
+  };
+
   render() {
     const { topicContent, minimumInvestment, hoursAvailable } = this.state.data;
 
@@ -52,13 +62,19 @@ class TopicForm extends Component {
             // style={{ marginBottom: "10px"} }
             primary
             disabled={this.state.loading}
-            onClick={() => {this.updateReduxState(); this.props.onBackClick()}}
+            onClick={() => {
+              this.updateReduxState();
+              this.props.onBackClick();
+            }}
           >
             Back
           </Button>
         )}
         <h2>Let's talk about something!</h2>
-        <Form onSubmit={this.onFormNext} error={!!this.state.errorMessage}>
+        <Form
+          onSubmit={this.onFormNext}
+          error={!!this.state.errorMessage}
+        >
           <Form.Input
             error={
               this.state.topicError != "" && {
@@ -73,7 +89,9 @@ class TopicForm extends Component {
             type="string"
             value={topicContent}
             onChange={event => {
-              this.setState( { data: {...this.state.data, topicContent: event.target.value} });
+              this.setState({
+                data: { ...this.state.data, topicContent: event.target.value }
+              });
             }}
           />
           <Form.Input
@@ -90,10 +108,15 @@ class TopicForm extends Component {
             type="number"
             value={minimumInvestment}
             onChange={event => {
-              this.setState({ data: {...this.state.data, minimumInvestment: event.target.value} });
+              this.setState({
+                data: {
+                  ...this.state.data,
+                  minimumInvestment: event.target.value
+                }
+              });
             }}
           />
-          <Form.Input
+          {/* <Form.Input
             error={
               this.state.activeTimeError != "" && {
                 content: this.state.activeTimeError,
@@ -107,10 +130,20 @@ class TopicForm extends Component {
             type="number"
             value={hoursAvailable}
             onChange={event => {
-              this.setState({ data: {...this.state.data, hoursAvailable: event.target.value} });
+              this.setState({
+                data: { ...this.state.data, hoursAvailable: event.target.value }
+              });
             }}
-          />
-
+          /> */}
+          
+        <DatePicker
+          selected={this.state.data.startDate}
+          onChange={this.handleDateChange}
+          showTimeSelect
+          timeIntervals="1"
+          dateFormat="Pp"
+          required
+        />
           <Message
             error
             header="Oops! Something went wrong"
@@ -125,6 +158,8 @@ class TopicForm extends Component {
             Next
           </Button>
         </Form>
+
+
       </React.Fragment>
     );
   }
