@@ -22,6 +22,7 @@ class VoteForm extends Component {
     console.log("[VoteForm.js] Topic Address:", this.props);
     var { minimumInvestment, topicAddress, argumentIndex } = this.props;
     const { ether, reputation } = this.state.data;
+    const wei = parseInt(web3.utils.toWei(String(ether), "ether"));
 
     minimumInvestment = parseInt(minimumInvestment); // Ensure this is a number
     event.preventDefault();
@@ -31,9 +32,12 @@ class VoteForm extends Component {
     try {
       if (minimumInvestment < 0) {
         throw new Error("Critical Issue: Minimim investment < 0?");
-      } else if (ether < minimumInvestment) {
+      } else if (wei < minimumInvestment) {
         throw new Error(
-          `You must contribute at least ${minimumInvestment} ether.`
+          `You must contribute at least ${web3.utils.fromWei(
+            minimumInvestment,
+            "ether"
+          )} ether.`
         );
       } else if (reputation < 0) {
         throw new Error("Cannot invest negative reputation.");
@@ -44,7 +48,7 @@ class VoteForm extends Component {
       const topicContract = Topic(topicAddress);
       await topicContract.methods.vote(argumentIndex, reputation).send({
         from: accounts[0],
-        value: web3.utils.toWei(String(ether), "ether")
+        value: wei
       });
 
       if (this.props.onFormSubmit != null) this.props.onFormSubmit();
@@ -69,7 +73,11 @@ class VoteForm extends Component {
             <Input
               fluid
               required
-              label={`Investment (ether) minimum ${minimumInvestment}`}
+              label={`Investment (ether) minimum ${
+                minimumInvestment
+                  ? web3.utils.fromWei(minimumInvestment, "ether")
+                  : "INVALID"
+              }`}
               labelPosition="right"
               placeholder="How much are you willing to bet?"
               type="number"

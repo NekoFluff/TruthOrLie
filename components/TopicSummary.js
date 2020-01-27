@@ -24,7 +24,9 @@ class TopicSummary extends Component {
   };
 
   renderTopicCardGroup() {
-    const { days, hours, minutes } = approximateTimeTillDate(this.props.endDate);
+    const { days, hours, minutes } = approximateTimeTillDate(
+      this.props.endDate
+    );
 
     const items = [
       {
@@ -131,7 +133,9 @@ class TopicSummary extends Component {
         );
       }
 
-      var totalSeconds = Math.floor(Math.abs(this.props.endDate - new Date()) / 1000);
+      var totalSeconds = Math.floor(
+        Math.abs(this.props.endDate - new Date()) / 1000
+      );
 
       await factory.methods
         .createTopic(

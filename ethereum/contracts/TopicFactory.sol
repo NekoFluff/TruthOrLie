@@ -6,7 +6,8 @@ import './ReputationFactory.sol';
 contract TopicFactory {
     address[] public deployedTopics;
     // address reputationFactoryAddress = 0x0604F9a0026613175C1A38a51e090aA96BB4e8B0;
-    address reputationFactoryAddress = 0x4BE24Ebd7D7623456B0Dd3aaEF27039E2e176bc7;
+    // address reputationFactoryAddress = 0x4BE24Ebd7D7623456B0Dd3aaEF27039E2e176bc7;
+    address reputationFactoryAddress = 0x2a705700f9DeBcB867fE1e29C564513F1e9E4BDc;
 
     function createTopic(string memory topicContent, uint minInvestment, uint hoursAvailable) payable public {
         Topic newTopic = new Topic(reputationFactoryAddress, topicContent, minInvestment, hoursAvailable, msg.sender);

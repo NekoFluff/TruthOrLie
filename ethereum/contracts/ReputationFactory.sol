@@ -28,9 +28,9 @@ contract ReputationFactory {
         userReputation.addReputation(addRep);
     }
 
-    function spendReputation(uint removeRep, address sender) public _topicContractsOnly {
+    function spendReputation(address topicAddress, uint removeRep, address sender) public _topicContractsOnly {
         Reputation userReputation = Reputation(deployedReputations[sender]);
         require(userReputation.owner() == sender, "Must be the owner of the Reputation Contract in order to use it.");
-        userReputation.spendReputation(removeRep);
+        userReputation.spendReputation(topicAddress, removeRep);
     }
 }

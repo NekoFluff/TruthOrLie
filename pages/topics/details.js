@@ -24,6 +24,7 @@ class TopicDetails extends Component {
         this.props.minimumInvestment
       );
       await this.retrieveCurrentAccount();
+      // console.log("[Topic Details (details.js)] Retrieving User Argument");
       await this.retrieveUserArgument();
     } catch (err) {
       console.log("[Topic Details (details.js)] An error has occured:", err);

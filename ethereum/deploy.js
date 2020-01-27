@@ -36,9 +36,10 @@ const deploy = async (contractName, contractJson) => {
   );
 };
 
-deploy("Topic Factory", compiledTopicFactory).then(() => {
-  console.log("Finished Topic Factory Deployment");
-});
 // deploy("Reputation Factory", compiledReputationFactory).then(() => {
 //   console.log("Finished Reputation Factory Deployment");
 // });
+
+deploy("Topic Factory", compiledTopicFactory).then(() => {
+  console.log("Finished Topic Factory Deployment");
+});

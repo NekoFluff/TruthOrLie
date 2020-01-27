@@ -23,21 +23,38 @@ class UserInfiniteTopicList extends Component {
     topics: [],
     totalTopicCount: 0,
     retrievingTopics: true,
-    loadingTopicIndex: 0
+    loadingTopicIndex: 0,
+    calculations: {
+      bottomVisible: false
+    }
   };
   contextRef = createRef();
 
   async componentDidMount() {
     try {
-      await this.reloadTopicItems();
+      // await this.reloadTopicItems();
     } catch (err) {
       console.log("[UserInfiniteTopicList.js] An error has occured:", err);
     }
   }
 
+  async componentDidUpdate(prevProps, prevState) {
+    console.log("[UserInfiniteTopicList.js] Component Did Update");
+
+    if (prevProps.reputationAddress != this.props.reputationAddress) {
+      await this.reloadTopicItems();
+    }
+  }
+
   async reloadTopicItems() {
+    console.log("[UserInfiniteTopicList.js] Reload Topic Items");
+    if (this.props.reputationAddress == null) {
+      return;
+    }
+
     try {
       this.setState({ retrievingTopics: true });
+
       const reputationContract = Reputation(this.props.reputationAddress);
 
       const totalTopicCount = parseInt(
@@ -163,6 +180,7 @@ class UserInfiniteTopicList extends Component {
 }
 
 const mapStateToProps = state => {
+  console.log("[UserInfiniteTopicList.js] mapStateToProps:", state.reputation);
   return { reputationAddress: state.reputation.reputationAddress };
 };
 
