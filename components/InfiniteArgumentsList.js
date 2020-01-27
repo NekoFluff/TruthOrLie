@@ -95,7 +95,7 @@ export default class InfiniteArgumentsList extends Component {
           description: argument["content"],
           meta: "Posted by: " + argument["creator"],
           creator: argument["creator"],
-          istrue: argument["isTrue"],
+          istrue: `${argument["isTrue"]}`,
           argumentindex: loadingArgumentIndex + i
         });
         console.log("[InfiniteArgumentList.js] ARGUMENT OBJECT:", argument);

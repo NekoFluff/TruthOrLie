@@ -3,7 +3,7 @@ import { NEW_TOPIC } from "../actionTypes";
 const initialState = {
   topicContent: "",
   minimumInvestment: "",
-  hoursAvailable: ""
+  endDate: ""
 };
 
 export default function(state = initialState, action) {

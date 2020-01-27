@@ -15,6 +15,7 @@ import {
   Container,
   Message
 } from "semantic-ui-react";
+import { approximateTimeTillDate } from "../helpers/date";
 
 class TopicSummary extends Component {
   state = {
@@ -23,6 +24,8 @@ class TopicSummary extends Component {
   };
 
   renderTopicCardGroup() {
+    const { days, hours, minutes } = approximateTimeTillDate(this.props.endDate);
+
     const items = [
       {
         header: `Min Investment per User: ${this.props.minimumInvestment} Wei`,
@@ -31,9 +34,9 @@ class TopicSummary extends Component {
         meta: "How confident should a user be prior to participating?"
       },
       {
-        header: `Uptime: ${this.props.hoursAvailable} Hours`,
+        header: `Ends ${this.props.endDate}`,
         description: "How long should users be able to contribute to this?",
-        meta: ""
+        meta: `Uptime: ${days} Days ${hours} Hours ${minutes} Minutes`
       }
     ];
 
@@ -128,11 +131,13 @@ class TopicSummary extends Component {
         );
       }
 
+      var totalSeconds = Math.floor(Math.abs(this.props.endDate - new Date()) / 1000);
+
       await factory.methods
         .createTopic(
           this.props.topicContent,
           this.props.minimumInvestment,
-          this.props.hoursAvailable
+          totalSeconds
         )
         .send({
           from: this.props.selectedAccount,

@@ -16,7 +16,7 @@ import {
 import factory from "../ethereum/topicFactory";
 import { Link } from "../routes";
 import Topic from "../ethereum/topic";
-import { timestampToString, timestampToDate } from "./../helpers/date";
+import { timestampToString, timestampToDate, approximateTimeTillDate } from "./../helpers/date";
 
 export default class InfiniteTopicsList extends Component {
   state = {
@@ -94,11 +94,18 @@ export default class InfiniteTopicsList extends Component {
         const topicContract = Topic(address);
         const text = await topicContract.methods.content().call();
         const details = await topicContract.methods.getDetails().call();
+        const {days, hours, minutes} = approximateTimeTillDate(timestampToDate(details[2]));
+        const timeTillString = `${days} Days ${hours} Hours ${minutes} Minutes`
+
+        var metaString = "Ended";
+        if (days != 0 || hours != 0 || minutes != 0) {
+          metaString = `Ends in: ${timeTillString} \n[${timestampToString(details[2])}]`
+        }
         appendList.push({
           header: address,
           description: text,
           // meta: address
-          meta: "Ends: " + timestampToString(details[2]),
+          meta: metaString,
           timestamp: details[2]
         });
         console.log(

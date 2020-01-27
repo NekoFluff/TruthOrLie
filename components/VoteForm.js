@@ -46,6 +46,7 @@ class VoteForm extends Component {
       });
 
       if (this.props.onFormSubmit != null) this.props.onFormSubmit();
+      Router.pushRoute(`/topics/${topicAddress}`);
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }

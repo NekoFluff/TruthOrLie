@@ -18,7 +18,7 @@ class CommonPage extends Component {
 
       
       <Provider store={store}>
-      <div class="Site">
+      <div className="Site">
           <Container className="Site-content">
             <Header />
             <CreateReputation />
