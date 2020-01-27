@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { Form, Button, Message, Container } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { newTopic } from "./../redux/actions";
-// import DatePicker from "react-datepicker";
-// import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 class TopicForm extends Component {
   state = {
@@ -132,7 +132,7 @@ class TopicForm extends Component {
 
           <Form.Field required>
             <label>When should this event end?</label>
-            {/* <DatePicker
+            <DatePicker
               selected={endDate}
               onChange={this.handleDateChange}
               showTimeSelect
@@ -141,7 +141,7 @@ class TopicForm extends Component {
               required
               minDate={now}
               maxDate={sevenDaysLater}
-            /> */}
+            />
           </Form.Field>
           <Message
             error
