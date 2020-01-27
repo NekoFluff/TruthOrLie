@@ -1,7 +1,9 @@
 import React, { Component } from "react";
-import { Form, Button, Message } from "semantic-ui-react";
+import { Form, Button, Message, Container } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { newTopic } from "./../redux/actions";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 class TopicForm extends Component {
   state = {
@@ -9,7 +11,7 @@ class TopicForm extends Component {
     data: {
       topicContent: "a",
       minimumInvestment: "1",
-      hoursAvailable: ""
+      endDate: new Date()
     },
 
     // Errors
@@ -27,7 +29,25 @@ class TopicForm extends Component {
     this.props.newTopic(this.state.data);
   };
 
+  sevenDaysFromNow = () => {
+    var days = 7;
+    var date = new Date();
+    var res = date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    return res;
+  };
+
+  dateWithinAWeek = () => {
+    return this.state.data.endDate <= this.sevenDaysFromNow();
+  };
+
   onFormNext = async event => {
+    // if (!this.dateWithinAWeek()) {
+    //   console.log("Date isn't within a week.");
+    //   return;
+    // } else {
+    //   console.log("Date is within a week.");
+    // }
+
     event.preventDefault();
     //TODO: Double confirmation button OR Popup https://react.semantic-ui.com/modules/popup/
     this.setState({ loading: true });
@@ -41,9 +61,16 @@ class TopicForm extends Component {
     this.setState({ loading: false });
   };
 
-  render() {
-    const { topicContent, minimumInvestment, hoursAvailable } = this.state.data;
+  handleDateChange = date => {
+    this.setState({
+      data: { ...this.state.data, endDate: date }
+    });
+  };
 
+  render() {
+    const { topicContent, minimumInvestment, endDate } = this.state.data;
+    const now = new Date();
+    const sevenDaysLater = this.sevenDaysFromNow();
     return (
       <React.Fragment>
         {this.props.backButtonVisible && (
@@ -102,26 +129,20 @@ class TopicForm extends Component {
               });
             }}
           />
-          <Form.Input
-            error={
-              this.state.activeTimeError != "" && {
-                content: this.state.activeTimeError,
-                pointing: "below"
-              }
-            }
-            fluid
-            required
-            label="Active Time (hours)"
-            placeholder="How long should the voting period last?"
-            type="number"
-            value={hoursAvailable}
-            onChange={event => {
-              this.setState({
-                data: { ...this.state.data, hoursAvailable: event.target.value }
-              });
-            }}
-          />
 
+          <Form.Field required>
+            <label>When should this event end?</label>
+            <DatePicker
+              selected={endDate}
+              onChange={this.handleDateChange}
+              showTimeSelect
+              timeIntervals="1"
+              dateFormat="Pp"
+              required
+              minDate={now}
+              maxDate={sevenDaysLater}
+            />
+          </Form.Field>
           <Message
             error
             header="Oops! Something went wrong"

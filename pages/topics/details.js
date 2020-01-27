@@ -16,7 +16,13 @@ class TopicDetails extends Component {
   };
 
   async componentDidMount() {
+    console.log("[Topic Details (details.js)] Component Did Mount:");
     try {
+      localStorage.setItem("topicText", this.props.text);
+      localStorage.setItem(
+        "topicMinimumInvestment",
+        this.props.minimumInvestment
+      );
       await this.retrieveCurrentAccount();
       await this.retrieveUserArgument();
     } catch (err) {
@@ -44,14 +50,6 @@ class TopicDetails extends Component {
     } catch (err) {
       console.log("[Topic Details (details.js)] An error has occured:", err);
     }
-  }
-
-  componentDidMount() {
-    localStorage.setItem("topicText", this.props.text);
-    localStorage.setItem(
-      "topicMinimumInvestment",
-      this.props.minimumInvestment
-    );
   }
 
   renderMetadata() {

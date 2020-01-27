@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import Header from "./Header.js";
+import Footer from "./Footer.js";
 import { Container } from "semantic-ui-react";
 import { Provider } from "react-redux";
 import store from "../redux/store";
-import Head from "next/head";
 import CreateReputation from "./CreateReputation.js";
 
 class CommonPage extends Component {
@@ -15,20 +15,17 @@ class CommonPage extends Component {
 
   render() {
     return (
-      <Provider store={store}>
-        <Container>
-          <Head>
-            <link
-              rel="stylesheet"
-              href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
-            />
-          </Head>
 
-          <Header />
-          <CreateReputation />
-          {this.props.children}
-          <h1>TODO: Footer</h1>
-        </Container>
+      
+      <Provider store={store}>
+      <div className="Site">
+          <Container className="Site-content">
+            <Header />
+            <CreateReputation />
+            {this.props.children}
+          </Container>
+        <Footer  />
+      </div>
       </Provider>
     );
   }

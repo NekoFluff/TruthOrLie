@@ -78,23 +78,30 @@ class UserInfiniteTopicList extends Component {
         .getTopics(loadingTopicIndex, loadingTopicIndex + maxCopies)
         .call();
 
-      for (var i = 0; i < maxCopies; i++) {
-        const address = topicAddresses[i];
-        const topicContract = Topic(address);
-        const text = await topicContract.methods.content().call();
-        const details = await topicContract.methods.getDetails().call();
-        appendList.push({
-          header: address,
-          description: text,
-          // meta: address
-          meta: "Ends: " + timestampToString(details[2]),
-          timestamp: details[2]
-        });
-        console.log(
-          "[InfiniteTopicList.js] End Date:",
-          timestampToDate(details[2])
-        );
-      }
+        for (var i = 0; i < maxCopies; i++) {
+          const address = topicAddresses[i];
+          const topicContract = Topic(address);
+          const text = await topicContract.methods.content().call();
+          const details = await topicContract.methods.getDetails().call();
+          const {days, hours, minutes} = approximateTimeTillDate(timestampToDate(details[2]));
+          const timeTillString = `${days} Days ${hours} Hours ${minutes} Minutes`
+  
+          var metaString = "Ended";
+          if (days != 0 || hours != 0 || minutes != 0) {
+            metaString = `Ends in: ${timeTillString} \n[${timestampToString(details[2])}]`
+          }
+          appendList.push({
+            header: address,
+            description: text,
+            // meta: address
+            meta: metaString,
+            timestamp: details[2]
+          });
+          console.log(
+            "[InfiniteTopicList.js] End Date:",
+            timestampToDate(details[2])
+          );
+        }
 
       // Combine the lists
       const newTopicList = this.state.topics.concat(appendList);

@@ -2,6 +2,32 @@ export function timestampToDate(UNIX_timestamp) {
   return new Date(UNIX_timestamp * 1000);
 }
 
+export function approximateTimeTillDate(endDate) {
+    const now = new Date();
+    if (endDate < now) { 
+      return {days: 0, hours: 0, minutes: 0, seconds: 0}
+    } 
+
+    // get total seconds between the times
+    var delta = Math.abs(endDate - now) / 1000;
+
+    // calculate (and subtract) whole days
+    var days = Math.floor(delta / 86400);
+    delta -= days * 86400;
+
+    // calculate (and subtract) whole hours
+    var hours = Math.floor(delta / 3600) % 24;
+    delta -= hours * 3600;
+
+    // calculate (and subtract) whole minutes
+    var minutes = Math.floor(delta / 60) % 60;
+    delta -= minutes * 60;
+
+    // // what's left is seconds
+    var seconds = delta % 60;  // in theory the modulus is not required
+    return {days, hours, minutes, seconds};
+}
+
 export function dateToString(date) {
   const months = [
     "Jan",
@@ -38,7 +64,7 @@ export function secondsTillDate(targetDate) {
   var now = new Date().getTime();
 
   // Find the distance between now and the count down date
-  var difference = date - now;
+  var difference = date - now / 1000;
 
   return difference;
 }
