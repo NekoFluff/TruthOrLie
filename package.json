@@ -24,6 +24,7 @@
     "next": "^9.2.1",
     "next-routes": "^1.4.2",
     "npm": "^6.13.6",
+    "paillier-js": "^0.9.2",
     "react": "^16.11.0",
     "react-datepicker": "^2.11.0",
     "react-dom": "^16.11.0",
