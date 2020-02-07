@@ -3,6 +3,8 @@ const port = parseInt(process.env.PORT, 10) || 3000;
 const routes = require("./routes");
 const paillier = require("paillier-js");
 const bigInt = require("big-integer");
+// import Topic from "./ethereum/topic";
+
 
 const app = next({
   dev: process.env.NODE_ENV !== "production"
@@ -109,6 +111,17 @@ app.prepare().then(() => {
 
   server.get("/test", (req, res) => {
     res.send("Hello World");
+  });
+
+  server.get("/vote", (req, res) => {
+    contract = req.query.contract;
+    account = req.query.account;
+    const topicContract = Topic(topicAddress);
+    await topicContract.methods.vote(argumentIndex, reputation).send({
+      from: account,
+      value: wei
+    });
+    res.send(req.query);
   });
 
   // Handler
