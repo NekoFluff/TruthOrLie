@@ -1,34 +1,49 @@
 
 ----- SYBIL ATTACKS
-- Getting an oracle 
-  - DONE - Step 1: Find a good oracle
-  - Step 2: Retrieve random number from oracle
-  - Step 3: Hash
-  - Step 4: modulo by total number of topics
-  - Display 10 topics
+- Getting an oracle (I use provable)
+  - DONE: Step 1: Find a good oracle
+  - DONE: Step 2: Retrieve random number from oracle
+  - DONE: Step 3: Hash
+  - DONE: Step 4: modulo by total number of topics
+  - **UI**: Display 10 topics
 
-- Random topic assignment
-  - Need to differentiate between finished and ongoing topics (store in different arrays in solidity)
+- DONE: Random topic assignment
+  - **IMPORTANT** #2: Need to differentiate between finished and ongoing topics (store in different arrays in solidity)
     - Modify code to remove topic (based on index) when the topic ends [TopicFactory]
     - Modify code to add topic to the end of finished array [TopicFactory]
   - Get length of unfinished [TopicFactory]
-  - Store random 10 visible articles in reputation contract [TopicFactory]
+  - **IMPORTANT #1 (prevent cascade effect)** Store random 10 visible articles in reputation contract [TopicFactory]
 
 
-- Refresh button (every hour) [Reputation]
-  - Test store data (SSS)
-  - Store last refresh button in database
-  - Refresh every hour
+- **UI** Refresh button ~~(every hour)~~ [Reputation] (Require 0.005 ether investment)
+  - IGNORE: Test store data (SSS)
+  - IGNORE: Store last refresh button in database
+  - IGNORE: Refresh every hour
 
-- Claiming
+- **UI** Claiming
   - press button after period ends and get money 
+  - ** IMPORTANT 3 ** implement claiming for 0 voters
+  - ** IMPORTANT 4 ** implement claiming for even voters
 
 - Both of these are on the same page
-- Meter to display current reputation [Topic]
-- Number for money pool [Topic]
+- **UI** Meter to display current reputation [Topic]
+- **IMPORTANT 5 + UI** Number for money pool $$$ [Topic]
+
+**UI**: Sort arguments by vote count, reputation, creation date (GOING TO NEED DATA RETURN)
 
 
------- HIDE VOTES
+**UI** How it works page
+**UI** Start Here page
+**UI** Contribute page
+
+After everything on this list is done, go on linkedIn and twitter. Advertise like crazy. HOPE FOR THE BEST
+
+
+
+
+
+
+------ **IMPORTANT #LAST** HIDE VOTES (A two phase system) (MAYBE TEST AND SEE IF IT'S NECESSARY)
 - Digital commitment (hash value + random string)
   ---------------------------- Test store data in database (SSS)
   ---------------------------- Store symmetric key

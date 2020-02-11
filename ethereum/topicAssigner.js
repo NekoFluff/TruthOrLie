@@ -1,9 +1,9 @@
 import web3 from "./web3";
-import TopicFactory from "./build/TopicFactory.json";
+import TopicAssigner from "./build/TopicAssigner.json";
 
 const instance = new web3.eth.Contract(
   TopicFactory.abi,
-  "0xdCcc5E8FD9Fe0b59E7594bA1617212B8C77A6F22"
+  "0x6f38984FD2D455A096750B663a639DfE00ef7B3b"
 );
 
 export default instance;

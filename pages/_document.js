@@ -13,6 +13,7 @@ export default class CustomDocument extends Document {
           />
 
           <link rel="stylesheet" href="/static/css/site.css" />
+          <link rel="stylesheet" href="/static/css/react-datepicker.css" />
         </Head>
         <body>
           <Main />
