@@ -6,7 +6,8 @@ import './TopicAssigner.sol';
 contract Topic {
     address reputationFactoryAddress;
     address topicAssignerAddress;
-    
+    address topicFactoryAddress;
+
     struct Argument {
         string content; // The argument in words
         bool isTrue; // Whether this argument thinks the statement is true or false.
@@ -48,7 +49,8 @@ contract Topic {
 
     function() external payable {}
 
-    constructor(address repFactoryAddress, address _topicAssignerAddress, string memory topicContent, uint minInvestment, uint hoursAvailable, address sender) public {
+    constructor(address _topicFactoryAddress, address repFactoryAddress, address _topicAssignerAddress, string memory topicContent, uint minInvestment, uint hoursAvailable, address sender) public {
+        topicFactoryAddress = _topicFactoryAddress;
         reputationFactoryAddress = repFactoryAddress;
         topicAssignerAddress = _topicAssignerAddress;
         content = topicContent;
@@ -151,8 +153,18 @@ contract Topic {
         }
 
         finalMonetaryTotal = address(this).balance;
-
+    }
+    
+    function getMoneyPool() public view returns (uint) {
+        return address(this).balance;
+    }
+    
+    function markAsCompleted() internal {
         isCompleted = true;
+        
+        // Mark as completed in the topic factory
+        TopicFactory topicFactory = TopicFactory(topicFactoryAddress);
+        topicFactory.markTopicAsCompleted(address(this));
     }
 
     function claim() public {
@@ -188,13 +200,14 @@ contract Topic {
         require(block.timestamp > endTime, 'You can only claim your rewards after the time period.');
 
         msg.sender.transfer(address(this).balance);
+        markAsCompleted();
     }
 
     function getDetails() public view returns (address, uint, uint, bool) {
         return (creator, minimumInvestment, endTime, isCompleted);
     }
 
-
+    // Too much ether is spent on an individual
     // function distributeMoney() public _creatorOnly {
     //     require(isCompleted == true, 'The period for the Topic must have ended in order to redistribute the money.');
     //     uint truthCount = getTruthCount();

@@ -8,10 +8,10 @@
   - **UI**: Display 10 topics
 
 - DONE: Random topic assignment
-  - **IMPORTANT** #2: Need to differentiate between finished and ongoing topics (store in different arrays in solidity)
-    - Modify code to remove topic (based on index) when the topic ends [TopicFactory]
-    - Modify code to add topic to the end of finished array [TopicFactory]
-  - Get length of unfinished [TopicFactory]
+  - DONE: **IMPORTANT** #2: Need to differentiate between finished and ongoing topics (store in different arrays in solidity)
+    - DONE: Modify code to remove topic (based on index) when the topic ends [TopicFactory]
+    - DONE: Modify code to add topic to the end of finished array [TopicFactory]
+  - DONE: Get length of unfinished [TopicFactory]
   - **IMPORTANT #1 (prevent cascade effect)** Store random 10 visible articles in reputation contract [TopicFactory]
 
 
@@ -22,12 +22,13 @@
 
 - **UI** Claiming
   - press button after period ends and get money 
-  - ** IMPORTANT 3 ** implement claiming for 0 voters
-  - ** IMPORTANT 4 ** implement claiming for even voters
+  - DONE: - CREATOR CLAIM ** IMPORTANT 3 ** implement claiming for 0 voters
+  - DONE: - ** IMPORTANT 4 ** implement claiming for even voters
 
 - Both of these are on the same page
 - **UI** Meter to display current reputation [Topic]
-- **IMPORTANT 5 + UI** Number for money pool $$$ [Topic]
+- DONE: **IMPORTANT 5** Number for money pool $$$ [Topic]
+- **UI** MONEY POOL
 
 **UI**: Sort arguments by vote count, reputation, creation date (GOING TO NEED DATA RETURN)
 
@@ -36,6 +37,8 @@
 **UI** Start Here page
 **UI** Contribute page
 
+First finish important parts (contract-specific)
+Then work on UI implementation
 After everything on this list is done, go on linkedIn and twitter. Advertise like crazy. HOPE FOR THE BEST
 
 

@@ -10,7 +10,7 @@ contract TopicAssigner is usingProvable {
     uint256 NUM_VISIBLE_TOPICS = 25;
 
     address public owner;
-    address public topicFactoryAddress = 0xEEE07d8Beb85450568E0dCF302554564d2bCe91d;
+    address public topicFactoryAddress = 0x02992af1dd8140193b87d2Ab620CA22F6E19f26C;
 
     mapping(bytes32 => address) public queryToUserAddress;
     mapping(address => uint) public assignedVisibleTopics;
