@@ -1,0 +1,46 @@
+
+----- SYBIL ATTACKS
+- Getting an oracle 
+  - DONE - Step 1: Find a good oracle
+  - Step 2: Retrieve random number from oracle
+  - Step 3: Hash
+  - Step 4: modulo by total number of topics
+  - Display 10 topics
+
+- Random topic assignment
+  - Need to differentiate between finished and ongoing topics (store in different arrays in solidity)
+    - Modify code to remove topic (based on index) when the topic ends [TopicFactory]
+    - Modify code to add topic to the end of finished array [TopicFactory]
+  - Get length of unfinished [TopicFactory]
+  - Store random 10 visible articles in reputation contract [TopicFactory]
+
+
+- Refresh button (every hour) [Reputation]
+  - Test store data (SSS)
+  - Store last refresh button in database
+  - Refresh every hour
+
+- Claiming
+  - press button after period ends and get money 
+
+- Both of these are on the same page
+- Meter to display current reputation [Topic]
+- Number for money pool [Topic]
+
+
+------ HIDE VOTES
+- Digital commitment (hash value + random string)
+  ---------------------------- Test store data in database (SSS)
+  ---------------------------- Store symmetric key
+  ---------------------------- Publish keys after voting period ends
+  - Store hash per user [Topic]
+  - Store hash [local storage]
+  - Remind user to 
+
+------ PHASE 2
+  - BEFORE CLAIM
+  - Provide vote + string (or just provide string)
+
+
+
+
