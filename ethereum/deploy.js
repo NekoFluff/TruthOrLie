@@ -40,21 +40,22 @@ const deploy = async (contractName, contractJson) => {
 
 const deployAll = async () => {
   try {
-    // deploy("Reputation Factory", compiledReputationFactory).then(() => {
+    // await deploy("Reputation Factory", compiledReputationFactory).then(() => {
     //   console.log("Finished Reputation Factory Deployment");
     // });
     
-    deploy("Topic Factory", compiledTopicFactory).then(() => {
-      console.log("Finished Topic Factory Deployment");
-    });
-    
-    // await deploy("Topic Assigner", compiledTopicAssigner).then(() => {
-    //   console.log("Finished Topic Assigner Deployment");
+    // await deploy("Topic Factory", compiledTopicFactory).then(() => {
+    //   console.log("Finished Topic Factory Deployment");
     // });
-    // process.exit(0);
+    
+    await deploy("Topic Assigner", compiledTopicAssigner).then(() => {
+      console.log("Finished Topic Assigner Deployment");
+    });
+
+    process.exit(0);
   } catch (err) {
     print(err);
-    // process.exit(1);
+    process.exit(1);
   }
 }
 
