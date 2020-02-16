@@ -147,7 +147,7 @@ class TopicSummary extends Component {
           from: this.props.selectedAccount,
           value: web3.utils.toWei(this.props.initialTopicValue, "ether")
         });
-      Router.pushRoute("/");
+      Router.push("/");
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }

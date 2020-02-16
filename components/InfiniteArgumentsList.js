@@ -10,6 +10,7 @@ import {
 } from "semantic-ui-react";
 import Topic from "../ethereum/topic";
 import ArgumentCardGroup from "./ArgumentCardGroup";
+import web3 from "../ethereum/web3";
 
 export default class InfiniteArgumentsList extends Component {
   state = {
@@ -87,16 +88,22 @@ export default class InfiniteArgumentsList extends Component {
       const topic = Topic(this.props.topicAddress);
 
       for (var i = 0; i < maxCopies; i++) {
+        const accounts = await web3.eth.getAccounts();
+      
+        const alreadyVoted = await topic.methods
+          .voted(accounts[0])
+          .call() != 0;
         const argument = await topic.methods
           .arguments(loadingArgumentIndex + i)
           .call();
         appendList.push({
-          header: argument["isTrue"] + `  [${argument["voteCount"]} votes]`,
+          header: (argument["isTrue"] ? 'Truth' : 'Lie') + `  [${argument["voteCount"]} votes]`,
           description: argument["content"],
           meta: "Posted by: " + argument["creator"],
           creator: argument["creator"],
           istrue: `${argument["isTrue"]}`,
-          argumentindex: loadingArgumentIndex + i
+          argumentindex: loadingArgumentIndex + i,
+          canvote: (!alreadyVoted).toString()
         });
         console.log("[InfiniteArgumentList.js] ARGUMENT OBJECT:", argument);
       }

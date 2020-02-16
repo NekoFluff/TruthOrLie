@@ -5,7 +5,7 @@
   - DONE: Step 2: Retrieve random number from oracle
   - DONE: Step 3: Hash
   - DONE: Step 4: modulo by total number of topics
-  - **UI**: Display 10 topics
+  - DONE: **UI**: Display 10 topics
 
 - DONE: Random topic assignment
   - DONE: **IMPORTANT** #2: Need to differentiate between finished and ongoing topics (store in different arrays in solidity)
@@ -15,7 +15,7 @@
   - **IMPORTANT #1 (prevent cascade effect)** Store random 10 visible articles in reputation contract [TopicFactory]
 
 
-- **UI** Refresh button ~~(every hour)~~ [Reputation] (Require 0.005 ether investment)
+- DONE: **UI** Refresh button ~~(every hour)~~ [Reputation] (Require 0.005 ether investment)
   - IGNORE: Test store data (SSS)
   - IGNORE: Store last refresh button in database
   - IGNORE: Refresh every hour
@@ -33,8 +33,8 @@
 **UI**: Sort arguments by vote count, reputation, creation date (GOING TO NEED DATA RETURN)
 
 
-**UI** How it works page
-**UI** Start Here page
+DONE: **UI** How it works page
+DONE: **UI** Start Here page
 **UI** Contribute page
 
 First finish important parts (contract-specific)

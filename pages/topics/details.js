@@ -137,6 +137,9 @@ class TopicDetails extends Component {
     );
     try {
       const topic = Topic(this.props.address);
+      const alreadyVoted = await topic.methods
+          .voted(this.state.currentAccount)
+          .call() != 0;
       const argumentIndex = await topic.methods
         .createdArgument(this.state.currentAccount)
         .call();
@@ -144,7 +147,9 @@ class TopicDetails extends Component {
         const argument = await topic.methods.arguments(argumentIndex).call();
         console.log("[Details.js] User Argument: ", argument);
         this.setState({
-          userArgument: argument
+          userArgument: argument,
+          userArgumentIndex: argumentIndex,
+          canVote: !alreadyVoted
         });
       }
     } catch (err) {
@@ -171,11 +176,13 @@ class TopicDetails extends Component {
           arguments={[
             {
               header:
-                this.state.userArgument["isTrue"] +
+                (this.state.userArgument["isTrue"] ? 'Truth' : 'Lie')+
                 `  [${this.state.userArgument["voteCount"]} votes]`,
               description: this.state.userArgument["content"],
               meta: "Posted by: " + this.state.userArgument["creator"],
-              creator: this.state.userArgument["creator"]
+              creator: this.state.userArgument["creator"],
+              argumentindex: this.state.userArgumentIndex,
+              canvote: this.state.canVote.toString()
             }
           ]}
         />

@@ -18,6 +18,7 @@ class ArgumentCardGroup extends Component {
                   route={`/topics/${this.props.topicAddress}/arguments/${props.creator}/vote`}
                 >
                   <Button
+                    disabled={!props.canvote}
                     onClick={() => {
                       localStorage.setItem("argumentText", props.description);
                       localStorage.setItem("argumentIsTrue", props.istrue);

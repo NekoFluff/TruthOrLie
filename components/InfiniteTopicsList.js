@@ -90,7 +90,7 @@ export default class InfiniteTopicsList extends Component {
         from: this.state.primaryAccount,
         value: web3.utils.toWei("0.005", "ether")
       });
-      // Router.pushRoute("/");
+      // Router.push("/");
     }
   };
 

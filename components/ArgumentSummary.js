@@ -126,7 +126,7 @@ class TopicSummary extends Component {
           from: this.props.selectedAccount
           // value: this.props.initialTopicValue // We don't send money when making an argument
         });
-      Router.pushRoute(`/topics/${this.props.topicAddress}`);
+      Router.push(`/topics/${this.props.topicAddress}`);
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }

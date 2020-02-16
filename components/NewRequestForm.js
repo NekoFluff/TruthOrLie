@@ -26,7 +26,7 @@ class NewRequestForm extends Component {
       await campaign.methods
         .createRequest(description, web3.utils.toWei(value, 'ether'), recipient)
         .send({ from: accounts[0] })
-      Router.pushRoute(`/campaigns/${this.props.address}/requests`)
+      Router.push(`/campaigns/${this.props.address}/requests`)
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }

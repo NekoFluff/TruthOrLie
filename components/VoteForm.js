@@ -45,24 +45,14 @@ class VoteForm extends Component {
 
       // Attempt to vote for an argument.
       const accounts = await web3.eth.getAccounts();
-      // const topicContract = Topic(topicAddress);
-      // await topicContract.methods.vote(argumentIndex, reputation).send({
-      //   from: accounts[0],
-      //   value: wei
-      // });
+      const topicContract = Topic(topicAddress);
+      await topicContract.methods.vote(argumentIndex, reputation).send({
+        from: accounts[0],
+        value: wei
+      });
 
-      // if (this.props.onFormSubmit != null) this.props.onFormSubmit();
-      console.log("HELLO WORLD. DELETE ME");
-      console.log(topicAddress);
-      console.log(accounts[0]);
-      const response = await fetch(
-        `${process.env.SERVER}/vote?contract=${topicAddress}&account=${accounts[0]}`
-      );
-
-      console.log("RESPONSE");
-      console.log(response);
-
-      // Router.replaceRoute(`/topics/${topicAddress}`);
+      if (this.props.onFormSubmit != null) this.props.onFormSubmit();
+      Router.replace(`/topics/${topicAddress}`);
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
