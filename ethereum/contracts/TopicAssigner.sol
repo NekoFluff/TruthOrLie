@@ -10,7 +10,7 @@ contract TopicAssigner is usingProvable {
     uint256 NUM_VISIBLE_TOPICS = 25;
 
     address public owner;
-    address public topicFactoryAddress = 0x8d2116eAeb9cF1921980f9f3f09b45864137C693;
+    address public topicFactoryAddress = 0xf4A0314501355DEb5C9D4D26659A0AF695eE90D3;
 
     mapping(bytes32 => address) public queryToUserAddress;
     mapping(address => uint) public assignedVisibleTopics;
@@ -68,12 +68,13 @@ contract TopicAssigner is usingProvable {
 
     // The user calls this function to pick a random set of topics
     function refreshRandomTopics() public payable {
-        TopicFactory topicFactory = TopicFactory(topicFactoryAddress);
-        uint256 ceiling = topicFactory.getNumberOfDeployedContracts();
-        require(
-            ceiling > 0,
-            "No topic contracts are deployed. Unable to perform random topic assignment"
-        );
+        // Make sure there are topic smart contracts available (unneeded)
+        // TopicFactory topicFactory = TopicFactory(topicFactoryAddress);
+        // uint256 ceiling = topicFactory.getNumberOfDeployedContracts();
+        // require(
+        //     ceiling > 0,
+        //     "No topic contracts are deployed. Unable to perform random topic assignment"
+        // );
 
         uint256 QUERY_EXECUTION_DELAY = 0;
         uint256 GAS_FOR_CALLBACK = 200000;
@@ -97,10 +98,10 @@ contract TopicAssigner is usingProvable {
             revert();
         } else { // The proof verifiction has passed!
 
-            // Make sure there are contracts available
-            TopicFactory topicFactory = TopicFactory(topicFactoryAddress);
-            uint256 ceiling = topicFactory.getNumberOfDeployedContracts();
-            require(ceiling > 0, "No topic contracts are deployed. Unable to perform random topic assignment");
+            // Make sure there are topic smart contracts available (unneeded)
+            // TopicFactory topicFactory = TopicFactory(topicFactoryAddress);
+            // uint256 ceiling = topicFactory.getNumberOfDeployedContracts();
+            // require(ceiling > 0, "No topic contracts are deployed. Unable to perform random topic assignment");
 
             // Generate random number
             // address[NUM_VISIBLE_TOPICS] storage visibleTopics = assignedVisibleTopics[queryToUserAddress[_queryId]];

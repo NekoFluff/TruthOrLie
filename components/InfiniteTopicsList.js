@@ -3,44 +3,44 @@ import React, { Component, createRef } from "react";
 import {
   Divider,
   Grid,
-  Image,
   Icon,
   Message,
   Card,
   Segment,
-  Sticky,
-  Table,
   Ref,
-  Visibility
+  Visibility,
+  Button
 } from "semantic-ui-react";
 import factory from "../ethereum/topicFactory";
 import { Link } from "../routes";
 import Topic from "../ethereum/topic";
-import { timestampToString, timestampToDate, approximateTimeTillDate } from "./../helpers/date";
-
+import {
+  timestampToString,
+  timestampToDate,
+  approximateTimeTillDate
+} from "./../helpers/date";
+import web3 from "./../ethereum/web3";
+import topicAssigner from "../ethereum/topicAssigner";
 export default class InfiniteTopicsList extends Component {
   state = {
-    calculations: {
-      direction: "none",
-      height: 0,
-      width: 0,
-      topPassed: false,
-      bottomPassed: false,
-      pixelsPassed: 0,
-      percentagePassed: 0,
-      topVisible: false,
-      bottomVisible: true,
-      fits: false,
-      passing: false,
-      onScreen: false,
-      offScreen: false
-    },
+    topicSeed: "",
+    accountSelectionError: "",
+    primaryAccount: "",
     topics: [],
     totalTopicCount: 0,
-    retrievingTopics: true,
-    loadingTopicIndex: 0
+    retrievingTopics: false,
+    topicsLoaded: 0
   };
   contextRef = createRef();
+
+  canViewTopics() {
+    const {topicSeed} = this.state;
+    return (
+      topicSeed != "0x0000000000000000000000000000000000000000" &&
+      topicSeed != "" &&
+      topicSeed != "0"
+    );
+  }
 
   async componentDidMount() {
     try {
@@ -50,19 +50,24 @@ export default class InfiniteTopicsList extends Component {
     }
   }
 
-  async reloadTopicItems() {
-    try {
-      this.setState({ retrievingTopics: true });
-      const totalTopicCount = parseInt(
-        await factory.methods.getNumberOfDeployedContracts().call()
-      );
-      this.setState({ totalTopicCount });
-      console.log("Fetching topics...")
-      await this.fetchTopics();
-      console.log("Fetched topics. Topic Count: " + this.state.totalTopicCount);
-      this.setState({ retrievingTopics: false });
-    } catch (err) {
-      console.log("[InfiniteTopicsList.js] An error has occured:", err);
+  async getPrimaryAccount() {
+    const accounts = await web3.eth.getAccounts();
+
+    if (accounts == null || accounts.length == 0) {
+      this.setState({
+        accountSelectionError: "There are no available accounts."
+      });
+      console.log("No accounts available.");
+      
+    } else {
+      this.setState({ primaryAccount: accounts[0] });
+      console.log("Active account: " + accounts[0]);
+
+      const topicSeed = await topicAssigner.methods
+        .assignedVisibleTopics(accounts[0])
+        .call();
+      console.log("Topic Seed: " + topicSeed);
+      this.setState({ topicSeed });
     }
   }
 
@@ -70,38 +75,78 @@ export default class InfiniteTopicsList extends Component {
     this.setState({ calculations });
 
     try {
-      await this.fetchTopics();
+      // await this.fetchTopics();
     } catch (err) {
       console.log("[InfiniteTopicsList.js] An error has occured:", err);
     }
   };
 
+  handleRefresh = async () => {
+    await this.getPrimaryAccount();
+    if (this.state.primaryAccount == "") {
+      console.log("No active account. Cannot refresh topics.");
+    } else {
+      await topicAssigner.methods.refreshRandomTopics().send({
+        from: this.state.primaryAccount,
+        value: web3.utils.toWei("0.005", "ether")
+      });
+      // Router.pushRoute("/");
+    }
+  };
+
+  async reloadTopicItems() {
+    try {
+      await this.getPrimaryAccount();
+      this.setState({ retrievingTopics: true });
+      const totalTopicCount = parseInt(
+        await factory.methods.getNumberOfDeployedContracts().call()
+      );
+      this.setState({ totalTopicCount });
+      console.log("Fetching topics...");
+      await this.fetchTopics();
+      console.log("Fetched topics.");
+      this.setState({ retrievingTopics: false });
+    } catch (err) {
+      console.log("[InfiniteTopicsList.js] An error has occured:", err);
+    }
+  }
+
   async fetchTopics() {
-    const { loadingTopicIndex, totalTopicCount } = this.state;
-    if (
-      this.state.calculations.bottomVisible &&
-      loadingTopicIndex < totalTopicCount
-    ) {
-      const maxCopies = Math.min(5, totalTopicCount - loadingTopicIndex);
+    // Check to make sure there are fetchable topics
+    if (this.state.totalTopicCount == 0) {
+      console.log("No topics available to fetch.")
+      return;
+    }
 
-      // Create a list of the objects to retrieve
-      var appendList = [];
-      this.setState({ loadingTopicIndex: loadingTopicIndex + maxCopies });
-      const topicAddresses = await factory.methods
-        .getContracts(loadingTopicIndex, loadingTopicIndex + maxCopies)
+    const { primaryAccount, topicSeed } = this.state;
+    var appendList = [];
+
+    if (primaryAccount == "") {
+      console.log("No active account. Cannot fetch topics.");
+    } else if (!this.canViewTopics(topicSeed)) {
+      console.log("Unable to view contacts");
+    } else {
+      console.log("Calling function with account: " + primaryAccount);
+      const topicAddresses = await topicAssigner.methods
+        .getRandomTopics(primaryAccount)
         .call();
+      console.log("Topic Addresses:" + topicAddresses);
 
-      for (var i = 0; i < maxCopies; i++) {
+      for (var i = 0; i < topicAddresses.length; i++) {
         const address = topicAddresses[i];
         const topicContract = Topic(address);
         const text = await topicContract.methods.content().call();
         const details = await topicContract.methods.getDetails().call();
-        const {days, hours, minutes} = approximateTimeTillDate(timestampToDate(details[2]));
-        const timeTillString = `${days} Days ${hours} Hours ${minutes} Minutes`
+        const { days, hours, minutes } = approximateTimeTillDate(
+          timestampToDate(details[2])
+        );
+        const timeTillString = `${days} Days ${hours} Hours ${minutes} Minutes`;
 
         var metaString = "Ended";
         if (days != 0 || hours != 0 || minutes != 0) {
-          metaString = `Ends in: ${timeTillString} \n[${timestampToString(details[2])}]`
+          metaString = `Ends in: ${timeTillString} \n[${timestampToString(
+            details[2]
+          )}]`;
         }
         appendList.push({
           header: address,
@@ -116,20 +161,90 @@ export default class InfiniteTopicsList extends Component {
         );
       }
 
-      // Combine the lists
-      const newTopicList = this.state.topics.concat(appendList);
-      this.setState({ topics: newTopicList });
+      // Set the new state
+      this.setState({ topics: appendList });
     }
   }
 
+  renderGrid = () => {
+    return (
+      <Ref innerRef={this.contextRef}>
+        <Grid columns={1}>
+          <Grid.Column>
+            <Visibility onUpdate={this.handleUpdate}>
+              <Segment>
+                {this.state.topics.map((topic, index, images) => (
+                  <React.Fragment key={index}>
+                    <Card
+                      color={
+                        timestampToDate(topic.timestamp).getTime() >
+                        new Date().getTime()
+                          ? "green"
+                          : "red"
+                      }
+                      fluid
+                      {...topic}
+                      extra={
+                        <Link route={`/topics/${topic.header}`}>
+                          <a>View Topic</a>
+                        </Link>
+                      }
+                    />
+                    {index !== images.length - 1 && <Divider />}
+                  </React.Fragment>
+                ))}
+              </Segment>
+            </Visibility>
+          </Grid.Column>
+        </Grid>
+      </Ref>
+    )
+  }
+
   render() {
-    const { calculations } = this.state;
+    const { topicSeed, totalTopicCount, topics } = this.state;
 
     return (
       <React.Fragment>
-        <h4>{`${this.state.loadingTopicIndex} ${
-          this.state.loadingTopicIndex == 1 ? "Topic" : "Topics"
+        <h4>{`${topics.length} ${
+          topics.length == 1 ? "Topic" : "Topics"
         } Loaded`}</h4>
+        <Button
+          color="orange"
+          // circular
+          // floated="right"
+          style={{ marginBottom: "10px" }}
+          onClick={this.handleRefresh}
+        >
+          New Seed
+        </Button>
+
+        <Message
+          error
+          style={{ marginTop: "10px" }}
+          hidden={totalTopicCount > 0}
+        >
+          <Message.Content>
+            <Message.Header>No topics available</Message.Header>
+            Be the first to post a new intersting topic! Press the 'Create New
+            Topic' button above.
+          </Message.Content>
+        </Message>
+
+        <Message
+          error
+          style={{ marginTop: "10px" }}
+          hidden={this.canViewTopics(topicSeed)}
+        >
+          <Message.Content>
+            <Message.Header>Press 'New Seed'</Message.Header>
+            Please press the 'New Seed' button. We need to generate a seed for
+            you using the Provable Oracle, which will be used to pick the random
+            topics that you will be able to fact check. IT WILL TAKE A MINUTE
+            FOR THE ORACLE SO DON'T SPAM. Just refresh the page in a couple
+            minutes after sending the transaction.
+          </Message.Content>
+        </Message>
 
         <Message
           icon
@@ -143,118 +258,7 @@ export default class InfiniteTopicsList extends Component {
           </Message.Content>
         </Message>
 
-
-        <Ref innerRef={this.contextRef}>
-          <Grid columns={1}>
-            <Grid.Column>
-              <Visibility onUpdate={this.handleUpdate}>
-                <Segment>
-                  {this.state.topics.map((topic, index, images) => (
-                    <React.Fragment key={index}>
-                      <Card
-                        color={
-                          timestampToDate(topic.timestamp).getTime() >
-                          new Date().getTime()
-                            ? "green"
-                            : "red"
-                        }
-                        fluid
-                        {...topic}
-                        extra={
-                          <Link route={`/topics/${topic.header}`}>
-                            <a>View Topic</a>
-                          </Link>
-                        }
-                      />
-                      {index !== images.length - 1 && <Divider />}
-                    </React.Fragment>
-                  ))}
-                </Segment>
-              </Visibility>
-            </Grid.Column>
-
-            {/* <Grid.Column>
-                <Table celled>
-                  <Table.Header>
-                    <Table.Row>
-                      <Table.HeaderCell>Calculation</Table.HeaderCell>
-                      <Table.HeaderCell>Value</Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Header>
-                  <Table.Body>
-                    <Table.Row>
-                      <Table.Cell>direction</Table.Cell>
-                      <Table.Cell>{calculations.direction}</Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>pixelsPassed</Table.Cell>
-                      <Table.Cell>
-                        {calculations.pixelsPassed.toFixed()}px
-                      </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>percentagePassed</Table.Cell>
-                      <Table.Cell>
-                        {(calculations.percentagePassed * 100).toFixed()}%
-                      </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>fits</Table.Cell>
-                      <Table.Cell>{calculations.fits.toString()}</Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>width</Table.Cell>
-                      <Table.Cell>{calculations.width.toFixed()}px</Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>height</Table.Cell>
-                      <Table.Cell>{calculations.height.toFixed()}px</Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>onScreen</Table.Cell>
-                      <Table.Cell>
-                        {calculations.onScreen.toString()}
-                      </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>offScreen</Table.Cell>
-                      <Table.Cell>
-                        {calculations.offScreen.toString()}
-                      </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>passing</Table.Cell>
-                      <Table.Cell>{calculations.passing.toString()}</Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>topVisible</Table.Cell>
-                      <Table.Cell>
-                        {calculations.topVisible.toString()}
-                      </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>bottomVisible</Table.Cell>
-                      <Table.Cell>
-                        {calculations.bottomVisible.toString()}
-                      </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>topPassed</Table.Cell>
-                      <Table.Cell>
-                        {calculations.topPassed.toString()}
-                      </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>bottomPassed</Table.Cell>
-                      <Table.Cell>
-                        {calculations.bottomPassed.toString()}
-                      </Table.Cell>
-                    </Table.Row>
-                  </Table.Body>
-                </Table>
-            </Grid.Column> */}
-          </Grid>
-        </Ref>
+        {this.renderGrid()}
       </React.Fragment>
     );
   }
