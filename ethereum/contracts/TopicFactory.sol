@@ -28,7 +28,7 @@ contract TopicFactory {
     address public owner;
     //address[] public deployedTopics; // TODO: Remove
     
-    address reputationFactoryAddress = 0x91e3E0Cd9Afa1A0cEd2456214a2e544A4f5a1DB2;
+    address reputationFactoryAddress = 0x6C141A0f5D7Eb04129746200De3475535537BE1a;
     address topicAssignerAddress;
     
     modifier _ownerOnly() {

@@ -57,7 +57,9 @@ export default class InfiniteTopicsList extends Component {
         await factory.methods.getNumberOfDeployedContracts().call()
       );
       this.setState({ totalTopicCount });
+      console.log("Fetching topics...")
       await this.fetchTopics();
+      console.log("Fetched topics. Topic Count: " + this.state.totalTopicCount);
       this.setState({ retrievingTopics: false });
     } catch (err) {
       console.log("[InfiniteTopicsList.js] An error has occured:", err);
@@ -140,6 +142,8 @@ export default class InfiniteTopicsList extends Component {
             We are fetching that content for you.
           </Message.Content>
         </Message>
+
+
         <Ref innerRef={this.contextRef}>
           <Grid columns={1}>
             <Grid.Column>

@@ -1,11 +1,18 @@
+if (process.env.NODE_ENV !== 'production') {
+  const result = require('dotenv').config();
+  if (result.error) {
+    throw result.error
+  }
+}
+
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 const Web3 = require("web3");
 const compiledTopicFactory = require("./build/TopicFactory.json");
 const compiledReputationFactory = require("./build/ReputationFactory.json");
 const compiledTopicAssigner = require("./build/TopicAssigner.json");
 
-const mnemonic =
-  "screen ugly basket extend hole nurse first hood permit adult payment defense";
+const mnemonic = process.env.mnemonic;
+console.log("Using mnemonic: " + mnemonic);
 
 const provider = new HDWalletProvider(
   mnemonic,

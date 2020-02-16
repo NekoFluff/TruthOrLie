@@ -98,7 +98,7 @@ class HowItWorks extends Component {
         <p>
           <b>
             The goal is to create an ecosystem that promotes and values the
-            truth.
+            truth. The github repo is at: <a href="https://github.com/NekoFluff/TruthOrLie" target="_blank">https://github.com/NekoFluff/TruthOrLie</a>
           </b>
         </p>
 

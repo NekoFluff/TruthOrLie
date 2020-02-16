@@ -102,6 +102,15 @@ class GettingStarted extends Component {
           will fail on any other network.
         </p>
         <p>
+          <b>
+            WARNING 2: Make sure to add this site as one of the allowed
+            connections in Metamask.
+          </b>{" "}
+          In order to do so, go to <b>Settings</b> inside Metamask. Then go to{" "}
+          <b>Connections</b>. Verify the site URL is correct. And finally press{" "}
+          <b>Connect</b>. You can now use the site!
+        </p>
+        <p>
           You can get some ether from <a>faucet.rinkeby.io</a>. This requirees a
           Twitter account or Facebook account, but it's completely free.
           Instructions can be found on the page.

@@ -1,3 +1,10 @@
+if (process.env.NODE_ENV !== 'production') {
+  const result = require('dotenv').config();
+  if (result.error) {
+    throw result.error
+  }
+}
+
 const next = require("next");
 const port = parseInt(process.env.PORT, 10) || 3000;
 const routes = require("./routes");

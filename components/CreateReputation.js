@@ -4,6 +4,7 @@ import web3 from "./../ethereum/web3";
 import { Button, Header, Icon, Modal, Message, Label } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { updateReputationAddress } from "./../redux/actions";
+import { Router } from "../routes";
 
 class CreateReputation extends Component {
   state = {
@@ -43,6 +44,7 @@ class CreateReputation extends Component {
           reputationAddress: reputationAddress
         });
       }
+      console.log("Loaded Reputation...");
     } catch (err) {
       console.log("[CreateReputation.js] Error: ", err);
     }
@@ -66,6 +68,7 @@ class CreateReputation extends Component {
         from: this.state.accounts[0]
       });
       await loadReputation();
+      Router.push('/'); // refresh the page
     } catch (err) {
       console.log("[CreateReputation.js] Error: ", err);
     }
