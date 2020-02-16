@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import { Card, Button } from "semantic-ui-react";
+import { Card, Button, Container } from "semantic-ui-react";
 // import 'semantic-ui-css/semantic.min.css';
-import CommonPage from "../components/CommonPage";
 import InfiniteTopicsList from "../components/InfiniteTopicsList";
 import { Link } from "../routes";
-import ReactGA from "react-ga";
 
 export default class CampaignIndex extends Component {
   state = {};
@@ -25,6 +23,11 @@ export default class CampaignIndex extends Component {
   render() {
     return (
       <React.Fragment>
+        <Container textAlign="center">
+          <h1 style={{ marginTop: "30px" }}>Truth or Lie?</h1>
+          <h3>You determine the Truth.</h3>
+        </Container>
+
         <h3>Open Topics</h3>
 
         <Link route="/topics/new">

@@ -4,11 +4,17 @@ import { Link } from "../routes";
 
 export default props => {
   return (
-    <Menu style={{ marginTop: "10px" }}>
+    <Menu fixed="top">
       <Link route="/">
-        <a className="item">TruthOrLie</a>
+        <a className="item">TruthOrLie Alpha</a>
       </Link>
       <Menu.Menu position="right">
+        <Link route="/how-it-works">
+          <a className="item">How It Works</a>
+        </Link>
+        <Link route="/getting-started">
+          <a className="item">Getting Started</a>
+        </Link>
         <Link route="/mine/topics">
           <a className="item">My Topics</a>
         </Link>
