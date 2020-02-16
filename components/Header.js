@@ -6,7 +6,7 @@ export default props => {
   return (
     <Menu fixed="top">
       <Link route="/">
-        <a className="item">TruthOrLie</a>
+        <a className="item">TruthOrLie Alpha</a>
       </Link>
       <Menu.Menu position="right">
         <Link route="/how-it-works">
