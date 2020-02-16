@@ -45,7 +45,6 @@ After everything on this list is done, go on linkedIn and twitter. Advertise lik
 
 
 
-
 ------ **IMPORTANT #LAST** HIDE VOTES (A two phase system) (MAYBE TEST AND SEE IF IT'S NECESSARY)
 - Digital commitment (hash value + random string)
   ---------------------------- Test store data in database (SSS)
