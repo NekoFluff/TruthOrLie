@@ -151,21 +151,32 @@ class GettingStarted extends Component {
 
         <h2 id="step4">Step 4: Begin fact checking</h2>
         <p>
-          On the{" "}
+          First you'll have to generate a random seed from the Provable Oracle
+          by pressing the 'New Seed' button on the{" "}
           <Link route="/">
             <a>homepage</a>
           </Link>{" "}
-          you should be able to see{" "}
-          <b>10 non-unique randomly provided topics.</b> Click on any one of
+          . This step is <b>mandatory</b>. This seed will be used to pick out 25
+          non-unique random topics from the available topic pool. This is to
+          prevent sybil attacks targeting particular topics of interest. There
+          is a minimum ether cost of 0.005 ether of using this service which
+          also prevents spam. The number of visible topics (currently 25) can be
+          increased depending on the thoughts of the community during the Alpha
+          testing period.
+        </p>
+        <p>
+          On the homepage you should be able to see{" "}
+          <b>25 non-unique randomly provided topics.</b> Click on any one of
           these to see more details including the ether in the topic pool, how
           many votes have been casted for both 'Truth' or 'Lie', and the
           reputation score for each side.
         </p>
         <p>
           If you don't like your topics, you can refresh the available topics by
-          pressing the 'Refresh' button. A new random seed will be created for
-          you which will determine which topics you are able to participate in
-          and fact check.
+          pressing the 'New Seed' button or by waiting until more topics are
+          created. A new random seed from the Provable Oracle will be created
+          for you which will determine which topics you are able to participate
+          in and fact check.
         </p>
 
         <h2 id="step5">Step 5: Claiming ether</h2>
