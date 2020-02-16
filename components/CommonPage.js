@@ -5,6 +5,7 @@ import { Container } from "semantic-ui-react";
 import { Provider } from "react-redux";
 import store from "../redux/store";
 import CreateReputation from "./CreateReputation.js";
+import Announcements from "./Announcements.js";
 import { logPageView, initGA } from "../helpers/analytics.js";
 
 class CommonPage extends Component {
@@ -26,9 +27,10 @@ class CommonPage extends Component {
     return (
       <Provider store={store}>
         <div className="Site">
-          <Container className="Site-content">
-            <Header />
+          <Header />
+          <Container className="Site-content" style={{ paddingTop: 60 }}>
             <CreateReputation />
+            <Announcements />
             {this.props.children}
           </Container>
           <Footer />
