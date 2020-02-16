@@ -21,21 +21,24 @@ const provider = new HDWalletProvider(
 
 const web3 = new Web3(provider);
 
-const deploy = async (contractName, contractJson) => {
-  // Get a list of the accounts available
-  const accounts = await web3.eth.getAccounts();
+const getPrimaryAccount = async () => {
+    // Get a list of the accounts available
+    const accounts = await web3.eth.getAccounts();
 
-  console.log("Available accounts:", accounts);
-  console.log("Attempting to deploy from account #0:", accounts[0]);
+    // console.log("Available accounts:", accounts);
+    console.log("Retrieved Account #0:", accounts[0]);
+    return accounts[0]
+}
 
+const deploy = async (account, contractName, contractJson, arguments = []) => {
   // Create new instance of the contract
   const contractInstance = await new web3.eth.Contract(contractJson.abi)
     .deploy({
       data: "0x" + contractJson.evm.bytecode.object,
-      arguments: []
+      arguments: arguments
     })
     .send({
-      from: accounts[0],
+      from: account,
       gas: 5000000
     }); // remove 'gas'
 
@@ -43,25 +46,33 @@ const deploy = async (contractName, contractJson) => {
     "Address of new " + contractName + " contract:",
     contractInstance.options.address
   );
+
+  return contractInstance;
 };
 
 const deployAll = async () => {
   try {
-    // await deploy("Reputation Factory", compiledReputationFactory).then(() => {
-    //   console.log("Finished Reputation Factory Deployment");
-    // });
+    const account = await getPrimaryAccount();
+    const reputationFactory = await deploy(account, "Reputation Factory", compiledReputationFactory)
+    console.log("Finished Reputation Factory Deployment");
     
-    // await deploy("Topic Factory", compiledTopicFactory).then(() => {
-    //   console.log("Finished Topic Factory Deployment");
-    // });
+    const topicFactory = await deploy(account, "Topic Factory", compiledTopicFactory, [reputationFactory.options.address])
+    console.log("Finished Topic Factory Deployment");
     
-    await deploy("Topic Assigner", compiledTopicAssigner).then(() => {
-      console.log("Finished Topic Assigner Deployment");
-    });
+    const topicAssigner = await deploy(account, "Topic Assigner", compiledTopicAssigner, [topicFactory.options.address])
+    console.log("Finished Topic Assigner Deployment");
+
+    await topicFactory.methods
+      .updateTopicAssignerAddress(topicAssigner.options.address)
+      .send({
+        from: account,
+        gas: 5000000
+      }); // remove 'gas'
+    console.log("Updated reverse link from TopicFactory Smart Contract to TopicAssigner smart contract")
 
     process.exit(0);
   } catch (err) {
-    print(err);
+    console.log(err);
     process.exit(1);
   }
 }

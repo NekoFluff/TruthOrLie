@@ -1,3 +1,8 @@
+
+Simply run deploy.js
+Copy and paste the corresponding addresses to each of the files: reputationFactory.js topicAssigner.js topicFactory.js
+
+@@@ Everything below is obsolete after changes to run automatically in deploy.js
 - npm run compile
 - deploy Reputation Factory by editing the deploy file and then running npm run deploy
 - copy the address of the new Reputation Factory

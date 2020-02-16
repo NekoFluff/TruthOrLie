@@ -28,7 +28,7 @@ contract TopicFactory {
     address public owner;
     //address[] public deployedTopics; // TODO: Remove
     
-    address reputationFactoryAddress = 0x6C141A0f5D7Eb04129746200De3475535537BE1a;
+    address reputationFactoryAddress;
     address topicAssignerAddress;
     
     modifier _ownerOnly() {
@@ -36,7 +36,8 @@ contract TopicFactory {
         _;
     }
     
-    constructor() public {
+    constructor(address _reputationFactoryAddress) public {
+        reputationFactoryAddress = _reputationFactoryAddress;
         owner = msg.sender;
     }
     

@@ -10,7 +10,7 @@ contract TopicAssigner is usingProvable {
     uint256 NUM_VISIBLE_TOPICS = 25;
 
     address public owner;
-    address public topicFactoryAddress = 0xf4A0314501355DEb5C9D4D26659A0AF695eE90D3;
+    address public topicFactoryAddress;
 
     mapping(bytes32 => address) public queryToUserAddress;
     mapping(address => uint) public assignedVisibleTopics;
@@ -22,7 +22,8 @@ contract TopicAssigner is usingProvable {
         _;
     }
     
-    constructor() public {
+    constructor(address _topicFactoryAddress) public {
+        topicFactoryAddress = _topicFactoryAddress;
         provable_setProof(proofType_Ledger);
         owner = msg.sender;
     }
