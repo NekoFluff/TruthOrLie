@@ -6,14 +6,29 @@ class Announcements extends Component {
   render() {
     return (
       <React.Fragment>
-        <Message
-          warning
-          header="Alpha Test - Rinkeby Network Only"
-          list={[
-            "This application currently only works on the Rinkeby network.",
-            "Please switch on MetaMask if you haven't done so."
-          ]}
-        />
+        <Message warning>
+          <Message.Content>
+            <Message.Header
+              content={"Alpha Test - Rinkeby Network Only"}
+            ></Message.Header>
+            <Message.List>
+              <Message.Item>
+                This application currently only works on the Rinkeby network.
+              </Message.Item>
+              <Message.Item>
+                Please switch on MetaMask if you haven't done so.
+              </Message.Item>
+              <Message.Item warning>
+                <b>
+                  <Link route="/getting-started">
+                    <a>Get Started Here</a>
+                  </Link>
+                </b>
+              </Message.Item>
+            </Message.List>
+          </Message.Content>
+        </Message>
+
         <Message warning>
           <Message.Content>
             <Message.Header content={"Our Privacy Policy"}></Message.Header>
@@ -21,7 +36,9 @@ class Announcements extends Component {
               <Message.Item warning>
                 <b>
                   Please read our{" "}
-                  <Link route="/privacy-policy"><a>privacy policy</a></Link>
+                  <Link route="/privacy-policy">
+                    <a>privacy policy</a>
+                  </Link>
                 </b>
                 . By using this website, you are consenting to the collection of
                 user actions such as page views and clicks through google
