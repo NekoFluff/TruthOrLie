@@ -1,6 +1,6 @@
 
------ SYBIL ATTACKS
-- Getting an oracle (I use provable)
+----- COUNTERING SYBIL ATTACKS
+- DONE: Getting an oracle (I use provable)
   - DONE: Step 1: Find a good oracle
   - DONE: Step 2: Retrieve random number from oracle
   - DONE: Step 3: Hash
@@ -21,7 +21,7 @@
   - IGNORE: Refresh every hour
 
 - **UI** Claiming
-  - press button after period ends and get money 
+  - Press button after period ends and get money 
   - DONE: - CREATOR CLAIM ** IMPORTANT 3 ** implement claiming for 0 voters
   - DONE: - ** IMPORTANT 4 ** implement claiming for even voters
 
@@ -31,26 +31,46 @@
 - **UI** MONEY POOL
 
 **UI**: Sort arguments by vote count, reputation, creation date (GOING TO NEED DATA RETURN)
+---------------------------------------------------------------------------------------------------------------
 
+Other Stuff
 
 DONE: **UI** How it works page
 DONE: **UI** Start Here page
 **UI** Contribute page
 
-First finish important parts (contract-specific)
+---------------------------------------------------------------------------------------------------------------
+
+DONE: First finish important parts (contract-specific)
 Then work on UI implementation
 After everything on this list is done, go on linkedIn and twitter. Advertise like crazy. HOPE FOR THE BEST
 
+---------------------------------------------------------------------------------------------------------------
 
-TODO:
-indicator to notify the user that it has been claimed
-how much ether can be claimed
-how much reputation you have overall (top left)... Current Reputation for user
+1. Claiming
+  - indicator to notify the user that it has been claimed
+  - how much ether can be claimed
+2. Reputation Amount
+  - How much reputation you have overall (top left)... Current Reputation for user
+3. Topic Visuals (Pie charts and numbers)
+  - reputations for each topic
+  - votes for each topic
+  - ether pool for each topic
+  - ether pool when viewing available topics
+4. Privacy Policy (generator)
+5. Google Analytics
+6. Advertising on Twitter
 
+Disclaimer/Advertisement:
+As a work in progress, there are plans for some major changes to the mechanisms. 
+Become a part of the process and make your voice heard.
+Participate in this new crowdsourcing platform, make a little dough, and bring to light the truth.
 
-reputations for each topic
-votes for each topic
-ether pool for each topic
+Advertisement:
+Come join us in a new crowdsourcing platform powered by a blockchain incentivization system. 
+Your fact checks may be rewarded in the form of ether. 
+As an application in Alpha, we are currently only working on the Rinkeby network, but you can be part of the development process.
+Make your voice heard and come participate with others. Make your voice heard and determine the truth for yourself. 
 
 
 
