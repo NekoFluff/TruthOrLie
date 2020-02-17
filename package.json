@@ -37,6 +37,7 @@
     "semantic-ui-react": "^0.88.2",
     "sha3": "^2.1.1",
     "solc": "^0.5.16",
+    "victory": "^34.1.1",
     "web3": "^1.2.5"
   },
   "devDependencies": {

@@ -15,11 +15,12 @@ import {
 
 import { Link } from "../routes";
 import Topic from "../ethereum/topic";
-import { timestampToString, timestampToDate, approximateTimeTillDate} from "./../helpers/date";
+import { timestampToString, timestampToDate, approximateTimeTillDate} from "../helpers/date";
 import Reputation from "../ethereum/reputation";
 import { connect } from "react-redux";
+import web3 from './../ethereum/web3';
 
-class UserInfiniteTopicList extends Component {
+class UserInfiniteVotedTopicList extends Component {
   state = {
     topics: [],
     totalTopicCount: 0,
@@ -35,12 +36,12 @@ class UserInfiniteTopicList extends Component {
     try {
       await this.reloadTopicItems();
     } catch (err) {
-      console.log("[UserInfiniteTopicList.js] An error has occured:", err);
+      console.log("[UserInfiniteVotedTopicList.js] An error has occured:", err);
     }
   }
 
   async componentDidUpdate(prevProps, prevState) {
-    console.log("[UserInfiniteTopicList.js] Component Did Update");
+    console.log("[UserInfiniteVotedTopicList.js] Component Did Update");
     try {
       if (prevProps.reputationAddress != this.props.reputationAddress) {
         await this.reloadTopicItems();
@@ -48,12 +49,12 @@ class UserInfiniteTopicList extends Component {
         await this.fetchTopics();
       }
     } catch (err) {
-      console.log("[UserInfiniteTopicList.js] An error has occured in componentDidUpdate:", err);
+      console.log("[UserInfiniteVotedTopicList.js] An error has occured in componentDidUpdate:", err);
     }
   }
 
   async reloadTopicItems() {
-    console.log("[UserInfiniteTopicList.js] Reload Topic Items");
+    console.log("[UserInfiniteVotedTopicList.js] Reload Topic Items");
     if (this.props.reputationAddress == null) {
       return;
     }
@@ -63,16 +64,17 @@ class UserInfiniteTopicList extends Component {
 
       const reputationContract = Reputation(this.props.reputationAddress);
 
-      const totalTopicCount = parseInt(
-        await reputationContract.methods.getNumberOfTopics().call()
-      );
-      this.setState({ totalTopicCount });
+      // const totalTopicCount = parseInt(
+      //   await reputationContract.methods.getNumberOfVotedTopics().call()
+      // );
+      
+      this.setState({ totalTopicCount: 3 });
       console.log("Fetching User Topics")
       await this.fetchTopics();
       console.log("Fetched User Topics")
       this.setState({ retrievingTopics: false });
     } catch (err) {
-      console.log("[UserInfiniteTopicList.js] An error has occured:", err);
+      console.log("[UserInfiniteVotedTopicList.js] An error has occured:", err);
     }
   }
 
@@ -82,7 +84,7 @@ class UserInfiniteTopicList extends Component {
     try {
       await this.fetchTopics();
     } catch (err) {
-      console.log("[UserInfiniteTopicList.js] An error has occured:", err);
+      console.log("[UserInfiniteVotedTopicList.js] An error has occured:", err);
     }
   };
 
@@ -100,7 +102,7 @@ class UserInfiniteTopicList extends Component {
       const reputationContract = Reputation(this.props.reputationAddress);
 
       const topicAddresses = await reputationContract.methods
-        .getTopics(totalTopicCount - loadingTopicIndex - maxCopies, totalTopicCount - loadingTopicIndex)
+        .getVotedTopics(totalTopicCount - loadingTopicIndex - maxCopies, totalTopicCount - loadingTopicIndex)
         .call();
 
       console.log("Topic Addresses for User: " + topicAddresses);
@@ -126,6 +128,7 @@ class UserInfiniteTopicList extends Component {
           // meta: address
           meta: metaString,
           timestamp: details[2]
+          // canclaim: details[4].toString()
         });
         console.log(
           "[InfiniteTopicList.js] End Date:",
@@ -137,6 +140,41 @@ class UserInfiniteTopicList extends Component {
       const newTopicList = this.state.topics.concat(appendList.reverse());
       this.setState({ topics: newTopicList });
     }
+  }
+
+  onClaim = async (topicAddress) => {
+    console.log("Claiming " + topicAddress)
+    try {
+      // Start the loading circle and reset the error message
+      this.setState({ loading: true, errorMessage: "" });
+
+      // Get a list of the accounts available
+      const accounts = await web3.eth.getAccounts();
+
+      // console.log("Available accounts:", accounts);
+      console.log("Retrieved Account #0:", accounts[0]);
+  
+      // Retrieve user accounts and create a new campaign using the CampaignFactory
+      if (accounts[0] == "") {
+        throw new Error(
+          "No account selected. Please go back to the Billing screen and choose an account."
+        );
+      }
+
+      // Try to claim
+      const topicContract = Topic(topicAddress);
+      await topicContract.methods
+      .claim()
+      .send({
+        from: accounts[0],
+        value: 0
+      });
+
+      Router.replace("/mine/topics");
+    } catch (err) {
+      this.setState({ errorMessage: err.message });
+    }
+    this.setState({ loading: false });
   }
 
   render() {
@@ -178,11 +216,12 @@ class UserInfiniteTopicList extends Component {
                         <Link route={`/topics/${topic.header}`}>
                           <a>View Topic</a>
                         </Link>
-                        <Button floated="right" color="yellow">Claim Ether</Button>
+                        {/* <Button hidden={topic.canclaim == "true" ? false :  true} floated="right" color="yellow" onClick={this.onClaim}>Claim Ether</Button> */}
+                        <Button floated="right" color="yellow" onClick={() => this.onClaim(topic.header)}>Claim Ether</Button>
                       </React.Fragment>
                     }
-                  >
-                    </Card>
+                  />
+                  {/* Add a divider... */}
                   {index !== images.length - 1 && <Divider />}
                 </React.Fragment>
               ))}
@@ -195,8 +234,8 @@ class UserInfiniteTopicList extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log("[UserInfiniteTopicList.js] mapStateToProps:", state.reputation);
+  console.log("[UserInfiniteVotedTopicList.js] mapStateToProps:", state.reputation);
   return { reputationAddress: state.reputation.reputationAddress };
 };
 
-export default connect(mapStateToProps)(UserInfiniteTopicList);
+export default connect(mapStateToProps)(UserInfiniteVotedTopicList);

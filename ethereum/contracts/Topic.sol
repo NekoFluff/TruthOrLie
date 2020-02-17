@@ -32,6 +32,8 @@ contract Topic {
     mapping(address => uint) public createdArgument; // User to argument index
     address payable[] public truthVoters; //TODO: Remove?
     address payable[] public lieVoters; // TODO: Remove?
+    uint public truthReputation;
+    uint public lieReputation;
 
     mapping(address => bool) public claimed; // Whether or not the user has already claimed their reward for this topic
     bool public isCompleted;
@@ -195,6 +197,9 @@ contract Topic {
     }
 
     function calculateMonetaryGain(uint initialMonetaryInvestment) public view returns (uint) {
+        if (totalMonetaryInvestment <= 0) {
+            return 0;
+        }
         uint result = finalMonetaryTotal * initialMonetaryInvestment / totalMonetaryInvestment;
         return result;
     }
@@ -212,8 +217,8 @@ contract Topic {
         markAsCompleted();
     }
 
-    function getDetails() public view returns (address, uint, uint, bool) {
-        return (creator, minimumInvestment, endTime, isCompleted);
+    function getDetails() public view returns (address, uint, uint, bool, bool, uint, uint, uint, uint, uint) {
+        return (creator, minimumInvestment, endTime, isCompleted, canClaim(), address(this).balance, getTruthCount(), getLieCount(), truthReputation, lieReputation);
     }
 
     // Too much ether is spent on an individual

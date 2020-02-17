@@ -62,6 +62,10 @@ contract Reputation {
         return tempTopics;
     }
 
+    function getNumberOfVotedTopics() public view returns (uint) {
+        return votedTopics.length;
+    }
+
     function addReputation(uint addRep) public _reputationFactoryOnly {
         rep += addRep;
     }
