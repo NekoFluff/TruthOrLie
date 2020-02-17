@@ -96,7 +96,10 @@ class HowItWorks extends Component {
         <p>
           <b>
             The goal is to create an ecosystem that promotes and values the
-            truth. The github repo is at: <a href="https://github.com/NekoFluff/TruthOrLie" target="_blank">https://github.com/NekoFluff/TruthOrLie</a>
+            truth. The github repo is at:{" "}
+            <a href="https://github.com/NekoFluff/TruthOrLie" target="_blank">
+              https://github.com/NekoFluff/TruthOrLie
+            </a>
           </b>
         </p>
 
@@ -105,16 +108,18 @@ class HowItWorks extends Component {
           It is important to note that fact checker rewards are from the{" "}
           <b>topic reward pool</b> (each topic being fact checked has its own
           reward pool). The topic reward pool consists of:
-          <ol>
-            <li>
-              ether from the topic poster (initial ether to entice users to fact
-              check their topic)
-            </li>{" "}
-            <li>
-              and ether from the fact checkers themselves (the ether spent by
-              each user when voting).
-            </li>
-          </ol>
+        </p>
+        <ol>
+          <li>
+            ether from the topic poster (initial ether to entice users to fact
+            check their topic)
+          </li>{" "}
+          <li>
+            and ether from the fact checkers themselves (the ether spent by each
+            user when voting).
+          </li>
+        </ol>
+        <p>
           Rewards are redistributed based on the amount of ether invested when
           voting.
         </p>
@@ -123,28 +128,26 @@ class HowItWorks extends Component {
         <p>
           Posters will first post a topic. They will provide information such
           as:
-          <ul>
-            <li>
-              A short sentence on the topic (with possibly a link to the
-              source).
-            </li>
-            <li>
-              Minimum ether investment to participate in the fact checking
-              process. (A higher minimum ether incentivizes more well though
-              answers at the cost of fewer participants.)
-            </li>
-            <li>
-              Completion Date/Time: When the topic period ends. Maximum 7 days
-              from the current date.
-            </li>
-            <li>
-              Initial Topic Reward Pool: Ether put in by the poster to
-              incentivize users to participate in the fact checking process.
-              Effort requires payment.
-            </li>
-          </ul>
         </p>
-
+        <ul>
+          <li>
+            A short sentence on the topic (with possibly a link to the source).
+          </li>
+          <li>
+            Minimum ether investment to participate in the fact checking
+            process. (A higher minimum ether incentivizes more well though
+            answers at the cost of fewer participants.)
+          </li>
+          <li>
+            Completion Date/Time: When the topic period ends. Maximum 7 days
+            from the current date.
+          </li>
+          <li>
+            Initial Topic Reward Pool: Ether put in by the poster to incentivize
+            users to participate in the fact checking process. Effort requires
+            payment.
+          </li>
+        </ul>
         <h2 id="step2">Step 2: Every day people fact check</h2>
         <p>
           During the period the fact check is active, every day people such as
@@ -175,46 +178,45 @@ class HowItWorks extends Component {
         </p>
 
         <h2 id="example">Example:</h2>
+
+        <ol>
+          <li>
+            Poster posts a topic that ends in 2 days with a initial topic reward
+            pool of 10 ether and a minimum investment of 1 ether.
+          </li>
+          <li>
+            Fact Checker A creates an argument for Truth and votes Truth with
+            the minimum 1 ether. (11 ether in topic reward pool)
+          </li>
+          <li>
+            Fact Checker B sees the argument and agrees, voting for Truth with 3
+            ether. (14 ether in topic reward pool)
+          </li>
+          <li>
+            Fact Checker C creates an argument for Lie and votes Lie with the
+            minimum 2 ether. (16 ether in topic reward pool)
+          </li>
+          <li>The topic voting period ends after 2 days.</li>
+          <li>
+            Fact Checker C views the results and recieves nothing for being in
+            the minority.{" "}
+          </li>
+          <li>
+            Fact Checker B views the results and recieves 1/(3+1) or 1/4 of the
+            ether in the topic reward pool for being in the majority. (1/4 * 16
+            = 4 ether)
+          </li>
+          <li>
+            Fact Checker A views the results and recieves 3/(3+1) or 3/4 of the
+            ether in the topic reward pool for being in the majority. (3/4 * 16
+            = 12 ether)
+          </li>
+        </ol>
         <p>
-          <ol>
-            <li>
-              Poster posts a topic that ends in 2 days with a initial topic
-              reward pool of 10 ether and a minimum investment of 1 ether.
-            </li>
-            <li>
-              Fact Checker A creates an argument for Truth and votes Truth with
-              the minimum 1 ether. (11 ether in topic reward pool)
-            </li>
-            <li>
-              Fact Checker B sees the argument and agrees, voting for Truth with
-              3 ether. (14 ether in topic reward pool)
-            </li>
-            <li>
-              Fact Checker C creates an argument for Lie and votes Lie with the
-              minimum 2 ether. (16 ether in topic reward pool)
-            </li>
-            <li>The topic voting period ends after 2 days.</li>
-            <li>
-              Fact Checker C views the results and recieves nothing for being in
-              the minority.{" "}
-            </li>
-            <li>
-              Fact Checker B views the results and recieves 1/(3+1) or 1/4 of
-              the ether in the topic reward pool for being in the majority. (1/4
-              * 16 = 4 ether)
-            </li>
-            <li>
-              Fact Checker A views the results and recieves 3/(3+1) or 3/4 of
-              the ether in the topic reward pool for being in the majority. (3/4
-              * 16 = 12 ether)
-            </li>
-          </ol>
-          <p>
-            If the initial ether investment by the poster was 0 instead of 10,
-            the total reward pool at the end of the voting period would be 6
-            instead of 16. In this case, Fact Checker B would recieve 1/4 * 6 =
-            1.5 ether and Fact Checker A would recieve 3/4 * 6 = 4.5 ether.
-          </p>
+          If the initial ether investment by the poster was 0 instead of 10, the
+          total reward pool at the end of the voting period would be 6 instead
+          of 16. In this case, Fact Checker B would recieve 1/4 * 6 = 1.5 ether
+          and Fact Checker A would recieve 3/4 * 6 = 4.5 ether.
         </p>
 
         <h2 id="participate">Interested in Participating?</h2>

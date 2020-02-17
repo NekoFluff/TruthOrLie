@@ -18,7 +18,7 @@ class Announcements extends Component {
               <Message.Item>
                 Please switch on MetaMask if you haven't done so.
               </Message.Item>
-              <Message.Item warning>
+              <Message.Item>
                 <b>
                   <Link route="/getting-started">
                     <a>Get Started Here</a>
@@ -33,7 +33,7 @@ class Announcements extends Component {
           <Message.Content>
             <Message.Header content={"Our Privacy Policy"}></Message.Header>
             <Message.List>
-              <Message.Item warning>
+              <Message.Item>
                 <b>
                   Please read our{" "}
                   <Link route="/privacy-policy">

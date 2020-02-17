@@ -184,11 +184,14 @@ class GettingStarted extends Component {
             <a>My Topics</a>
           </Link>{" "}
           at the top right of your screen. There you can view:
-          <ul>
+        </p>
+        <ul>
             <li>the topics you have posted</li>
             <li>the topics you have voted on</li>
             <li>the arguments you have created</li>
-          </ul>{" "}
+          </ul>
+        <p>
+
           If the voting period for any of the topics you have voted on have
           ended AND <b>you were on the side of the majority</b>, you will be
           able to claim your share of the reward pool by clicking on the Claim

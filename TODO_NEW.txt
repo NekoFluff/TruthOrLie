@@ -51,8 +51,8 @@ After everything on this list is done, go on linkedIn and twitter. Advertise lik
   - DONE: indicator to notify the user that it has been claimed
   - DONE: how much ether can be claimed
 
-2. Reputation Amount
-  - How much reputation you have overall (top left)... Current Reputation for user
+2. DONE: Reputation Amount
+  - DONE: How much reputation you have overall (top left)... Current Reputation for user
 
 3. Topic Visuals (Pie charts and numbers)
   - reputations for each topic
