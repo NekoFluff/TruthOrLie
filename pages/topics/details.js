@@ -1,14 +1,13 @@
 import React, { Component } from "react";
-import CommonPage from "./../../components/CommonPage";
 import Topic from "../../ethereum/topic";
-import { Card, Grid, Button, Segment } from "semantic-ui-react";
+import { Card, Grid, Button, Segment, Container } from "semantic-ui-react";
 import { Link } from "../../routes";
 import InfiniteArgumentsList from "./../../components/InfiniteArgumentsList";
 import { timestampToString, timestampToDate } from "../../helpers/date";
 import Timer from "./../../components/Timer";
 import web3 from "../../ethereum/web3";
 import ArgumentCardGroup from "../../components/ArgumentCardGroup";
-
+import { VictoryPie } from "victory";
 class TopicDetails extends Component {
   state = {
     currentAccount: "",
@@ -43,7 +42,14 @@ class TopicDetails extends Component {
         creator: details[0],
         minimumInvestment: details[1],
         unixTimestamp: details[2],
-        isCompleted: details[3]
+        isCompleted: details[3],
+        canClaim: details[4],
+        claimed: details[5],
+        etherPool: parseInt(details[6]),
+        truthCount: parseInt(details[7]),
+        lieCount: parseInt(details[8]),
+        truthReputation: parseInt(details[9]),
+        lieReputation: parseInt(details[10])
       };
       console.log("[details.js] Topic Details:", details, topicDetails);
 
@@ -58,7 +64,7 @@ class TopicDetails extends Component {
       address,
       minimumInvestment,
       isCompleted,
-      isPublic,
+      // isPublic,
       creator,
       unixTimestamp
     } = this.props;
@@ -83,13 +89,13 @@ class TopicDetails extends Component {
         description: `${isCompleted}`,
         style: { overflowWrap: "break-word" }
       },
-      {
-        header: "Public",
-        meta:
-          "If the Topic has not been made public yet, it is not possible to participate just yet.",
-        description: `${isPublic}`,
-        style: { overflowWrap: "break-word" }
-      },
+      // {
+      //   header: "Public",
+      //   meta:
+      //     "If the Topic has not been made public yet, it is not possible to participate just yet.",
+      //   description: `${isPublic}`,
+      //   style: { overflowWrap: "break-word" }
+      // },
       {
         header: "Creator",
         meta: "The one who created this Topic.",
@@ -137,9 +143,8 @@ class TopicDetails extends Component {
     );
     try {
       const topic = Topic(this.props.address);
-      const alreadyVoted = await topic.methods
-          .voted(this.state.currentAccount)
-          .call() != 0;
+      const alreadyVoted =
+        (await topic.methods.voted(this.state.currentAccount).call()) != 0;
       const argumentIndex = await topic.methods
         .createdArgument(this.state.currentAccount)
         .call();
@@ -160,13 +165,74 @@ class TopicDetails extends Component {
     }
   };
 
-  // appendList.push({
-  //   header: argument["isTrue"] + `  [${argument["voteCount"]} votes]`,
-  //   description: argument["content"],
-  //   meta: "Posted by: " + argument["creator"],
-  //   creator: argument["creator"]
-  //   // description: argument,
-  // });
+  renderGraphs = () => {
+    return (
+      <Grid columns={2} divided>
+        <Grid.Row>
+          <Grid.Column>
+            <Container textAlign="center">
+              <h3>Reputation Chart</h3>
+            </Container>
+            {this.props.lieCount == 0 && this.props.truthCount == 0 ? (
+              <p>No one has voted yet.</p>
+            ) : (
+              <VictoryPie
+                style={{
+                  parent: { maxWidth: "100%" },
+                  labels: { fill: "white", fontSize: 20, fontWeight: "bold" }
+                }}
+                animate={{ duratiion: 2000 }}
+                colorScale={["#2185d0", "#b21e1e"]}
+                labelRadius={({ innerRadius }) => innerRadius + 35}
+                // startAngle={90}
+                // endAngle={-90}
+                data={[
+                  {
+                    x: `Truth: ${this.props.truthReputation}`,
+                    y: this.props.truthReputation
+                  },
+                  {
+                    x: `Lie: ${this.props.lieReputation}`,
+                    y: this.props.lieReputation
+                  }
+                ]}
+              ></VictoryPie>
+            )}
+          </Grid.Column>
+          <Grid.Column>
+            <Container textAlign="center">
+              <h3>Votes Chart</h3>
+            </Container>
+
+            {this.props.lieCount == 0 && this.props.truthCount == 0 ? (
+              <p>No one has voted yet.</p>
+            ) : (
+              <VictoryPie
+                style={{
+                  parent: { maxWidth: "100%" },
+                  labels: { fill: "white", fontSize: 20, fontWeight: "bold" }
+                }}
+                animate={{ duratiion: 2000 }}
+                colorScale={["#2185d0", "#b21e1e"]}
+                labelRadius={({ innerRadius }) => innerRadius + 35}
+                // style={{ labels: { fontSize: 12, fontWeight: `bold` } }}
+                // startAngle={90}
+                // endAngle={-90}
+                data={[
+                  {
+                    x: `Truth: ${this.props.truthCount}`,
+                    y: this.props.truthCount
+                  },
+                  { x: `Lie: ${this.props.lieCount}`, y: this.props.lieCount }
+                ]}
+              ></VictoryPie>
+            )}
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+    );
+  };
+
   renderUserArgument = () => {
     return (
       <Segment>
@@ -176,7 +242,7 @@ class TopicDetails extends Component {
           arguments={[
             {
               header:
-                (this.state.userArgument["isTrue"] ? 'Truth' : 'Lie')+
+                (this.state.userArgument["isTrue"] ? "Truth" : "Lie") +
                 `  [${this.state.userArgument["voteCount"]} votes]`,
               description: this.state.userArgument["content"],
               meta: "Posted by: " + this.state.userArgument["creator"],
@@ -190,41 +256,59 @@ class TopicDetails extends Component {
     );
   };
 
-  render() {
+  renderBasicTopicDetails = () => {
     const topicExpired =
       timestampToDate(this.props.unixTimestamp) <= new Date().getTime();
+
+    return (
+      <Segment>
+        <Card
+          fluid
+          raised
+          header={"Topic"}
+          meta={"Is this the Truth or a Lie?"}
+          description={this.props.text}
+          style={{ overflowWrap: "break-word" }}
+        />
+
+        {this.state.userArgument == "" ? (
+          <Link route={`/topics/${this.props.address}/arguments/new`}>
+            <a>
+              <Button disabled={topicExpired} primary>
+                {topicExpired
+                  ? "Can't make an argument. Topic expired."
+                  : "Make an Argument"}
+              </Button>
+            </a>
+          </Link>
+        ) : (
+          <Button primary disabled>
+            You've already made an argument.
+          </Button>
+        )}
+      </Segment>
+    );
+  };
+
+  render() {
     return (
       <React.Fragment>
         <Timer targetDate={timestampToDate(this.props.unixTimestamp)}></Timer>
+
+        {/* <TopicGraphs/> */}
+        {/* radius={({ datum }) => 1 + datum.y * 1} */}
+        <Container textAlign="center">
+          Ether Pool: {`${this.props.etherPool} Ether`}
+        </Container>
+
+        <Container textAlign="right"></Container>
+
         <h3>Topic Details</h3>
         <Grid columns={2} divided>
           <Grid.Row>
             <Grid.Column width={11}>
-              <Segment>
-                <Card
-                  fluid
-                  raised
-                  header={"Topic"}
-                  meta={"Is this the Truth or a Lie?"}
-                  description={this.props.text}
-                  style={{ overflowWrap: "break-word" }}
-                />
-                {this.state.userArgument == "" ? (
-                  <Link route={`/topics/${this.props.address}/arguments/new`}>
-                    <a>
-                      <Button disabled={topicExpired} primary>
-                        {topicExpired
-                          ? "Can't make an argument. Topic expired."
-                          : "Make an Argument"}
-                      </Button>
-                    </a>
-                  </Link>
-                ) : (
-                  <Button primary disabled>
-                    You've already made an argument.
-                  </Button>
-                )}
-              </Segment>
+              {this.renderBasicTopicDetails()}
+              {this.renderGraphs()}
               {this.state.userArgument != "" && this.renderUserArgument()}
 
               <InfiniteArgumentsList topicAddress={this.props.address} />

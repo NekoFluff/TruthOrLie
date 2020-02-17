@@ -94,8 +94,10 @@ contract Topic {
         arguments[argumentIndex].voteCount++;
         if (arguments[argumentIndex].isTrue) {
             truthVoters.push(msg.sender);
+            truthReputation += reputationCost;
         } else {
             lieVoters.push(msg.sender);
+            lieReputation += reputationCost;
         }
     }
 
