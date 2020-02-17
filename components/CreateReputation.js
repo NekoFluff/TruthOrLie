@@ -39,9 +39,13 @@ class CreateReputation extends Component {
         .deployedReputations(accounts[0])
         .call();
       
-      const reputationContract = Reputation(reputationAddress);
-      const currentReputation = await reputationContract.methods.rep().call()
-      this.setState({currentReputation});
+      // If the reputation address is valid, retrieve the amount of reputation associated.
+      console.log("The Rep Address:" + reputationAddress);
+      if (this.isValidReputationAddress(reputationAddress)) {
+        const reputationContract = Reputation(reputationAddress);
+        const currentReputation = await reputationContract.methods.rep().call()
+        this.setState({currentReputation});
+      }
 
       // Only update if the reputation address is different
       if (this.props.reputationAddress != reputationAddress) {
@@ -81,10 +85,13 @@ class CreateReputation extends Component {
     this.setState({ creatingReputationContract: false, modalOpen: false });
   };
 
+  isValidReputationAddress = (repAddress) => {
+    return repAddress != "0x0000000000000000000000000000000000000000";
+  }
+
   renderForm = () => {
     if (
-      this.props.reputationAddress ==
-      "0x0000000000000000000000000000000000000000"
+      !this.isValidReputationAddress(this.props.reputationAddress)
     ) {
       return (
         <React.Fragment>
@@ -108,11 +115,11 @@ class CreateReputation extends Component {
               <p>
                 Hi, it seems like you are using a new ethereum address. You will
                 need a new <b>Reputation Contract</b> in order to use this
-                application. Would you like to create one now?
+                application. Would you like to create one now?  
               </p>
               <br />
               <p>
-                (It will take a small amount of ether to create the Reputation
+                (Don't worry, you can always do it later. Check out the <a href="/getting-started">Getting Started</a> page. It will take a small amount of ether to create the Reputation
                 Contract and get started.)
               </p>
             </Modal.Content>

@@ -31,7 +31,7 @@ class UserInfiniteVotedTopicList extends Component {
 
   async componentDidMount() {
     try {
-      await this.reloadTopicItems(true);
+      await this.reloadTopicItems();
     } catch (err) {
       console.log("[UserInfiniteVotedTopicList.js] An error has occured:", err);
     }
@@ -53,7 +53,7 @@ class UserInfiniteVotedTopicList extends Component {
     }
   }
 
-  async reloadTopicItems(initialLoad = false) {
+  async reloadTopicItems() {
     console.log("[UserInfiniteVotedTopicList.js] Reload Topic Items");
     if (this.props.reputationAddress == null) {
       return;
@@ -70,7 +70,7 @@ class UserInfiniteVotedTopicList extends Component {
 
       this.setState({ totalTopicCount });
       console.log("Fetching User Topics");
-      await this.fetchTopics(initialLoad);
+      await this.fetchTopics();
       console.log("Fetched User Topics");
       this.setState({ retrievingTopics: false });
     } catch (err) {
@@ -88,10 +88,10 @@ class UserInfiniteVotedTopicList extends Component {
     }
   };
 
-  async fetchTopics(initialLoad = false) {
+  async fetchTopics() {
     const { loadingTopicIndex, totalTopicCount } = this.state;
     if (
-      initialLoad ||
+      (loadingTopicIndex == 0 && totalTopicCount > 0) ||
       (this.state.calculations.bottomVisible &&
         loadingTopicIndex < totalTopicCount)
     ) {

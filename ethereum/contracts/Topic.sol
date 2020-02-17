@@ -194,10 +194,10 @@ contract Topic {
         }
     }
 
-    function inMajority() public view {
+    function inMajority() public view returns (bool) {
         uint argumentIndex = voted[msg.sender];
         Argument storage arg = arguments[argumentIndex];
-        return (majority == 1 && arg.isTrue) || (majority == 2 && !arg.isTrue) || (majority == 3)
+        return (majority == 1 && arg.isTrue) || (majority == 2 && !arg.isTrue) || (majority == 3);
     }
 
     // function calculateMonetaryGainForUser() public view returns (uint) {
