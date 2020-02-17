@@ -5,14 +5,15 @@ import { Button, Header, Icon, Modal, Message, Label } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { updateReputationAddress } from "./../redux/actions";
 import { Router } from "../routes";
-
+import Reputation from "../ethereum/reputation"
 class CreateReputation extends Component {
   state = {
     accounts: [],
     finishedLoading: false,
     modalOpen: true,
     creatingReputationContract: false,
-    error: ""
+    error: "",
+    currentReputation: "N/A"
   };
 
   async componentDidMount() {
@@ -37,6 +38,10 @@ class CreateReputation extends Component {
       const reputationAddress = await reputationFactory.methods
         .deployedReputations(accounts[0])
         .call();
+      
+      const reputationContract = Reputation(reputationAddress);
+      const currentReputation = await reputationContract.methods.rep().call()
+      this.setState({currentReputation});
 
       // Only update if the reputation address is different
       if (this.props.reputationAddress != reputationAddress) {
@@ -155,13 +160,18 @@ class CreateReputation extends Component {
         "0x0000000000000000000000000000000000000000"
       ) {
         return (
-          <div>
-            <Label as="a" color="blue" image>
+          <Label.Group>
+            <Label as="a" href="/mine/topics" color="blue" image>
+              {/* <Label color="blue"> */}
+              Reputation:
+              <Label.Detail>{this.state.currentReputation}</Label.Detail>
+            </Label>
+            <Label as="a" href="/mine/topics" color="blue" image>
               {/* <Label color="blue"> */}
               Reputation Address:
               <Label.Detail>{this.props.reputationAddress}</Label.Detail>
             </Label>
-          </div>
+          </Label.Group>
         );
       } else {
         return this.renderForm();
