@@ -15,17 +15,18 @@ const app = next({
   dev: process.env.NODE_ENV !== "production"
 });
 const handler = routes.getRequestHandler(app);
-const HomormorphicEncryption = {
-  random_keys: () => {
-    return paillier.generateRandomKeys(2048);
-  },
-  encrypt: (publicKey, m) => {
-    return publicKey.encrypt(m);
-  },
-  decrypt: (privateKey, c) => {
-    return privateKey.decrypt(c);
-  }
-};
+// Don't use pallier anymore...
+// const HomormorphicEncryption = {
+//   random_keys: () => {
+//     return paillier.generateRandomKeys(2048);
+//   },
+//   encrypt: (publicKey, m) => {
+//     return publicKey.encrypt(m);
+//   },
+//   decrypt: (privateKey, c) => {
+//     return privateKey.decrypt(c);
+//   }
+// };
 
 const handle = app.getRequestHandler();
 
@@ -45,6 +46,7 @@ app.prepare().then(() => {
     });
   }
 
+  // This won't work. Use 2-phases with digital commitments to hide votes...
   // server.get("/vote", (req, res) => {
   //   contract = req.query.contract;
   //   account = req.query.account;

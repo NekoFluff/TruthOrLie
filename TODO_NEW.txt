@@ -47,18 +47,23 @@ After everything on this list is done, go on linkedIn and twitter. Advertise lik
 
 ---------------------------------------------------------------------------------------------------------------
 
-1. Claiming
-  - indicator to notify the user that it has been claimed
-  - how much ether can be claimed
+1. DONE: Claiming
+  - DONE: indicator to notify the user that it has been claimed
+  - DONE: how much ether can be claimed
+
 2. Reputation Amount
   - How much reputation you have overall (top left)... Current Reputation for user
+
 3. Topic Visuals (Pie charts and numbers)
   - reputations for each topic
   - votes for each topic
   - ether pool for each topic
   - ether pool when viewing available topics
-4. Privacy Policy (generator)
+  
+4. DONE: Privacy Policy (generator)
+
 5. Google Analytics
+
 6. Advertising on Twitter
 
 Disclaimer/Advertisement:

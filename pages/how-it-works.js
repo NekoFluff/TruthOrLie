@@ -5,9 +5,7 @@ import { Link } from "../routes";
 class HowItWorks extends Component {
   contextRef = createRef();
 
-  state = {
-    phase: 1
-  };
+  state = {};
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name });
 

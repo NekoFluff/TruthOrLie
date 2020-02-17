@@ -2,18 +2,10 @@ import _ from "lodash";
 import React, { Component, createRef } from "react";
 import {
   Divider,
-  Grid,
-  Icon,
-  Message,
-  Card,
-  Segment,
-  Table,
-  Button,
   Ref,
-  Visibility
+  Visibility,
 } from "semantic-ui-react";
 
-import { Link } from "../routes";
 import Topic from "../ethereum/topic";
 import {
   timestampToString,
@@ -23,7 +15,8 @@ import {
 import Reputation from "../ethereum/reputation";
 import { connect } from "react-redux";
 import web3 from "./../ethereum/web3";
-
+import FetchingContentMessage from "./FetchingContentMessage";
+import TopicCard from './TopicCard';
 class UserInfiniteVotedTopicList extends Component {
   state = {
     topics: [],
@@ -135,16 +128,16 @@ class UserInfiniteVotedTopicList extends Component {
         const address = topicAddresses[i];
         const topicContract = Topic(address);
         const text = await topicContract.methods.content().call();
-        const details = await topicContract.methods.getDetails().call(
-          {
-            from: accounts[0]
-          }
-        );
+        const details = await topicContract.methods.getDetails().call({
+          from: accounts[0]
+        });
         console.log(details);
         const { days, hours, minutes, seconds } = approximateTimeTillDate(
           timestampToDate(details[2])
         );
-        const timeTillString = `${days} Days ${hours} Hours ${minutes} Minutes ${Math.round(seconds)} Seconds`;
+        const timeTillString = `${days} Days ${hours} Hours ${minutes} Minutes ${Math.round(
+          seconds
+        )} Seconds`;
 
         var metaString = "Ended";
         if (days != 0 || hours != 0 || minutes != 0 || seconds != 0) {
@@ -154,14 +147,67 @@ class UserInfiniteVotedTopicList extends Component {
         }
         console.log("ALL DETAILS: ");
         console.log(details);
-        appendList.push({
+        // If the user can claim the reward, list how much ether they would earn
+        var usableDetails = {
           header: address,
           description: text,
           // meta: address
           meta: metaString,
           timestamp: details[2],
-          canclaim: details[4].toString()
-        });
+          canclaim: details[4].toString(),
+          hasclaimed: details[5].toString(),
+          result: "Ongoing"
+        };
+
+        // Get your argument
+        const argumentIndex = await topicContract.methods
+          .voted(accounts[0])
+          .call();
+        const argument = await topicContract.methods
+          .arguments(argumentIndex)
+          .call();
+        usableDetails['yourvote'] = (argument["isTrue"] ? 'Truth' : 'Lie')
+
+        // Get amount invested
+        const investment = await topicContract.methods
+          .monetaryInvestment(accounts[0])
+          .call();
+        usableDetails["investment"] = web3.utils.fromWei(investment, "ether");
+
+        // Get monetary gain
+        if (investment == 0) {
+          usableDetails["monetarygain"] = 0;
+        } else {
+          const monetaryGain = await topicContract.methods
+            .calculateMonetaryGain(investment)
+            .call({
+              from: accounts[0]
+            });
+          usableDetails["monetarygain"] = parseFloat(web3.utils.fromWei(
+            monetaryGain,
+            "ether"
+          )).toFixed(4);
+        }
+
+        // Get the result
+        if (
+          timestampToDate(usableDetails.timestamp).getTime() <
+          new Date().getTime()
+        ) {
+          const majority = await topicContract.methods.majority().call();
+          if (majority == 1) {
+            usableDetails["result"] = 'TRUTH"';
+            usableDetails["topicresultcolor"] = 'blue';
+          } else if (majority == 2) {
+            usableDetails["result"] = "LIE";
+            usableDetails["topicresultcolor"] = 'red';
+          } else if (majority == 3) {
+            usableDetails["result"] = "tie...";
+            usableDetails["topicresultcolor"] = 'yellow';
+          }
+        }
+
+        appendList.push(usableDetails);
         console.log(
           "[UserInfiniteVotedTopicList.js] End Date:",
           timestampToDate(details[2])
@@ -174,38 +220,7 @@ class UserInfiniteVotedTopicList extends Component {
     }
   }
 
-  onClaim = async topicAddress => {
-    console.log("Claiming " + topicAddress);
-    try {
-      // Start the loading circle and reset the error message
-      this.setState({ loading: true, errorMessage: "" });
-
-      // Get a list of the accounts available
-      const accounts = await web3.eth.getAccounts();
-
-      // console.log("Available accounts:", accounts);
-      console.log("Retrieved Account #0:", accounts[0]);
-
-      // Retrieve user accounts and create a new campaign using the CampaignFactory
-      if (accounts[0] == "") {
-        throw new Error(
-          "No account selected. Please go back to the Billing screen and choose an account."
-        );
-      }
-
-      // Try to claim
-      const topicContract = Topic(topicAddress);
-      await topicContract.methods.claim().send({
-        from: accounts[0],
-        value: 0
-      });
-
-      Router.replace("/mine/topics");
-    } catch (err) {
-      this.setState({ errorMessage: err.message });
-    }
-    this.setState({ loading: false });
-  };
+  
 
   render() {
     console.log(this.state.topics);
@@ -215,54 +230,20 @@ class UserInfiniteVotedTopicList extends Component {
           this.state.loadingTopicIndex == 1 ? "Topic" : "Topics"
         } Loaded [${this.state.totalTopicCount} total]`}</h4>
 
-        <Message
-          icon
-          style={{ marginTop: "10px" }}
-          hidden={!this.state.retrievingTopics}
-        >
-          <Icon name="circle notched" loading />
-          <Message.Content>
-            <Message.Header>Just one second</Message.Header>
-            We are fetching that content for you.
-          </Message.Content>
-        </Message>
+        <FetchingContentMessage
+          retrievingTopics={this.state.retrievingTopics}
+        />
+
         <Ref innerRef={this.contextRef}>
           <Visibility onUpdate={this.handleUpdate}>
-            {/* <Segment> */}
+            {/* For every topics... Create a card. */}
             {this.state.topics.map((topic, index, images) => (
               <React.Fragment key={index}>
-                <Card
-                  color={
-                    timestampToDate(topic.timestamp).getTime() >
-                    new Date().getTime()
-                      ? "green"
-                      : "red"
-                  }
-                  fluid
-                  {...topic}
-                  extra={
-                    <React.Fragment>
-                      <Link route={`/topics/${topic.header}`}>
-                        <a>View Topic</a>
-                      </Link>
-                      {topic.canclaim == "true" && (
-                        <Button
-                          
-                          floated="right"
-                          color="yellow"
-                          onClick={() => this.onClaim(topic.header)}
-                        >
-                          Claim Ether
-                        </Button>
-                      )}
-                    </React.Fragment>
-                  }
-                />
+                <TopicCard topic={topic}/>
                 {/* Add a divider... */}
                 {index !== images.length - 1 && <Divider />}
               </React.Fragment>
             ))}
-            {/* </Segment> */}
           </Visibility>
         </Ref>
       </React.Fragment>

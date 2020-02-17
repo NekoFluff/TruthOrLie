@@ -2,12 +2,9 @@ import _ from "lodash";
 import React, { Component, createRef } from "react";
 import {
   Divider,
-  Grid,
   Icon,
   Message,
   Card,
-  Segment,
-  Table,
   Button,
   Ref,
   Visibility
@@ -15,11 +12,11 @@ import {
 
 import { Link } from "../routes";
 import Topic from "../ethereum/topic";
-import { timestampToString, timestampToDate, approximateTimeTillDate} from "./../helpers/date";
+import { timestampToString, timestampToDate, approximateTimeTillDate} from "../helpers/date";
 import Reputation from "../ethereum/reputation";
 import { connect } from "react-redux";
 
-class UserInfiniteTopicList extends Component {
+class UserInfiniteCreatedTopicList extends Component {
   state = {
     topics: [],
     totalTopicCount: 0,
@@ -35,12 +32,12 @@ class UserInfiniteTopicList extends Component {
     try {
       await this.reloadTopicItems();
     } catch (err) {
-      console.log("[UserInfiniteTopicList.js] An error has occured:", err);
+      console.log("[UserInfiniteCreatedTopicList.js] An error has occured:", err);
     }
   }
 
   async componentDidUpdate(prevProps, prevState) {
-    console.log("[UserInfiniteTopicList.js] Component Did Update");
+    console.log("[UserInfiniteCreatedTopicList.js] Component Did Update");
     try {
       if (prevProps.reputationAddress != this.props.reputationAddress) {
         await this.reloadTopicItems();
@@ -48,12 +45,12 @@ class UserInfiniteTopicList extends Component {
         await this.fetchTopics();
       }
     } catch (err) {
-      console.log("[UserInfiniteTopicList.js] An error has occured in componentDidUpdate:", err);
+      console.log("[UserInfiniteCreatedTopicList.js] An error has occured in componentDidUpdate:", err);
     }
   }
 
   async reloadTopicItems() {
-    console.log("[UserInfiniteTopicList.js] Reload Topic Items");
+    console.log("[UserInfiniteCreatedTopicList.js] Reload Topic Items");
     if (this.props.reputationAddress == null) {
       return;
     }
@@ -72,7 +69,7 @@ class UserInfiniteTopicList extends Component {
       console.log("Fetched User Topics")
       this.setState({ retrievingTopics: false });
     } catch (err) {
-      console.log("[UserInfiniteTopicList.js] An error has occured:", err);
+      console.log("[UserInfiniteCreatedTopicList.js] An error has occured:", err);
     }
   }
 
@@ -82,7 +79,7 @@ class UserInfiniteTopicList extends Component {
     try {
       await this.fetchTopics();
     } catch (err) {
-      console.log("[UserInfiniteTopicList.js] An error has occured:", err);
+      console.log("[UserInfiniteCreatedTopicList.js] An error has occured:", err);
     }
   };
 
@@ -195,8 +192,8 @@ class UserInfiniteTopicList extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log("[UserInfiniteTopicList.js] mapStateToProps:", state.reputation);
+  console.log("[UserInfiniteCreatedTopicList.js] mapStateToProps:", state.reputation);
   return { reputationAddress: state.reputation.reputationAddress };
 };
 
-export default connect(mapStateToProps)(UserInfiniteTopicList);
+export default connect(mapStateToProps)(UserInfiniteCreatedTopicList);

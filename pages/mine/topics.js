@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import UserInfiniteTopicList from "../../components/UserInfiniteTopicList";
+import UserInfiniteCreatedTopicList from "../../components/UserInfiniteCreatedTopicList";
 import UserInfiniteVotedTopicList from './../../components/UserInfiniteVotedTopicList';
 import { Menu, Input, Segment } from "semantic-ui-react";
 class MyTopics extends Component {
@@ -44,7 +44,7 @@ class MyTopics extends Component {
         <Segment attached="bottom">
           
           { this.state.activeItem == "voted-topics" ? <UserInfiniteVotedTopicList /> : "" }
-          { this.state.activeItem == "created-topics" ? <UserInfiniteTopicList />  : "" }
+          { this.state.activeItem == "created-topics" ? <UserInfiniteCreatedTopicList />  : "" }
           { this.state.activeItem == "arguments" ? <p>Arguments you have created will be visible here. This feature will be added in the near future.</p> : "" }
         </Segment>
       </React.Fragment>

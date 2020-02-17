@@ -1,17 +1,45 @@
 import React, { Component } from "react";
 import { Message } from "semantic-ui-react";
+import { Link } from "../routes";
 
 class Announcements extends Component {
   render() {
     return (
-      <Message
-        warning
-        header="Alpha Test - Rinkeby Network Only"
-        list={[
-          "This application currently only works on the Rinkeby network.",
-          "Please switch to the Rinkeby network in Metamask if you haven't already done so."
-        ]}
-      />
+      <React.Fragment>
+        <Message
+          warning
+          header="Alpha Test - Rinkeby Network Only"
+          list={[
+            "This application currently only works on the Rinkeby network.",
+            "Please switch on MetaMask if you haven't done so."
+          ]}
+        />
+        <Message warning>
+          <Message.Content>
+            <Message.Header content={"Our Privacy Policy"}></Message.Header>
+            <Message.List>
+              <Message.Item warning>
+                <b>
+                  Please read our{" "}
+                  <Link route="/privacy-policy"><a>privacy policy</a></Link>
+                </b>
+                . By using this website, you are consenting to the collection of
+                user actions such as page views and clicks through google
+                analytics.
+              </Message.Item>
+              <Message.Item>
+                The information gathered will be used to guide the design
+                process moving forward.
+              </Message.Item>
+              <Message.Item>
+                It will also be used in a research study on the effectiveness of
+                a blockchain incentivization system on croudsourcing fact
+                checks.
+              </Message.Item>
+            </Message.List>
+          </Message.Content>
+        </Message>
+      </React.Fragment>
     );
   }
 }

@@ -145,17 +145,13 @@ contract Topic {
 
         uint truthCount = getTruthCount();
         uint lieCount = getLieCount();
-        uint winnerCount = 0;
 
         if (truthCount > lieCount) {
             majority = 1;
-            winnerCount = truthCount;
         } else if (truthCount < lieCount) {
             majority = 2;
-            winnerCount = lieCount;
         } else {
             majority = 3;
-            winnerCount = truthCount + lieCount;
         }
 
         finalMonetaryTotal = address(this).balance;
@@ -188,12 +184,18 @@ contract Topic {
             calculateMajority();
         }
 
-        if ((majority == 1 && arg.isTrue) || (majority == 2 && !arg.isTrue) || (majority == 3)) {
+        if (inMajority()) {
             msg.sender.transfer(this.calculateMonetaryGain(monetaryInvestment[msg.sender]));
             ReputationFactory repFactory = ReputationFactory(reputationFactoryAddress);
             repFactory.addReputation(this.calculateReputationGain(reputationInvestment[msg.sender]), msg.sender);
             claimed[msg.sender] = true;
         }
+    }
+
+    function inMajority() public view {
+        uint argumentIndex = voted[msg.sender];
+        Argument storage arg = arguments[argumentIndex];
+        return (majority == 1 && arg.isTrue) || (majority == 2 && !arg.isTrue) || (majority == 3)
     }
 
     // function calculateMonetaryGainForUser() public view returns (uint) {
@@ -204,8 +206,11 @@ contract Topic {
         if (totalMonetaryInvestment <= 0) {
             return 0;
         }
-        uint result = finalMonetaryTotal * initialMonetaryInvestment / totalMonetaryInvestment;
-        return result;
+        if (block.timestamp > endTime) {
+            return finalMonetaryTotal * initialMonetaryInvestment / totalMonetaryInvestment;
+        } else {
+            return address(this).balance * initialMonetaryInvestment / totalMonetaryInvestment;
+        }
     }
 
     function calculateReputationGain(uint initialReputation) pure public returns (uint) {
