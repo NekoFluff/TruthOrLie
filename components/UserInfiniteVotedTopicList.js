@@ -15,10 +15,14 @@ import {
 
 import { Link } from "../routes";
 import Topic from "../ethereum/topic";
-import { timestampToString, timestampToDate, approximateTimeTillDate} from "../helpers/date";
+import {
+  timestampToString,
+  timestampToDate,
+  approximateTimeTillDate
+} from "../helpers/date";
 import Reputation from "../ethereum/reputation";
 import { connect } from "react-redux";
-import web3 from './../ethereum/web3';
+import web3 from "./../ethereum/web3";
 
 class UserInfiniteVotedTopicList extends Component {
   state = {
@@ -34,7 +38,7 @@ class UserInfiniteVotedTopicList extends Component {
 
   async componentDidMount() {
     try {
-      await this.reloadTopicItems();
+      await this.reloadTopicItems(true);
     } catch (err) {
       console.log("[UserInfiniteVotedTopicList.js] An error has occured:", err);
     }
@@ -49,11 +53,14 @@ class UserInfiniteVotedTopicList extends Component {
         await this.fetchTopics();
       }
     } catch (err) {
-      console.log("[UserInfiniteVotedTopicList.js] An error has occured in componentDidUpdate:", err);
+      console.log(
+        "[UserInfiniteVotedTopicList.js] An error has occured in componentDidUpdate:",
+        err
+      );
     }
   }
 
-  async reloadTopicItems() {
+  async reloadTopicItems(initialLoad = false) {
     console.log("[UserInfiniteVotedTopicList.js] Reload Topic Items");
     if (this.props.reputationAddress == null) {
       return;
@@ -64,14 +71,14 @@ class UserInfiniteVotedTopicList extends Component {
 
       const reputationContract = Reputation(this.props.reputationAddress);
 
-      // const totalTopicCount = parseInt(
-      //   await reputationContract.methods.getNumberOfVotedTopics().call()
-      // );
-      
-      this.setState({ totalTopicCount: 3 });
-      console.log("Fetching User Topics")
-      await this.fetchTopics();
-      console.log("Fetched User Topics")
+      const totalTopicCount = parseInt(
+        await reputationContract.methods.getNumberOfVotedTopics().call()
+      );
+
+      this.setState({ totalTopicCount });
+      console.log("Fetching User Topics");
+      await this.fetchTopics(initialLoad);
+      console.log("Fetched User Topics");
       this.setState({ retrievingTopics: false });
     } catch (err) {
       console.log("[UserInfiniteVotedTopicList.js] An error has occured:", err);
@@ -88,11 +95,12 @@ class UserInfiniteVotedTopicList extends Component {
     }
   };
 
-  async fetchTopics() {
+  async fetchTopics(initialLoad = false) {
     const { loadingTopicIndex, totalTopicCount } = this.state;
     if (
-      this.state.calculations.bottomVisible &&
-      loadingTopicIndex < totalTopicCount
+      initialLoad ||
+      (this.state.calculations.bottomVisible &&
+        loadingTopicIndex < totalTopicCount)
     ) {
       const maxCopies = Math.min(5, totalTopicCount - loadingTopicIndex);
 
@@ -102,36 +110,60 @@ class UserInfiniteVotedTopicList extends Component {
       const reputationContract = Reputation(this.props.reputationAddress);
 
       const topicAddresses = await reputationContract.methods
-        .getVotedTopics(totalTopicCount - loadingTopicIndex - maxCopies, totalTopicCount - loadingTopicIndex)
+        .getVotedTopics(
+          totalTopicCount - loadingTopicIndex - maxCopies,
+          totalTopicCount - loadingTopicIndex
+        )
         .call();
+      // Get a list of the accounts available
+      const accounts = await web3.eth.getAccounts();
+
+      // console.log("Available accounts:", accounts);
+      console.log("Retrieved Account #0:", accounts[0]);
+
+      // Retrieve user accounts and create a new campaign using the CampaignFactory
+      if (accounts[0] == "") {
+        throw new Error(
+          "No account selected. Please go back to the Billing screen and choose an account."
+        );
+      }
+
+      console.log("Metamask account: " + accounts[0]);
 
       console.log("Topic Addresses for User: " + topicAddresses);
       for (var i = 0; i < maxCopies; i++) {
         const address = topicAddresses[i];
         const topicContract = Topic(address);
         const text = await topicContract.methods.content().call();
-        const details = await topicContract.methods.getDetails().call();
-        const { days, hours, minutes } = approximateTimeTillDate(
+        const details = await topicContract.methods.getDetails().call(
+          {
+            from: accounts[0]
+          }
+        );
+        console.log(details);
+        const { days, hours, minutes, seconds } = approximateTimeTillDate(
           timestampToDate(details[2])
         );
-        const timeTillString = `${days} Days ${hours} Hours ${minutes} Minutes`;
+        const timeTillString = `${days} Days ${hours} Hours ${minutes} Minutes ${Math.round(seconds)} Seconds`;
 
         var metaString = "Ended";
-        if (days != 0 || hours != 0 || minutes != 0) {
+        if (days != 0 || hours != 0 || minutes != 0 || seconds != 0) {
           metaString = `Ends in: ${timeTillString} \n[${timestampToString(
             details[2]
           )}]`;
         }
+        console.log("ALL DETAILS: ");
+        console.log(details);
         appendList.push({
           header: address,
           description: text,
           // meta: address
           meta: metaString,
-          timestamp: details[2]
-          // canclaim: details[4].toString()
+          timestamp: details[2],
+          canclaim: details[4].toString()
         });
         console.log(
-          "[InfiniteTopicList.js] End Date:",
+          "[UserInfiniteVotedTopicList.js] End Date:",
           timestampToDate(details[2])
         );
       }
@@ -142,8 +174,8 @@ class UserInfiniteVotedTopicList extends Component {
     }
   }
 
-  onClaim = async (topicAddress) => {
-    console.log("Claiming " + topicAddress)
+  onClaim = async topicAddress => {
+    console.log("Claiming " + topicAddress);
     try {
       // Start the loading circle and reset the error message
       this.setState({ loading: true, errorMessage: "" });
@@ -153,7 +185,7 @@ class UserInfiniteVotedTopicList extends Component {
 
       // console.log("Available accounts:", accounts);
       console.log("Retrieved Account #0:", accounts[0]);
-  
+
       // Retrieve user accounts and create a new campaign using the CampaignFactory
       if (accounts[0] == "") {
         throw new Error(
@@ -163,9 +195,7 @@ class UserInfiniteVotedTopicList extends Component {
 
       // Try to claim
       const topicContract = Topic(topicAddress);
-      await topicContract.methods
-      .claim()
-      .send({
+      await topicContract.methods.claim().send({
         from: accounts[0],
         value: 0
       });
@@ -175,11 +205,10 @@ class UserInfiniteVotedTopicList extends Component {
       this.setState({ errorMessage: err.message });
     }
     this.setState({ loading: false });
-  }
+  };
 
   render() {
-    const { calculations } = this.state;
-
+    console.log(this.state.topics);
     return (
       <React.Fragment>
         <h4>{`${this.state.loadingTopicIndex} ${
@@ -200,31 +229,39 @@ class UserInfiniteVotedTopicList extends Component {
         <Ref innerRef={this.contextRef}>
           <Visibility onUpdate={this.handleUpdate}>
             {/* <Segment> */}
-              {this.state.topics.map((topic, index, images) => (
-                <React.Fragment key={index}>
-                  <Card
-                    color={
-                      timestampToDate(topic.timestamp).getTime() >
-                      new Date().getTime()
-                        ? "green"
-                        : "red"
-                    }
-                    fluid
-                    {...topic}
-                    extra={
-                      <React.Fragment>
-                        <Link route={`/topics/${topic.header}`}>
-                          <a>View Topic</a>
-                        </Link>
-                        {/* <Button hidden={topic.canclaim == "true" ? false :  true} floated="right" color="yellow" onClick={this.onClaim}>Claim Ether</Button> */}
-                        <Button floated="right" color="yellow" onClick={() => this.onClaim(topic.header)}>Claim Ether</Button>
-                      </React.Fragment>
-                    }
-                  />
-                  {/* Add a divider... */}
-                  {index !== images.length - 1 && <Divider />}
-                </React.Fragment>
-              ))}
+            {this.state.topics.map((topic, index, images) => (
+              <React.Fragment key={index}>
+                <Card
+                  color={
+                    timestampToDate(topic.timestamp).getTime() >
+                    new Date().getTime()
+                      ? "green"
+                      : "red"
+                  }
+                  fluid
+                  {...topic}
+                  extra={
+                    <React.Fragment>
+                      <Link route={`/topics/${topic.header}`}>
+                        <a>View Topic</a>
+                      </Link>
+                      {topic.canclaim == "true" && (
+                        <Button
+                          
+                          floated="right"
+                          color="yellow"
+                          onClick={() => this.onClaim(topic.header)}
+                        >
+                          Claim Ether
+                        </Button>
+                      )}
+                    </React.Fragment>
+                  }
+                />
+                {/* Add a divider... */}
+                {index !== images.length - 1 && <Divider />}
+              </React.Fragment>
+            ))}
             {/* </Segment> */}
           </Visibility>
         </Ref>
@@ -234,7 +271,10 @@ class UserInfiniteVotedTopicList extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log("[UserInfiniteVotedTopicList.js] mapStateToProps:", state.reputation);
+  console.log(
+    "[UserInfiniteVotedTopicList.js] mapStateToProps:",
+    state.reputation
+  );
   return { reputationAddress: state.reputation.reputationAddress };
 };
 

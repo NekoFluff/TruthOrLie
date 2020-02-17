@@ -138,7 +138,7 @@ class CreateReputation extends Component {
   };
 
   render() {
-    console.log("[CreateReputation.js state]: ", this.state);
+    console.log("Render [CreateReputation.js state]: ", this.state);
     if (!this.state.finishedLoading) {
       return <React.Fragment></React.Fragment>;
     } else {

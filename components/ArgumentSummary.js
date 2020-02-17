@@ -122,7 +122,7 @@ class TopicSummary extends Component {
       const topic = Topic(this.props.topicAddress);
       await topic.methods
         .createArgument(this.props.argument, this.props.isTrue === "Truth")
-        .{
+        .send({
           from: this.props.selectedAccount
           // value: this.props.initialTopicValue // We don't send money when making an argument
         });

@@ -42,6 +42,15 @@ Then work on UI implementation
 After everything on this list is done, go on linkedIn and twitter. Advertise like crazy. HOPE FOR THE BEST
 
 
+TODO:
+indicator to notify the user that it has been claimed
+how much ether can be claimed
+how much reputation you have overall (top left)... Current Reputation for user
+
+
+reputations for each topic
+votes for each topic
+ether pool for each topic
 
 
 

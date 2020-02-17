@@ -14,7 +14,8 @@ contract TopicAssigner is usingProvable {
 
     mapping(bytes32 => address) public queryToUserAddress;
     mapping(address => uint) public assignedVisibleTopics;
-
+    mapping(address => bool) public proofFailed;
+    
     event LogNewProvableQuery(string description);
     
     modifier _ownerOnly() {
@@ -96,7 +97,7 @@ contract TopicAssigner is usingProvable {
         require(msg.sender == provable_cbAddress());
 
         if (provable_randomDS_proofVerify__returnCode(_queryId,_result,_proof) !=0) { // The proof verification has failed! Handle this case however you see fit.
-            revert();
+            proofFailed[queryToUserAddress[_queryId]] = true;
         } else { // The proof verifiction has passed!
 
             // Make sure there are topic smart contracts available (unneeded)
@@ -115,6 +116,7 @@ contract TopicAssigner is usingProvable {
             //     visibleTopics[i] = topicFactory.deployedTopics(hash % ceiling);
             // }
 
+            proofFailed[queryToUserAddress[_queryId]] = false;
             delete queryToUserAddress[_queryId];
         }
     }

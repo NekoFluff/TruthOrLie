@@ -3,7 +3,7 @@ import TopicAssigner from "./build/TopicAssigner.json";
 
 const instance = new web3.eth.Contract(
   TopicAssigner.abi,
-  "0x34aB39DF590D4B9bBfB42DB34d8050431BD452ff"//process.env.topicAssignerAddress
+  "0xb0aa44eA59549D1Aff25DC3C83e03051F7aC6593"//process.env.topicAssignerAddress
 );
 
 export default instance;

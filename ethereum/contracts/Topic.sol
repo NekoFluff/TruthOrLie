@@ -196,6 +196,10 @@ contract Topic {
         }
     }
 
+    // function calculateMonetaryGainForUser() public view returns (uint) {
+    //     return this.calculateMonetaryGain(monetaryInvestment[msg.sender];
+    // }
+
     function calculateMonetaryGain(uint initialMonetaryInvestment) public view returns (uint) {
         if (totalMonetaryInvestment <= 0) {
             return 0;
@@ -217,8 +221,8 @@ contract Topic {
         markAsCompleted();
     }
 
-    function getDetails() public view returns (address, uint, uint, bool, bool, uint, uint, uint, uint, uint) {
-        return (creator, minimumInvestment, endTime, isCompleted, canClaim(), address(this).balance, getTruthCount(), getLieCount(), truthReputation, lieReputation);
+    function getDetails() public view returns (address, uint, uint, bool, bool, bool, uint, uint, uint, uint, uint) {
+        return (creator, minimumInvestment, endTime, isCompleted, canClaim(), claimed[msg.sender], address(this).balance, getTruthCount(), getLieCount(), truthReputation, lieReputation);
     }
 
     // Too much ether is spent on an individual
