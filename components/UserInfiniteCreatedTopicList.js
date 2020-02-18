@@ -86,10 +86,11 @@ class UserInfiniteCreatedTopicList extends Component {
   async fetchTopics() {
     const { loadingTopicIndex, totalTopicCount } = this.state;
     if (
-      this.state.calculations.bottomVisible &&
-      loadingTopicIndex < totalTopicCount
+      (loadingTopicIndex == 0 && totalTopicCount > 0) ||
+      (this.state.calculations.bottomVisible &&
+        loadingTopicIndex < totalTopicCount)
     ) {
-      const maxCopies = Math.min(5, totalTopicCount - loadingTopicIndex);
+      const maxCopies = Math.min(10, totalTopicCount - loadingTopicIndex);
 
       // Create a list of the objects to retrieve
       var appendList = [];

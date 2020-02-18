@@ -95,7 +95,7 @@ class UserInfiniteVotedTopicList extends Component {
       (this.state.calculations.bottomVisible &&
         loadingTopicIndex < totalTopicCount)
     ) {
-      const maxCopies = Math.min(5, totalTopicCount - loadingTopicIndex);
+      const maxCopies = Math.min(10, totalTopicCount - loadingTopicIndex);
 
       // Create a list of the objects to retrieve
       var appendList = [];
