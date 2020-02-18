@@ -11,8 +11,8 @@ const compiledTopicFactory = require("./build/TopicFactory.json");
 const compiledReputationFactory = require("./build/ReputationFactory.json");
 const compiledTopicAssigner = require("./build/TopicAssigner.json");
 
-const mnemonic = "screen ugly basket extend hole nurse first hood permit adult payment defense";
-console.log("Using mnemonic: " + mnemonic);
+const mnemonic = process.env.mnemonic;
+// console.log("Using mnemonic: " + mnemonic);
 
 const provider = new HDWalletProvider(
   mnemonic,
