@@ -90,7 +90,10 @@ class TopicCard extends Component {
                 color={topic.topicresultcolor}
               >{`VERDICT:   ${topic.result}`}</Label>
             </Container>
-            {(topic.canclaim == "true" || topic.hasclaimed) && (
+            {console.log("Topic:")}
+            {console.log(topic)}
+            {!((topic.yourvote == "Truth" && topic.result == "LIE") ||
+              (topic.yourvote == "Lie" && topic.result == "TRUTH")) && (topic.canclaim == "true" || topic.hasclaimed) && (
               <Button
                 floated="right"
                 color="blue"
@@ -98,17 +101,17 @@ class TopicCard extends Component {
                 onClick={() => this.onClaim(topic.header)}
               >
                 {topic.hasclaimed == "false"
-                  ? "Claim Ether"
+                  ? (topic.majority != 0 ? "Claim Ether" : "Find Majority and try to Claim Ether")
                   : "Already Claimed"}
               </Button>
             )}
 
-            {((topic.yourvote == "Truth" && topic.verdict == "LIE") ||
-              (topic.yourvote == "Lie" && topic.verdict == "Truth")) && (
+            {((topic.yourvote == "Truth" && topic.result == "LIE") ||
+              (topic.yourvote == "Lie" && topic.result == "TRUTH")) && (
               <Button
                 floated="right"
                 color="blue"
-                disabled={topic.hasclaimed == "true"}
+                disabled
                 onClick={() => this.onClaim(topic.header)}
               >
                 You weren't in the majority. No claiming for you.

@@ -51,7 +51,7 @@ class TopicDetails extends Component {
         truthReputation: parseInt(details[9]),
         lieReputation: parseInt(details[10])
       };
-      console.log("[details.js] Topic Details:", details, topicDetails);
+      // console.log("[details.js] Topic Details:", details, topicDetails);
 
       return topicDetails;
     } catch (err) {
@@ -172,61 +172,61 @@ class TopicDetails extends Component {
           <Grid.Column>
             <Container textAlign="center">
               <h3>Reputation Chart</h3>
+              {this.props.lieCount == 0 && this.props.truthCount == 0 ? (
+                <p>No one has voted yet.</p>
+              ) : (
+                <VictoryPie
+                  style={{
+                    parent: { maxWidth: "100%" },
+                    labels: { fill: "white", fontSize: 20, fontWeight: "bold" }
+                  }}
+                  animate={{ duratiion: 2000 }}
+                  colorScale={["#2185d0", "#b21e1e"]}
+                  labelRadius={({ innerRadius }) => innerRadius + 35}
+                  // startAngle={90}
+                  // endAngle={-90}
+                  data={[
+                    {
+                      x: `Truth: ${this.props.truthReputation}`,
+                      y: this.props.truthReputation
+                    },
+                    {
+                      x: `Lie: ${this.props.lieReputation}`,
+                      y: this.props.lieReputation
+                    }
+                  ]}
+                ></VictoryPie>
+              )}
             </Container>
-            {this.props.lieCount == 0 && this.props.truthCount == 0 ? (
-              <p>No one has voted yet.</p>
-            ) : (
-              <VictoryPie
-                style={{
-                  parent: { maxWidth: "100%" },
-                  labels: { fill: "white", fontSize: 20, fontWeight: "bold" }
-                }}
-                animate={{ duratiion: 2000 }}
-                colorScale={["#2185d0", "#b21e1e"]}
-                labelRadius={({ innerRadius }) => innerRadius + 35}
-                // startAngle={90}
-                // endAngle={-90}
-                data={[
-                  {
-                    x: `Truth: ${this.props.truthReputation}`,
-                    y: this.props.truthReputation
-                  },
-                  {
-                    x: `Lie: ${this.props.lieReputation}`,
-                    y: this.props.lieReputation
-                  }
-                ]}
-              ></VictoryPie>
-            )}
           </Grid.Column>
           <Grid.Column>
             <Container textAlign="center">
               <h3>Votes Chart</h3>
-            </Container>
 
-            {this.props.lieCount == 0 && this.props.truthCount == 0 ? (
-              <p>No one has voted yet.</p>
-            ) : (
-              <VictoryPie
-                style={{
-                  parent: { maxWidth: "100%" },
-                  labels: { fill: "white", fontSize: 20, fontWeight: "bold" }
-                }}
-                animate={{ duratiion: 2000 }}
-                colorScale={["#2185d0", "#b21e1e"]}
-                labelRadius={({ innerRadius }) => innerRadius + 35}
-                // style={{ labels: { fontSize: 12, fontWeight: `bold` } }}
-                // startAngle={90}
-                // endAngle={-90}
-                data={[
-                  {
-                    x: `Truth: ${this.props.truthCount}`,
-                    y: this.props.truthCount
-                  },
-                  { x: `Lie: ${this.props.lieCount}`, y: this.props.lieCount }
-                ]}
-              ></VictoryPie>
-            )}
+              {this.props.lieCount == 0 && this.props.truthCount == 0 ? (
+                <p>No one has voted yet.</p>
+              ) : (
+                <VictoryPie
+                  style={{
+                    parent: { maxWidth: "100%" },
+                    labels: { fill: "white", fontSize: 20, fontWeight: "bold" }
+                  }}
+                  animate={{ duratiion: 2000 }}
+                  colorScale={["#2185d0", "#b21e1e"]}
+                  labelRadius={({ innerRadius }) => innerRadius + 35}
+                  // style={{ labels: { fontSize: 12, fontWeight: `bold` } }}
+                  // startAngle={90}
+                  // endAngle={-90}
+                  data={[
+                    {
+                      x: `Truth: ${this.props.truthCount}`,
+                      y: this.props.truthCount
+                    },
+                    { x: `Lie: ${this.props.lieCount}`, y: this.props.lieCount }
+                  ]}
+                ></VictoryPie>
+              )}
+            </Container>
           </Grid.Column>
         </Grid.Row>
       </Grid>
@@ -265,7 +265,7 @@ class TopicDetails extends Component {
         <Card
           fluid
           raised
-          header={"Topic"}
+          header={"Text:"}
           meta={"Is this the Truth or a Lie?"}
           description={this.props.text}
           style={{ overflowWrap: "break-word" }}
@@ -298,7 +298,8 @@ class TopicDetails extends Component {
         {/* <TopicGraphs/> */}
         {/* radius={({ datum }) => 1 + datum.y * 1} */}
         <Container textAlign="center">
-          Ether Pool: {`${this.props.etherPool} Ether`}
+          Ether Pool:{" "}
+          {`${web3.utils.fromWei(this.props.etherPool.toString(), "ether")} Ether`}
         </Container>
 
         <Container textAlign="right"></Container>

@@ -140,7 +140,7 @@ class TopicSummary extends Component {
       await factory.methods
         .createTopic(
           this.props.topicContent,
-          this.props.minimumInvestment,
+          web3.utils.toWei(this.props.minimumInvestment, "ether") ,
           totalSeconds
         )
         .send({

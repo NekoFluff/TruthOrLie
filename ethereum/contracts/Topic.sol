@@ -23,7 +23,8 @@ contract Topic {
 
     mapping(address => uint) public voted; // User to argument index
     mapping(address => uint) public monetaryInvestment; // User to wei investment
-    uint public totalMonetaryInvestment;
+    uint public truthMonetaryInvestment;
+    uint public lieMonetaryInvestment;
     uint public finalMonetaryTotal;
     
     mapping(address => uint) public reputationInvestment; // User to reputation investment
@@ -87,7 +88,6 @@ contract Topic {
         ReputationFactory(reputationFactoryAddress).spendReputation(address(this), reputationCost, msg.sender);
         voted[msg.sender] = argumentIndex;
         monetaryInvestment[msg.sender] = msg.value;
-        totalMonetaryInvestment += msg.value;
         reputationInvestment[msg.sender] = reputationCost;
         totalReputationInvestment += reputationCost;
 
@@ -95,9 +95,11 @@ contract Topic {
         if (arguments[argumentIndex].isTrue) {
             truthVoters.push(msg.sender);
             truthReputation += reputationCost;
+            truthMonetaryInvestment += msg.value;
         } else {
             lieVoters.push(msg.sender);
             lieReputation += reputationCost;
+            lieMonetaryInvestment += msg.value;
         }
     }
 
@@ -157,6 +159,7 @@ contract Topic {
         }
 
         finalMonetaryTotal = address(this).balance;
+        markAsCompleted();
     }
     
     function getMoneyPool() public view returns (uint) {
@@ -187,7 +190,7 @@ contract Topic {
         }
 
         if (inMajority()) {
-            msg.sender.transfer(this.calculateMonetaryGain(monetaryInvestment[msg.sender]));
+            msg.sender.transfer(this.calculateMonetaryGain(monetaryInvestment[msg.sender], arg.isTrue));
             ReputationFactory repFactory = ReputationFactory(reputationFactoryAddress);
             repFactory.addReputation(this.calculateReputationGain(reputationInvestment[msg.sender]), msg.sender);
             claimed[msg.sender] = true;
@@ -195,8 +198,7 @@ contract Topic {
     }
 
     function inMajority() public view returns (bool) {
-        uint argumentIndex = voted[msg.sender];
-        Argument storage arg = arguments[argumentIndex];
+        Argument storage arg = arguments[voted[msg.sender]];
         return (majority == 1 && arg.isTrue) || (majority == 2 && !arg.isTrue) || (majority == 3);
     }
 
@@ -204,19 +206,30 @@ contract Topic {
     //     return this.calculateMonetaryGain(monetaryInvestment[msg.sender];
     // }
 
-    function calculateMonetaryGain(uint initialMonetaryInvestment) public view returns (uint) {
-        if (totalMonetaryInvestment <= 0) {
+    function calculateMonetaryGain(uint initialMonetaryInvestment, bool onTruthSide) public view returns (uint) {
+        uint tempTotalInvestment;
+        if (onTruthSide) {
+            tempTotalInvestment = truthMonetaryInvestment;
+        } else {
+            tempTotalInvestment = lieMonetaryInvestment;
+        }
+
+        if (tempTotalInvestment <= 0) {
             return 0;
         }
-        if (block.timestamp > endTime) {
-            return finalMonetaryTotal * initialMonetaryInvestment / totalMonetaryInvestment;
+
+        if (isCompleted) {
+            if (majority == 3) {
+                tempTotalInvestment = truthMonetaryInvestment + lieMonetaryInvestment;
+            }
+            return finalMonetaryTotal * initialMonetaryInvestment / tempTotalInvestment;
         } else {
-            return address(this).balance * initialMonetaryInvestment / totalMonetaryInvestment;
+            return address(this).balance * initialMonetaryInvestment / tempTotalInvestment;
         }
     }
 
     function calculateReputationGain(uint initialReputation) pure public returns (uint) {
-        uint256 result = initialReputation * 11 / 10; // For now we 
+        uint256 result = initialReputation * 11 / 10; // For now we just use this ratio
         return result;
     }
 

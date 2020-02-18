@@ -3,7 +3,7 @@ import ReputationFactory from "./build/ReputationFactory.json";
 
 const instance = new web3.eth.Contract(
   ReputationFactory.abi,
-  "0x29F1D6016D7952BCF16EE0Bf10Dc5c5E51511ba7"
+  "0x01A6ba50C0031bb684E65589F2eF5F078B19fD4a"
 );
 
 export default instance;

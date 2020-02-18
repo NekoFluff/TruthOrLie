@@ -38,7 +38,7 @@ class UserInfiniteVotedTopicList extends Component {
   }
 
   async componentDidUpdate(prevProps, prevState) {
-    console.log("[UserInfiniteVotedTopicList.js] Component Did Update");
+    // console.log("[UserInfiniteVotedTopicList.js] Component Did Update");
     try {
       if (prevProps.reputationAddress != this.props.reputationAddress) {
         await this.reloadTopicItems();
@@ -179,7 +179,7 @@ class UserInfiniteVotedTopicList extends Component {
           usableDetails["monetarygain"] = 0;
         } else {
           const monetaryGain = await topicContract.methods
-            .calculateMonetaryGain(investment)
+            .calculateMonetaryGain(investment, argument["isTrue"])
             .call({
               from: accounts[0]
             });
@@ -195,15 +195,16 @@ class UserInfiniteVotedTopicList extends Component {
           new Date().getTime()
         ) {
           const majority = await topicContract.methods.majority().call();
+          usableDetails["majority"] = majority;
           if (majority == 1) {
-            usableDetails["result"] = 'TRUTH"';
-            usableDetails["topicresultcolor"] = 'blue';
+            usableDetails["result"] = "TRUTH";
+            usableDetails["topicresultcolor"] = "blue";
           } else if (majority == 2) {
             usableDetails["result"] = "LIE";
-            usableDetails["topicresultcolor"] = 'red';
+            usableDetails["topicresultcolor"] = "red";
           } else if (majority == 3) {
             usableDetails["result"] = "tie...";
-            usableDetails["topicresultcolor"] = 'yellow';
+            usableDetails["topicresultcolor"] = "yellow";
           }
         }
 
@@ -223,7 +224,7 @@ class UserInfiniteVotedTopicList extends Component {
   
 
   render() {
-    console.log(this.state.topics);
+    // console.log(this.state.topics);
     return (
       <React.Fragment>
         <h4>{`${this.state.loadingTopicIndex} ${

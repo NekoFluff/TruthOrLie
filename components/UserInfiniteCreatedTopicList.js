@@ -175,7 +175,7 @@ class UserInfiniteCreatedTopicList extends Component {
                         <Link route={`/topics/${topic.header}`}>
                           <a>View Topic</a>
                         </Link>
-                        <Button floated="right" color="yellow">Claim Ether</Button>
+                        {/* <Button floated="right" color="yellow">Claim Ether</Button> */}
                       </React.Fragment>
                     }
                   >

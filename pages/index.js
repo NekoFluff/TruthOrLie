@@ -30,8 +30,8 @@ export default class CampaignIndex extends Component {
 
         <h3>Open Topics</h3>
 
-        <Link route="/topics/new">
-          <a>
+        {/* <Link route="/topics/new"> */}
+          <a href="/topics/new">
             <Button
               fluid
               style={{ marginBottom: "10px" }}
@@ -41,7 +41,7 @@ export default class CampaignIndex extends Component {
               labelPosition="left"
             />
           </a>
-        </Link>
+        {/* </Link> */}
 
         {this.renderTopics()}
       </React.Fragment>
