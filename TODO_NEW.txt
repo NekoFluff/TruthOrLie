@@ -92,6 +92,12 @@ Come join us in a new crowdsourcing platform powered by a blockchain incentiviza
 Make your voice heard and determine the truth for yourself.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Newer version:
+Your fact checks may be rewarded in the form of ether! Check out this new crowdsourcing and blockchain-enabled platform! The alpha version (on the Rinkeby Testnet) is at http://truthorlie.info. 
+
+Make your voice heard and determine the truth for yourself!
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 ------ **IMPORTANT #LAST** HIDE VOTES (A two phase system) (MAYBE TEST AND SEE IF IT'S NECESSARY)
 - Digital commitment (hash value + random string)
   ---------------------------- Test store data in database (SSS)

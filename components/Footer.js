@@ -18,14 +18,17 @@ export default props => {
       {/* <a href="https://www.facebook.com/" target="_blank">
           <Icon name="facebook big"/>
         </a> */}
-      <a href="https://twitter.com/TruthOrLie8" target="_blank">
+      <a style={{marginRight: "20px"}} href="https://twitter.com/TruthOrLie8" target="_blank">
         <Icon name="twitter" className="big" />
       </a>
       {/* <a href="https://www.linkedin.com/company/c" target="_blank">
           <Icon name="linkedin big"/>
         </a> */}
-      <a href="https://discord.gg/sCNpMAs" target="_blank">
+      <a style={{marginRight: "20px"}} href="https://discord.gg/sCNpMAs" target="_blank">
         <Icon name="discord" className="big" />
+      </a>
+      <a  href="https://github.com/NekoFluff/TruthOrLie" target="_blank">
+        <Icon name="github" className="big" />
       </a>
       {/* </Container> */}
     </Segment>

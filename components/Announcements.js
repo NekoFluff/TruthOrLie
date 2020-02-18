@@ -19,14 +19,19 @@ class Announcements extends Component {
                 Please switch on MetaMask if you haven't done so.
               </Message.Item>
               <Message.Item>
+                <b>
                 Questions? Check out our{" "}
                 <a href="https://discord.gg/sCNpMAs" target="_blank">
                   Discord
                 </a>
-                {" "}and{" "}
+                ,{" "}
                 <a href="https://twitter.com/TruthOrLie8" target="_blank">
                   Twitter
+                </a>, and{" "}
+                <a href="https://github.com/NekoFluff/TruthOrLie" target="_blank">
+                  Github
                 </a>
+                </b>
               </Message.Item>
               <Message.Item>
                 <b>
