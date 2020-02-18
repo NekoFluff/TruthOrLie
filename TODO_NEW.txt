@@ -54,11 +54,11 @@ After everything on this list is done, go on linkedIn and twitter. Advertise lik
 2. DONE: Reputation Amount
   - DONE: How much reputation you have overall (top left)... Current Reputation for user
 
-3. Topic Visuals (Pie charts and numbers)
-  - reputations for each topic
-  - votes for each topic
-  - ether pool for each topic
-  - ether pool when viewing available topics
+3. DONE: Topic Visuals (Pie charts and numbers)
+  - DONE: reputations for each topic
+  - DONE: votes for each topic
+  - DONE: ether pool for each topic
+  - DONE: ether pool when viewing available topics
   
 4. DONE: Privacy Policy (generator)
 
@@ -66,6 +66,9 @@ After everything on this list is done, go on linkedIn and twitter. Advertise lik
 
 6. Advertising on Twitter
 
+7. Icon 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Disclaimer/Advertisement:
 As a work in progress, there are plans for some major changes to the mechanisms. 
 Become a part of the process and make your voice heard.
@@ -75,9 +78,19 @@ Advertisement:
 Come join us in a new crowdsourcing platform powered by a blockchain incentivization system. 
 Your fact checks may be rewarded in the form of ether. 
 As an application in Alpha, we are currently only working on the Rinkeby network, but you can be part of the development process.
-Make your voice heard and come participate with others. Make your voice heard and determine the truth for yourself. 
+Make your voice heard and determine the truth for yourself. 
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Final Twitter Announcement:
 
+Your fact checks may be rewarded in the form of ether!
+
+http://truthorlie.info 
+
+Come join us in a new crowdsourcing platform powered by a blockchain incentivization system (currently in Alpha/Rinkeby testnet). 
+
+Make your voice heard and determine the truth for yourself.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ------ **IMPORTANT #LAST** HIDE VOTES (A two phase system) (MAYBE TEST AND SEE IF IT'S NECESSARY)
 - Digital commitment (hash value + random string)

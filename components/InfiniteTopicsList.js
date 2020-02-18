@@ -9,7 +9,9 @@ import {
   Segment,
   Ref,
   Visibility,
-  Button
+  Button,
+  Container,
+  Label
 } from "semantic-ui-react";
 import factory from "../ethereum/topicFactory";
 import { Link } from "../routes";
@@ -34,7 +36,7 @@ export default class InfiniteTopicsList extends Component {
   contextRef = createRef();
 
   canViewTopics() {
-    const {topicSeed} = this.state;
+    const { topicSeed } = this.state;
     return (
       topicSeed != "0x0000000000000000000000000000000000000000" &&
       topicSeed != "" &&
@@ -58,7 +60,6 @@ export default class InfiniteTopicsList extends Component {
         accountSelectionError: "There are no available accounts."
       });
       console.log("No accounts available.");
-      
     } else {
       this.setState({ primaryAccount: accounts[0] });
       console.log("Active account: " + accounts[0]);
@@ -114,7 +115,7 @@ export default class InfiniteTopicsList extends Component {
   async fetchTopics() {
     // Check to make sure there are fetchable topics
     if (this.state.totalTopicCount == 0) {
-      console.log("No topics available to fetch.")
+      console.log("No topics available to fetch.");
       return;
     }
 
@@ -153,7 +154,13 @@ export default class InfiniteTopicsList extends Component {
           description: text,
           // meta: address
           meta: metaString,
-          timestamp: details[2]
+          minimuminvestment: web3.utils.fromWei(details[1], "ether"),
+          timestamp: details[2],
+          topicpool: web3.utils.fromWei(details[6], "ether"),
+          truthcount: details[7],
+          liecount: details[8],
+          truthreputation: details[9],
+          liereputation: details[10]
         });
         console.log(
           "[InfiniteTopicList.js] End Date:",
@@ -185,9 +192,60 @@ export default class InfiniteTopicsList extends Component {
                       fluid
                       {...topic}
                       extra={
-                        <Link route={`/topics/${topic.header}`}>
-                          <a>View Topic</a>
-                        </Link>
+                        <React.Fragment>
+                          
+                          <Link route={`/topics/${topic.header}`}>
+                            <a><Button>View Topic</Button></a>
+                          </Link>
+                          
+                          
+                          <Container textAlign="right">
+                            <Label.Group>
+                              {/* <Label>
+                                <Link route={`/topics/${topic.header}`}>
+                                  <a>View Topic</a>
+                                </Link>
+                              </Label> */}
+
+                              {topic.minimuminvestment && (
+                                <Label color="secondary">
+                                  {`${topic.minimuminvestment} Minimum Ether to Vote`}
+                                </Label>
+                              )}
+                            
+                              {topic.topicpool && (
+                                <Label color="secondary">
+                                  {`Topic Pool: ${topic.topicpool} Ether`}
+                                </Label>
+                              )}
+                              </Label.Group>
+                            <Label.Group>
+                              {topic.truthcount && (
+                                <Label color="blue">
+                                  {`# Truth Votes: ${topic.truthcount}`}
+                                </Label>
+                              )}
+                            
+                              {topic.liecount && (
+                                <Label color="red">
+                                  {`# Lie Votes: ${topic.liecount}`}
+                                </Label>
+                              )}
+                              </Label.Group>
+                            <Label.Group>
+                              {topic.truthreputation && (
+                                <Label color="blue">
+                                  {`Total Truth Reputation: ${topic.truthreputation}`}
+                                </Label>
+                              )}
+                              {topic.liereputation && (
+                                <Label color="red">
+                                  {`Total Lie Reputation: ${topic.liereputation}`}
+                                </Label>
+                              )}
+                            </Label.Group>
+                          </Container>
+                        </React.Fragment>
                       }
                     />
                     {index !== images.length - 1 && <Divider />}
@@ -198,8 +256,8 @@ export default class InfiniteTopicsList extends Component {
           </Grid.Column>
         </Grid>
       </Ref>
-    )
-  }
+    );
+  };
 
   render() {
     const { topicSeed, totalTopicCount, topics } = this.state;
