@@ -1,0 +1,6 @@
+1. I call: approve(TokenDistributerAddress, AllTokens)
+
+2. When giving token to user in TokenDistributor Contract:
+  - It calls: transferFrom(myAddress, factCheckerAddress, rewardInTokens)
+
+3. Done!
