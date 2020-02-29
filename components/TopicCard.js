@@ -6,6 +6,7 @@ import {
 import { Link } from "../routes";
 import web3 from "./../ethereum/web3";
 import Topic from "../ethereum/topic";
+import { Router } from '../routes';
 
 class TopicCard extends Component {
   state = {};
@@ -44,11 +45,11 @@ class TopicCard extends Component {
       }
 
 
-      Router.replace("/mine/topics");
     } catch (err) {
       console.log("[TopicCard.js] Error: " + err)
       this.setState({ errorMessage: err.message });
     }
+    Router.push("/mine/topics");
     this.setState({ loading: false });
   };
 
@@ -56,7 +57,8 @@ class TopicCard extends Component {
     const { topic } = this.props;
     const topicEnded = timestampToDate(topic.timestamp).getTime() < new Date().getTime();
     const canCreatorClaim = topic.isCreator == "true" && topicEnded && topic.totalVoteCount == 0;
-
+    const lost = ((topic.yourvote == "Truth" && topic.result == "LIE") || (topic.yourvote == "Lie" && topic.result == "TRUTH"));
+    
     return (
       <Card
         color={
@@ -93,12 +95,17 @@ class TopicCard extends Component {
               <Label.Group>
                 {topic.topicrewardpool && (
                   <Label color="blue">
-                    {`Current Reward Pool: ~${topic.topicrewardpool} Ether`}
+                    {`Current Reward Pool: ~${topic.topicrewardpool} ETH`}
                   </Label>
                 )}
-                {topic.monetarygain && (
+                {!lost && topic.monetarygain && (
                   <Label color="blue">
-                    {`Winner Reward: ~${topic.monetarygain} Ether`}
+                    {`Reward for being in Majority: ~${topic.monetarygain} ETH`}
+                  </Label>
+                )}
+                {lost && (
+                  <Label color="red">
+                    {`You were not in the majority: ~0 ETH`}
                   </Label>
                 )}
                 {topic.hasclaimed == "true" && topic.repgain && (
@@ -124,6 +131,7 @@ class TopicCard extends Component {
               (topic.yourvote == "Lie" && topic.result == "TRUTH")) && */}
             { topicEnded && (topic.canclaim == "true" || topic.hasclaimed == "true") && (
               <Button
+                loading={this.state.loading}
                 floated="right"
                 color="blue"
                 disabled={topic.hasclaimed == "true"}

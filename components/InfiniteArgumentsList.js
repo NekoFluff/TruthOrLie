@@ -11,7 +11,7 @@ import {
 import Topic from "../ethereum/topic";
 import ArgumentCardGroup from "./ArgumentCardGroup";
 import web3 from "../ethereum/web3";
-
+import { retrieveReputation } from './../helpers/reputation';
 export default class InfiniteArgumentsList extends Component {
   state = {
     calculations: {
@@ -79,7 +79,7 @@ export default class InfiniteArgumentsList extends Component {
       this.state.calculations.bottomVisible &&
       loadingArgumentIndex < totalArgumentCount
     ) {
-      const maxCopies = Math.min(5, totalArgumentCount - loadingArgumentIndex);
+      const maxCopies = Math.min(10, totalArgumentCount - loadingArgumentIndex);
 
       // Create a list of the objects to retrieve
       var appendList = [];
@@ -96,20 +96,27 @@ export default class InfiniteArgumentsList extends Component {
         const argument = await topic.methods
           .arguments(loadingArgumentIndex + i)
           .call();
+
+        const {_, rep} = await retrieveReputation(argument["creator"]);
+
         appendList.push({
-          header: (argument["isTrue"] ? 'Truth' : 'Lie') + `  [${argument["voteCount"]} votes]`,
+          header: (argument["isTrue"] ? 'Truth' : 'Lie'), //+ `  [${argument["voteCount"]} votes]`,
           description: argument["content"],
           meta: "Posted by: " + argument["creator"],
           creator: argument["creator"],
           istrue: `${argument["isTrue"]}`,
           argumentindex: loadingArgumentIndex + i,
-          canvote: (!alreadyVoted).toString()
+          canvote: (!alreadyVoted).toString(),
+          votecount: argument["voteCount"],
+          reputation: rep
         });
-        console.log("[InfiniteArgumentList.js] ARGUMENT OBJECT:", argument);
+        // console.log("[InfiniteArgumentList.js] ARGUMENT OBJECT:", argument);
+        
       }
 
       // Combine the lists
       const newList = this.state.arguments.concat(appendList);
+      newList.sort(function(a,b) {return b.reputation-a.reputation})
       this.setState({ arguments: newList });
     }
   }

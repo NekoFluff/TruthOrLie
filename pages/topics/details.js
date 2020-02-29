@@ -68,6 +68,7 @@ class TopicDetails extends Component {
       creator,
       unixTimestamp
     } = this.props;
+    const minimumInvestmentEth = web3.utils.fromWei(minimumInvestment, "ether")
 
     const items = [
       {
@@ -79,7 +80,7 @@ class TopicDetails extends Component {
       {
         header: "Minimum Investment",
         meta: "Minimum amount a user needs to contribute when participating",
-        description: `${minimumInvestment} wei`,
+        description: `${minimumInvestmentEth} ETH`,
         style: { overflowWrap: "break-word" }
       },
       {
@@ -150,7 +151,7 @@ class TopicDetails extends Component {
         .call();
       if (argumentIndex > 0) {
         const argument = await topic.methods.arguments(argumentIndex).call();
-        console.log("[Details.js] User Argument: ", argument);
+        // console.log("[Details.js] User Argument: ", argument);
         this.setState({
           userArgument: argument,
           userArgumentIndex: argumentIndex,
@@ -166,7 +167,7 @@ class TopicDetails extends Component {
   };
 
   renderGraphs = () => {
-    var numColumns = 1
+    var numColumns = 2
     if (this.props.isCompleted) {
       numColumns = 2
     }
@@ -250,8 +251,7 @@ class TopicDetails extends Component {
           arguments={[
             {
               header:
-                (this.state.userArgument["isTrue"] ? "Truth" : "Lie") +
-                `  [${this.state.userArgument["voteCount"]} votes]`,
+                (this.state.userArgument["isTrue"] ? "Truth" : "Lie"),// + `  [${this.state.userArgument["voteCount"]} votes]`,
               description: this.state.userArgument["content"],
               meta: "Posted by: " + this.state.userArgument["creator"],
               creator: this.state.userArgument["creator"],

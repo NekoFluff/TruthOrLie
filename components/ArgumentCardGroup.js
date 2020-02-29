@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, Divider, Button } from "semantic-ui-react";
+import { Card, Divider, Button, Container, Label } from "semantic-ui-react";
 import { Link } from "../routes";
 
 class ArgumentCardGroup extends Component {
@@ -14,26 +14,37 @@ class ArgumentCardGroup extends Component {
               fluid
               {...props}
               extra={
-                <Link
-                  route={`/topics/${this.props.topicAddress}/arguments/${props.creator}/vote`}
-                >
-                  <Button
-                    disabled={props.canvote == "true" ? false : true}
-                    onClick={() => {
-                      localStorage.setItem("argumentText", props.description);
-                      localStorage.setItem("argumentIsTrue", props.istrue);
-                      localStorage.setItem(
-                        "argumentIndex",
-                        props.argumentindex
-                      );
-                      console.log(
-                        "Updated local storage with argument details"
-                      );
-                    }}
+                <React.Fragment>
+                  <Container textAlign="right">
+                    {props.reputation && (
+                      <Label.Group>
+                        <Label color="blue">
+                          {`${props.reputation} Reputation`}
+                        </Label>
+                      </Label.Group>
+                    )}
+                  </Container>
+                  <Link
+                    route={`/topics/${this.props.topicAddress}/arguments/${props.creator}/vote`}
                   >
-                    Vote
-                  </Button>
-                </Link>
+                    <Button
+                      disabled={props.canvote == "true" ? false : true}
+                      onClick={() => {
+                        localStorage.setItem("argumentText", props.description);
+                        localStorage.setItem("argumentIsTrue", props.istrue);
+                        localStorage.setItem(
+                          "argumentIndex",
+                          props.argumentindex
+                        );
+                        console.log(
+                          "Updated local storage with argument details"
+                        );
+                      }}
+                    >
+                      Vote
+                    </Button>
+                  </Link>
+                </React.Fragment>
               }
             />
             {index !== images.length - 1 && <Divider />}

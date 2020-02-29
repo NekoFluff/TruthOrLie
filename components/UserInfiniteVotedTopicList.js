@@ -145,8 +145,7 @@ class UserInfiniteVotedTopicList extends Component {
             details[2]
           )}]`;
         }
-        console.log("ALL DETAILS: ");
-        console.log(details);
+
         // If the user can claim the reward, list how much ether they would earn
         var usableDetails = {
           header: address,

@@ -137,15 +137,16 @@ class TopicSummary extends Component {
         Math.abs(this.props.endDate - new Date()) / 1000
       );
 
+      const commission = 0.00025;
       await factory.methods
         .createTopic(
           this.props.topicContent,
-          web3.utils.toWei(this.props.minimumInvestment, "ether") ,
+          web3.utils.toWei((parseFloat(this.props.minimumInvestment)+commission).toString(), "ether") ,
           totalSeconds
         )
         .send({
           from: this.props.selectedAccount,
-          value: web3.utils.toWei(this.props.initialTopicValue, "ether")
+          value: web3.utils.toWei(this.props.initialTopicValue + commission, "ether") 
         });
       Router.push("/");
     } catch (err) {

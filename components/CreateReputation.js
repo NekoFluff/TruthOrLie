@@ -6,6 +6,8 @@ import { connect } from "react-redux";
 import { updateReputationAddress } from "./../redux/actions";
 import { Router } from "../routes";
 import Reputation from "../ethereum/reputation"
+import { retrieveReputation, isValidReputationAddress } from './../helpers/reputation';
+
 class CreateReputation extends Component {
   state = {
     accounts: [],
@@ -35,17 +37,10 @@ class CreateReputation extends Component {
       }
       this.setState({ accounts });
 
-      const reputationAddress = await reputationFactory.methods
-        .deployedReputations(accounts[0])
-        .call();
       
-      // If the reputation address is valid, retrieve the amount of reputation associated.
-      console.log("The Rep Address:" + reputationAddress);
-      if (this.isValidReputationAddress(reputationAddress)) {
-        const reputationContract = Reputation(reputationAddress);
-        const currentReputation = await reputationContract.methods.rep().call()
-        this.setState({currentReputation});
-      }
+      const {reputationAddress, rep} = await retrieveReputation(accounts[0])
+      this.setState({currentReputation: rep});
+
 
       // Only update if the reputation address is different
       if (this.props.reputationAddress != reputationAddress) {
@@ -85,13 +80,9 @@ class CreateReputation extends Component {
     this.setState({ creatingReputationContract: false, modalOpen: false });
   };
 
-  isValidReputationAddress = (repAddress) => {
-    return repAddress != "0x0000000000000000000000000000000000000000";
-  }
-
   renderForm = () => {
     if (
-      !this.isValidReputationAddress(this.props.reputationAddress)
+      !isValidReputationAddress(this.props.reputationAddress)
     ) {
       return (
         <React.Fragment>

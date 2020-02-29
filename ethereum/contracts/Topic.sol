@@ -87,9 +87,15 @@ contract Topic {
         require(msg.value >= minimumInvestment, 'You must invest at least the minimum amount as decided by the creator.');
         require(canVote(), "You don't have this topic on your available list or you have already voted.");
         
+        // Commission for topic creators
+        uint commission = msg.value * 2 / 100; 
+        uint valueAfterCommision = msg.value - commission;
+        address payable creatorPayable = address(uint160(address(creator)));
+        creatorPayable.transfer(commission);
+
         ReputationFactory(reputationFactoryAddress).spendReputation(address(this), reputationCost, msg.sender);
         voted[msg.sender] = argumentIndex;
-        monetaryInvestment[msg.sender] = msg.value;
+        monetaryInvestment[msg.sender] = valueAfterCommision;
         reputationInvestment[msg.sender] = reputationCost;
         totalReputationInvestment += reputationCost;
 
@@ -97,11 +103,11 @@ contract Topic {
         if (arguments[argumentIndex].isTrue) {
             truthVoters.push(msg.sender);
             truthReputation += reputationCost;
-            truthMonetaryInvestment += msg.value;
+            truthMonetaryInvestment += valueAfterCommision;
         } else {
             lieVoters.push(msg.sender);
             lieReputation += reputationCost;
-            lieMonetaryInvestment += msg.value;
+            lieMonetaryInvestment += valueAfterCommision;
         }
     }
 

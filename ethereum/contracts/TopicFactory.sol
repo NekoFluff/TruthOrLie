@@ -20,6 +20,8 @@ contract TopicFactory {
     address topicAssignerAddress;
     mapping(address => bool) isAdmin;
 
+    uint commission = 250000000000000; // wei to create new topic
+
     // Logging events
     event LogNewTopic(address sender, address topicAddress, uint minInvestment, uint secondsAvailable);
     event LogRemoveTopic(address sender, address topicAddress, bytes32 key);
@@ -65,7 +67,11 @@ contract TopicFactory {
         require(topicAssignerAddress != address(0), "A Topic Assigner contract address must be assigned before being able to create any new topics.");
         Topic newTopic = new Topic(address(this), reputationFactoryAddress, topicAssignerAddress, topicContent, minInvestment, secondsAvailable, msg.sender);
         address payable newTopicAddress = address(uint160(address(newTopic)));
-        newTopicAddress.transfer(address(this).balance);
+
+        // Commission
+        newTopicAddress.transfer(msg.value - commission);
+        address payable ownerPayable = address(uint160(address(owner)));
+        ownerPayable.transfer(commission);
         
         bytes32 key = addressToBytes32(address(newTopic));
         topicSet.insert(key);
