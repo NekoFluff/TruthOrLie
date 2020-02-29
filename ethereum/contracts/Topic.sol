@@ -187,12 +187,12 @@ contract Topic {
             calculateMajority();
         }
 
-        if (inMajority()) {
+        if (inMajority(msg.sender)) {
             msg.sender.transfer(this.calculateMonetaryGain(monetaryInvestment[msg.sender], arg.isTrue));
         }
 
         ReputationFactory repFactory = ReputationFactory(reputationFactoryAddress);
-        repFactory.addReputation(this.calculateReputationGain(reputationInvestment[msg.sender]), msg.sender);
+        repFactory.addReputation(this.calculateReputationGain(reputationInvestment[msg.sender], msg.sender), msg.sender);
         claimed[msg.sender] = true;
     }
 
@@ -231,8 +231,8 @@ contract Topic {
         }
     }
 
-    function calculateReputationGain(uint initialReputation) public view returns (uint) {
-        if (inMajority()) {
+    function calculateReputationGain(uint initialReputation, address sender) public view returns (uint) {
+        if (inMajority(sender)) {
             return initialReputation * 11 / 10; 
         } else {
             return initialReputation * 8 / 10; 
@@ -243,8 +243,8 @@ contract Topic {
         return (creator, minimumInvestment, endTime, isCompleted, canClaim(), claimed[msg.sender], address(this).balance, getTruthCount(), getLieCount(), truthReputation, lieReputation);
     }
 
-    function inMajority() public view returns (bool) {
-        Argument storage arg = arguments[voted[msg.sender]];
+    function inMajority(address sender) public view returns (bool) {
+        Argument storage arg = arguments[voted[sender]];
         return (majority == 1 && arg.isTrue) || (majority == 2 && !arg.isTrue) || (majority == 3);
     }
 

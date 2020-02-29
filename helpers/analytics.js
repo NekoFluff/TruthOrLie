@@ -15,13 +15,20 @@ export const logPageView = () => {
   ReactGA.pageview(window.location.pathname);
 };
 
-export const logEvent = (category = "", action = "") => {
+export const logEvent = (category = "", action = "", value = null, label = "") => {
   if (category && action) {
-    ReactGA.event({ category, action });
+    eventData = { category, action }
+    if (value) {
+      eventData[value] = value;
+    }
+    if (label) {
+      eventData[label] = label;
+    }
+    ReactGA.event(eventData);
   }
 };
 
-export const logException = (description = "", factal = false) => {
+export const logException = (description = "", fatal = false) => {
   if (description) {
     ReactGA.exception({ description, fatal });
   }

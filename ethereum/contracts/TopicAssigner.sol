@@ -106,8 +106,8 @@ contract TopicAssigner is usingProvable {
 
             // Generate random number
             // address[NUM_VISIBLE_TOPICS] storage visibleTopics = assignedVisibleTopics[queryToUserAddress[_queryId]];
-            uint256 hash = uint256(keccak256(abi.encodePacked(_result)));
-            assignedVisibleTopics[queryToUserAddress[_queryId]] = hash;
+            // uint256 hash = uint256(keccak256(abi.encodePacked(_result)));
+            // assignedVisibleTopics[queryToUserAddress[_queryId]] = hash;
 
             // By hashing, pick the remaining topics
             // for (uint256 i = 0; i < NUM_VISIBLE_TOPICS; i++) {
@@ -116,8 +116,12 @@ contract TopicAssigner is usingProvable {
             // }
 
             proofFailed[queryToUserAddress[_queryId]] = false;
-            delete queryToUserAddress[_queryId];
+            // delete queryToUserAddress[_queryId];
         }
+
+        uint256 hash = uint256(keccak256(abi.encodePacked(_result)));
+        assignedVisibleTopics[queryToUserAddress[_queryId]] = hash;
+        delete queryToUserAddress[_queryId];
     }
 
     function reclaimExtraEther() public _ownerOnly {

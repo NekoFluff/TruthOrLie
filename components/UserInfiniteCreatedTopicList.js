@@ -160,7 +160,7 @@ class UserInfiniteVotedTopicList extends Component {
           canclaim: details[4].toString(),
           hasclaimed: details[5].toString(),
           result: "Ongoing",
-          topicRewardPool: parseFloat(web3.utils.fromWei(
+          topicrewardpool: parseFloat(web3.utils.fromWei(
             details[6],
             "ether"
           )).toFixed(4)
@@ -203,7 +203,7 @@ class UserInfiniteVotedTopicList extends Component {
 
         // Get reputation gain
         const repgain = await topicContract.methods
-          .calculateReputationGain(repinvestment)
+          .calculateReputationGain(repinvestment, accounts[0])
           .call({
             from: accounts[0]
           });

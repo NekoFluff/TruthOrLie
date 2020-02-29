@@ -56,9 +56,6 @@ class TopicCard extends Component {
     const { topic } = this.props;
     const topicEnded = timestampToDate(topic.timestamp).getTime() < new Date().getTime();
     const canCreatorClaim = topic.isCreator == "true" && topicEnded && topic.totalVoteCount == 0;
-    console.log(topic.isCreator);
-    console.log(topicEnded);
-    console.log(topic.totalVoteCount);
 
     return (
       <Card
@@ -92,13 +89,11 @@ class TopicCard extends Component {
                   </Label>
                 )}
 
-
-
               </Label.Group>
               <Label.Group>
-                {topic.topicRewardPool && (
+                {topic.topicrewardpool && (
                   <Label color="blue">
-                    {`Current Reward Pool: ~${topic.topicRewardPool} Ether`}
+                    {`Current Reward Pool: ~${topic.topicrewardpool} Ether`}
                   </Label>
                 )}
                 {topic.monetarygain && (
@@ -106,9 +101,9 @@ class TopicCard extends Component {
                     {`Winner Reward: ~${topic.monetarygain} Ether`}
                   </Label>
                 )}
-                {topic.repgain && (
+                {topic.hasclaimed == "true" && topic.repgain && (
                   <Label color="blue">
-                    {`Reputation Return: ~${topic.repgain} Ether`}
+                    {`Reputation Returned: ~${topic.repgain} Rep`}
                   </Label>
                 )}
               </Label.Group>
@@ -123,11 +118,11 @@ class TopicCard extends Component {
                 color={topic.topicresultcolor}
               >{`VERDICT:   ${topic.result}`}</Label>
             </Container>
-            {console.log("Topic:")}
-            {console.log(topic)}
+            {/* {console.log("Topic:")} */}
+            {/* {console.log(topic)} */}
             {/* !((topic.yourvote == "Truth" && topic.result == "LIE") ||
               (topic.yourvote == "Lie" && topic.result == "TRUTH")) && */}
-            { topicEnded && (topic.canclaim == "true" || topic.hasclaimed) && (
+            { topicEnded && (topic.canclaim == "true" || topic.hasclaimed == "true") && (
               <Button
                 floated="right"
                 color="blue"
