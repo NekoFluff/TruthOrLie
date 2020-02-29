@@ -3,6 +3,7 @@ import { Router } from "../routes";
 import factory from "../ethereum/topicFactory";
 import web3 from "../ethereum/web3";
 import { connect } from "react-redux";
+import { logEvent } from "../helpers/analytics.js";
 
 import {
   Grid,
@@ -148,6 +149,8 @@ class TopicSummary extends Component {
           from: this.props.selectedAccount,
           value: web3.utils.toWei(this.props.initialTopicValue + commission, "ether") 
         });
+      logEvent('Topic', 'Created a new Topic', this.props.topicContent.length || 0, this.props.selectedAccount);
+
       Router.push("/");
     } catch (err) {
       this.setState({ errorMessage: err.message });

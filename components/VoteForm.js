@@ -5,6 +5,7 @@ import { newArgument } from "../redux/actions";
 import { Router } from "../routes";
 import Topic from "../ethereum/topic";
 import web3 from "../ethereum/web3";
+import { logEvent } from "../helpers/analytics.js";
 
 class VoteForm extends Component {
   state = {
@@ -51,11 +52,14 @@ class VoteForm extends Component {
         value: wei
       });
 
+      logEvent('Vote', 'User Voted', wei, this.props.selectedAccount);
       if (this.props.onFormSubmit != null) this.props.onFormSubmit();
-      Router.replace(`/topics/${topicAddress}`);
+
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
+    
+    Router.replace(`/topics/${topicAddress}`);
     this.setState({ loading: false });
   };
 

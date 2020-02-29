@@ -7,7 +7,7 @@ import { updateReputationAddress } from "./../redux/actions";
 import { Router } from "../routes";
 import Reputation from "../ethereum/reputation"
 import { retrieveReputation, isValidReputationAddress } from './../helpers/reputation';
-
+import { logEvent } from './../helpers/analytics';
 class CreateReputation extends Component {
   state = {
     accounts: [],
@@ -71,6 +71,8 @@ class CreateReputation extends Component {
       await reputationFactory.methods.createReputation().send({
         from: this.state.accounts[0]
       });
+      logEvent(category='Reputation', action='Created new Reputation', label=this.state.accounts[0]);
+
       await loadReputation();
       Router.push('/'); // refresh the page
     } catch (err) {

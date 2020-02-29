@@ -3,6 +3,7 @@ import { Router } from "../routes";
 import Topic from "../ethereum/topic";
 import { connect } from "react-redux";
 import web3 from "./../ethereum/web3";
+import { logEvent } from "../helpers/analytics.js";
 
 import {
   Grid,
@@ -127,6 +128,8 @@ class TopicSummary extends Component {
           // value: this.props.initialTopicValue // We don't send money when making an argument
         });
       Router.push(`/topics/${this.props.topicAddress}`);
+      logEvent('Argument', 'Created a new Argument', this.props.argument.length || 0, this.props.selectedAccount);
+
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }

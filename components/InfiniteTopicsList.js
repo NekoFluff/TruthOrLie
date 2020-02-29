@@ -23,6 +23,7 @@ import {
 } from "./../helpers/date";
 import web3 from "./../ethereum/web3";
 import topicAssigner from "../ethereum/topicAssigner";
+import { logEvent } from './../helpers/analytics';
 export default class InfiniteTopicsList extends Component {
   state = {
     topicSeed: "",
@@ -91,6 +92,7 @@ export default class InfiniteTopicsList extends Component {
         from: this.state.primaryAccount,
         value: web3.utils.toWei("0.005", "ether")
       });
+      logEvent(category='Seed', action='Seed has been refreshed', label=this.state.primaryAccount);
       // Router.push("/");
     }
   };
