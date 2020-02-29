@@ -208,18 +208,18 @@ export default class InfiniteTopicsList extends Component {
                               </Label> */}
 
                               {topic.minimuminvestment && (
-                                <Label color="secondary">
+                                <Label>
                                   {`${topic.minimuminvestment} Minimum Ether to Vote`}
                                 </Label>
                               )}
                             
                               {topic.topicpool && (
-                                <Label color="secondary">
+                                <Label>
                                   {`Topic Pool: ${topic.topicpool} Ether`}
                                 </Label>
                               )}
                               </Label.Group>
-                            <Label.Group>
+                            {/* <Label.Group>
                               {topic.truthcount && (
                                 <Label color="blue">
                                   {`# Truth Votes: ${topic.truthcount}`}
@@ -231,7 +231,7 @@ export default class InfiniteTopicsList extends Component {
                                   {`# Lie Votes: ${topic.liecount}`}
                                 </Label>
                               )}
-                              </Label.Group>
+                              </Label.Group> */}
                             <Label.Group>
                               {topic.truthreputation && (
                                 <Label color="blue">

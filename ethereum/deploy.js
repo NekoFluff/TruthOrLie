@@ -12,11 +12,14 @@ const compiledReputationFactory = require("./build/ReputationFactory.json");
 const compiledTopicAssigner = require("./build/TopicAssigner.json");
 
 const mnemonic = process.env.mnemonic;
+const infuraLink = process.env.infuraLink;
 // console.log("Using mnemonic: " + mnemonic);
+// console.log("Infura Link: " + infuraLink);
 
 const provider = new HDWalletProvider(
   mnemonic,
-  "https://rinkeby.infura.io/v3/18ff1d353a884068a84b06afb9b5fcf3"
+  //"https://rinkeby.infura.io/v3/18ff1d353a884068a84b06afb9b5fcf3"
+  infuraLink
 );
 
 const web3 = new Web3(provider);
@@ -59,6 +62,14 @@ const deployAll = async () => {
     const topicFactory = await deploy(account, "Topic Factory", compiledTopicFactory, [reputationFactory.options.address])
     console.log("Finished Topic Factory Deployment");
     
+    await reputationFactory.methods
+    .updateTopicFactoryAddress(topicFactory.options.address)
+    .send({
+      from: account,
+      gas: 5000000
+    }); // remove 'gas'
+    console.log("Updated reverse link from ReputationFactory smart contract to TopicFactory smart contract")
+
     const topicAssigner = await deploy(account, "Topic Assigner", compiledTopicAssigner, [topicFactory.options.address])
     console.log("Finished Topic Assigner Deployment");
 
@@ -68,7 +79,9 @@ const deployAll = async () => {
         from: account,
         gas: 5000000
       }); // remove 'gas'
-    console.log("Updated reverse link from TopicFactory Smart Contract to TopicAssigner smart contract")
+    console.log("Updated reverse link from TopicFactory smart contract to TopicAssigner smart contract")
+
+
 
     process.exit(0);
   } catch (err) {

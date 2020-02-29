@@ -85,7 +85,7 @@ class TopicDetails extends Component {
       {
         header: "Completed?",
         meta:
-          "If already completed, users may no longer participate in the discussion.",
+          "If already completed, the majority has been determined.",
         description: `${isCompleted}`,
         style: { overflowWrap: "break-word" }
       },
@@ -166,8 +166,12 @@ class TopicDetails extends Component {
   };
 
   renderGraphs = () => {
+    var numColumns = 1
+    if (this.props.isCompleted) {
+      numColumns = 2
+    }
     return (
-      <Grid columns={2} divided>
+      <Grid columns={numColumns} divided>
         <Grid.Row>
           <Grid.Column>
             <Container textAlign="center">
@@ -199,14 +203,16 @@ class TopicDetails extends Component {
               )}
             </Container>
           </Grid.Column>
+          {
+            this.props.isCompleted && 
           <Grid.Column>
             <Container textAlign="center">
               <h3>Votes Chart</h3>
 
               {this.props.lieCount == 0 && this.props.truthCount == 0 ? (
                 <p>No one has voted yet.</p>
-              ) : (
-                <VictoryPie
+                ) : (
+                  <VictoryPie
                   style={{
                     parent: { maxWidth: "100%" },
                     labels: { fill: "white", fontSize: 20, fontWeight: "bold" }
@@ -228,6 +234,8 @@ class TopicDetails extends Component {
               )}
             </Container>
           </Grid.Column>
+          }
+
         </Grid.Row>
       </Grid>
     );

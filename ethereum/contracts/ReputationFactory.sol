@@ -1,17 +1,34 @@
 pragma solidity ^0.5.10;
 
 import "./Reputation.sol";
-import "./Topic.sol";
+import "./TopicFactory.sol";
 
 contract ReputationFactory {
+    address public owner;    
+    address topicFactoryAddress;
     uint256 deployedReputationCount = 0;
     mapping(address => address) public deployedReputations;
 
-    modifier _topicContractsOnly() {
-        Topic topic = Topic(msg.sender);
-        // require(topic.isTopic(), "Only Topic Contracts can invoke this function");
-        topic.getTruthCount();
+    modifier _ownerOnly() {
+        require(msg.sender == owner, 'You must be the creator of this Topic Factory in order to do this.');
         _;
+    }
+
+    modifier _topicContractsOnly() {
+        // Topic topic = Topic(msg.sender);
+        // require(topic.isTopic(), "Only Topic Contracts can invoke this function");
+        // topic.getTruthCount();
+        TopicFactory topicFactory = TopicFactory(topicFactoryAddress);
+        require(topicFactory.checkIfValidTopicAddress(msg.sender), "Only official Topic Contracts can invoke this function");
+        _;
+    }
+
+    constructor() public {
+        owner = msg.sender;
+    }
+
+    function updateTopicFactoryAddress(address _topicFactoryAddress) public _ownerOnly {
+        topicFactoryAddress = _topicFactoryAddress;
     }
 
     function createReputation() public {

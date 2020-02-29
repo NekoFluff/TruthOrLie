@@ -10,7 +10,7 @@ import Topic from "../ethereum/topic";
 class TopicCard extends Component {
   state = {};
 
-  onClaim = async topicAddress => {
+  onClaim = async (topicAddress, creatorClaim) => {
     console.log("Claiming " + topicAddress);
     try {
       // Start the loading circle and reset the error message
@@ -31,10 +31,18 @@ class TopicCard extends Component {
 
       // Try to claim
       const topicContract = Topic(topicAddress);
-      await topicContract.methods.claim().send({
-        from: accounts[0],
-        value: 0
-      });
+      if (creatorClaim) {
+        await topicContract.methods.creatorClaim().send({
+          from: accounts[0],
+          value: 0
+        });
+      } else {
+        await topicContract.methods.claim().send({
+          from: accounts[0],
+          value: 0
+        });
+      }
+
 
       Router.replace("/mine/topics");
     } catch (err) {
@@ -46,10 +54,16 @@ class TopicCard extends Component {
 
   render() {
     const { topic } = this.props;
+    const topicEnded = timestampToDate(topic.timestamp).getTime() < new Date().getTime();
+    const canCreatorClaim = topic.isCreator == "true" && topicEnded && topic.totalVoteCount == 0;
+    console.log(topic.isCreator);
+    console.log(topicEnded);
+    console.log(topic.totalVoteCount);
+
     return (
       <Card
         color={
-          timestampToDate(topic.timestamp).getTime() > new Date().getTime()
+            !topicEnded
             ? "green"
             : "red"
         }
@@ -72,10 +86,29 @@ class TopicCard extends Component {
                     {`${topic.investment} Ether Invested`}
                   </Label>
                 )}
+                {topic.repinvestment && (
+                  <Label color="red">
+                    {`${topic.repinvestment} Reputation Invested`}
+                  </Label>
+                )}
 
+
+
+              </Label.Group>
+              <Label.Group>
+                {topic.topicRewardPool && (
+                  <Label color="blue">
+                    {`Current Reward Pool: ~${topic.topicRewardPool} Ether`}
+                  </Label>
+                )}
                 {topic.monetarygain && (
                   <Label color="blue">
-                    {`Your Current Reward: ~${topic.monetarygain} Ether`}
+                    {`Winner Reward: ~${topic.monetarygain} Ether`}
+                  </Label>
+                )}
+                {topic.repgain && (
+                  <Label color="blue">
+                    {`Reputation Return: ~${topic.repgain} Ether`}
                   </Label>
                 )}
               </Label.Group>
@@ -92,21 +125,22 @@ class TopicCard extends Component {
             </Container>
             {console.log("Topic:")}
             {console.log(topic)}
-            {!((topic.yourvote == "Truth" && topic.result == "LIE") ||
-              (topic.yourvote == "Lie" && topic.result == "TRUTH")) && (topic.canclaim == "true" || topic.hasclaimed) && (
+            {/* !((topic.yourvote == "Truth" && topic.result == "LIE") ||
+              (topic.yourvote == "Lie" && topic.result == "TRUTH")) && */}
+            { topicEnded && (topic.canclaim == "true" || topic.hasclaimed) && (
               <Button
                 floated="right"
                 color="blue"
                 disabled={topic.hasclaimed == "true"}
-                onClick={() => this.onClaim(topic.header)}
+                onClick={() => this.onClaim(topic.header, canCreatorClaim)}
               >
                 {topic.hasclaimed == "false"
-                  ? (topic.majority != 0 ? "Claim Ether" : "Find Majority and try to Claim Ether")
-                  : "Already Claimed"}
+                  ? (topic.majority != 0 ? "Claim Ether/Reputation" : (canCreatorClaim ? "Reclaim as Creator" : "Find Majority and try to Claim Ether"))
+                  : "Already Claimed Ether/Reputation"}
               </Button>
             )}
-
-            {((topic.yourvote == "Truth" && topic.result == "LIE") ||
+            
+            {/* {((topic.yourvote == "Truth" && topic.result == "LIE") ||
               (topic.yourvote == "Lie" && topic.result == "TRUTH")) && (
               <Button
                 floated="right"
@@ -116,7 +150,7 @@ class TopicCard extends Component {
               >
                 You weren't in the majority. No claiming for you.
               </Button>
-            )}
+            )} */}
           </React.Fragment>
         }
       />

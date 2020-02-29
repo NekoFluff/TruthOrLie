@@ -156,7 +156,11 @@ class UserInfiniteVotedTopicList extends Component {
           timestamp: details[2],
           canclaim: details[4].toString(),
           hasclaimed: details[5].toString(),
-          result: "Ongoing"
+          result: "Ongoing",
+          topicRewardPool: parseFloat(web3.utils.fromWei(
+            details[6],
+            "ether"
+          )).toFixed(4)
         };
 
         // Get your argument
@@ -174,6 +178,11 @@ class UserInfiniteVotedTopicList extends Component {
           .call();
         usableDetails["investment"] = web3.utils.fromWei(investment, "ether");
 
+        const repinvestment = await topicContract.methods
+          .reputationInvestment(accounts[0])
+          .call();
+        usableDetails["repinvestment"] = repinvestment;
+
         // Get monetary gain
         if (investment == 0) {
           usableDetails["monetarygain"] = 0;
@@ -188,6 +197,14 @@ class UserInfiniteVotedTopicList extends Component {
             "ether"
           )).toFixed(4);
         }
+
+        // Get reputation gain
+        const repgain = await topicContract.methods
+          .calculateReputationGain(repinvestment)
+          .call({
+            from: accounts[0]
+          });
+        usableDetails["repgain"] = repgain;
 
         // Get the result
         if (

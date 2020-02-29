@@ -7,7 +7,7 @@ import "./provableAPI_0.5.sol";
 contract TopicAssigner is usingProvable {
     uint256 constant MAX_INT_FROM_BYTE = 256;
     uint256 constant NUM_RANDOM_BYTES_REQUESTED = 8;
-    uint256 NUM_VISIBLE_TOPICS = 25;
+    uint256 NUM_VISIBLE_TOPICS = 10;
 
     address public owner;
     address public topicFactoryAddress;
@@ -33,6 +33,16 @@ contract TopicAssigner is usingProvable {
         NUM_VISIBLE_TOPICS = numTopics;
     }
 
+    function hasTopic(address sender, address topicAddress) public view returns (bool) {
+        address[] memory availableTopics = getRandomTopics(sender);
+        for (uint8 i = 0; i < NUM_VISIBLE_TOPICS; i++) {
+            if (availableTopics[i] == topicAddress) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function getRandomTopics(address sender) public view returns (address[] memory) {
         TopicFactory topicFactory = TopicFactory(topicFactoryAddress);
         uint256 ceiling = topicFactory.getNumberOfDeployedContracts();
@@ -55,17 +65,6 @@ contract TopicAssigner is usingProvable {
     
             return topicFactory.getTopicsAtIndices(indices);
         }
-
-    }
-    
-    function hasTopic(address sender, address topicAddress) public view returns (bool) {
-        address[] memory availableTopics = getRandomTopics(sender);
-        for (uint8 i = 0; i < NUM_VISIBLE_TOPICS; i++) {
-            if (availableTopics[i] == topicAddress) {
-                return true;
-            }
-        }
-        return false;
     }
 
     // The user calls this function to pick a random set of topics
@@ -119,6 +118,10 @@ contract TopicAssigner is usingProvable {
             proofFailed[queryToUserAddress[_queryId]] = false;
             delete queryToUserAddress[_queryId];
         }
+    }
+
+    function reclaimExtraEther() public _ownerOnly {
+        msg.sender.transfer(address(this).balance);
     }
 }
 

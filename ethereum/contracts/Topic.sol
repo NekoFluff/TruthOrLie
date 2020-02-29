@@ -21,20 +21,24 @@ contract Topic {
     uint public endTime;
     Argument[] public arguments;
 
+    // Vote Section
     mapping(address => uint) public voted; // User to argument index
+    address payable[] public truthVoters; //TODO: Remove?
+    address payable[] public lieVoters; // TODO: Remove?
+
+    // Monetary Investment Section
     mapping(address => uint) public monetaryInvestment; // User to wei investment
     uint public truthMonetaryInvestment;
     uint public lieMonetaryInvestment;
     uint public finalMonetaryTotal;
     
+    // Reputation Investment Section
     mapping(address => uint) public reputationInvestment; // User to reputation investment
+    uint public truthReputation;
+    uint public lieReputation;
     uint public totalReputationInvestment;
 
     mapping(address => uint) public createdArgument; // User to argument index
-    address payable[] public truthVoters; //TODO: Remove?
-    address payable[] public lieVoters; // TODO: Remove?
-    uint public truthReputation;
-    uint public lieReputation;
 
     mapping(address => bool) public claimed; // Whether or not the user has already claimed their reward for this topic
     bool public isCompleted;
@@ -46,14 +50,13 @@ contract Topic {
     }
 
     modifier _mustBeWithinTimeFrame() {
-        // require(isCompleted == false, 'The period for the Topic has already ended.');
         require(block.timestamp < endTime, 'The period for the Topic has already ended.');
         _;
     }
 
     function() external payable {}
 
-    constructor(address _topicFactoryAddress, address repFactoryAddress, address _topicAssignerAddress, string memory topicContent, uint minInvestment, uint hoursAvailable, address sender) public {
+    constructor(address _topicFactoryAddress, address repFactoryAddress, address _topicAssignerAddress, string memory topicContent, uint minInvestment, uint secondsAvailable, address sender) public {
         topicFactoryAddress = _topicFactoryAddress;
         reputationFactoryAddress = repFactoryAddress;
         topicAssignerAddress = _topicAssignerAddress;
@@ -61,7 +64,7 @@ contract Topic {
         minimumInvestment = minInvestment;
         creator = sender;
         majority = 0;
-        endTime = block.timestamp + hoursAvailable  * 1 seconds;
+        endTime = block.timestamp + secondsAvailable  * 1 seconds;
 
         finalMonetaryTotal = 0;
 
@@ -73,7 +76,6 @@ contract Topic {
         return true;
     }
 
-    // TODO: Implement UI for this pure function (in details.js)
     function canVote() public view returns (bool) {
         TopicAssigner topicAssigner = TopicAssigner(topicAssignerAddress); 
         return voted[msg.sender] == 0 && topicAssigner.hasTopic(msg.sender, address(this));
@@ -162,10 +164,6 @@ contract Topic {
         markAsCompleted();
     }
     
-    function getMoneyPool() public view returns (uint) {
-        return address(this).balance;
-    }
-    
     function markAsCompleted() internal {
         isCompleted = true;
         
@@ -191,15 +189,20 @@ contract Topic {
 
         if (inMajority()) {
             msg.sender.transfer(this.calculateMonetaryGain(monetaryInvestment[msg.sender], arg.isTrue));
-            ReputationFactory repFactory = ReputationFactory(reputationFactoryAddress);
-            repFactory.addReputation(this.calculateReputationGain(reputationInvestment[msg.sender]), msg.sender);
-            claimed[msg.sender] = true;
         }
+
+        ReputationFactory repFactory = ReputationFactory(reputationFactoryAddress);
+        repFactory.addReputation(this.calculateReputationGain(reputationInvestment[msg.sender]), msg.sender);
+        claimed[msg.sender] = true;
     }
 
-    function inMajority() public view returns (bool) {
-        Argument storage arg = arguments[voted[msg.sender]];
-        return (majority == 1 && arg.isTrue) || (majority == 2 && !arg.isTrue) || (majority == 3);
+    function creatorClaim() public _creatorOnly {
+        require((getTruthCount() + getLieCount() == 0), 'The money goes to the people who participated in the process.');
+        require(block.timestamp > endTime, 'You can only claim your rewards after the time period.');
+
+        msg.sender.transfer(address(this).balance);
+        markAsCompleted();
+        claimed[msg.sender] = true;
     }
 
     // function calculateMonetaryGainForUser() public view returns (uint) {
@@ -228,21 +231,25 @@ contract Topic {
         }
     }
 
-    function calculateReputationGain(uint initialReputation) pure public returns (uint) {
-        uint256 result = initialReputation * 11 / 10; // For now we just use this ratio
-        return result;
-    }
-
-    function creatorClaim() public _creatorOnly {
-        require((getTruthCount() + getLieCount() == 0), 'The money goes to the people who participated in the process.');
-        require(block.timestamp > endTime, 'You can only claim your rewards after the time period.');
-
-        msg.sender.transfer(address(this).balance);
-        markAsCompleted();
+    function calculateReputationGain(uint initialReputation) public view returns (uint) {
+        if (inMajority()) {
+            return initialReputation * 11 / 10; 
+        } else {
+            return initialReputation * 8 / 10; 
+        }
     }
 
     function getDetails() public view returns (address, uint, uint, bool, bool, bool, uint, uint, uint, uint, uint) {
         return (creator, minimumInvestment, endTime, isCompleted, canClaim(), claimed[msg.sender], address(this).balance, getTruthCount(), getLieCount(), truthReputation, lieReputation);
+    }
+
+    function inMajority() public view returns (bool) {
+        Argument storage arg = arguments[voted[msg.sender]];
+        return (majority == 1 && arg.isTrue) || (majority == 2 && !arg.isTrue) || (majority == 3);
+    }
+
+    function getMoneyPool() public view returns (uint) {
+        return address(this).balance;
     }
 
     // Too much ether is spent on an individual

@@ -4,13 +4,6 @@ import './Topic.sol';
 
 contract Reputation {
     address reputationFactoryAddress;
-
-    struct Argument {
-        string content; // The argument in words
-        bool isTrue; // Whether this argument thinks the statement is true or false.
-        address creator;
-        uint voteCount;
-    }
     
     address public owner;
     uint public rep;
@@ -33,13 +26,9 @@ contract Reputation {
         owner = sender;
     }
 
-    function addTopic(address payable topicAddress, address sender) public {
-        require(Topic(topicAddress).creator() == sender, "Must be the creator of the Topic in order to add it.");
+    function addTopic(address payable topicAddress) public {
+        require(Topic(topicAddress).creator() == owner, "Must be the creator of the Topic in order to add it.");
         topics.push(topicAddress);
-    }
-
-    function getNumberOfTopics() public view returns (uint) {
-        return topics.length;
     }
 
     function getTopics(uint startIndex, uint endIndex) public view returns (address[] memory) {
@@ -50,6 +39,10 @@ contract Reputation {
             tempTopics[i] = address(topics[startIndex + i]);
         }
         return tempTopics;
+    }
+
+    function getNumberOfTopics() public view returns (uint) {
+        return topics.length;
     }
 
     function getVotedTopics(uint startIndex, uint endIndex) public view returns (address[] memory) {

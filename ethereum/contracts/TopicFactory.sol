@@ -2,6 +2,7 @@ pragma solidity ^0.5.10;
 
 import './Topic.sol';
 import './ReputationFactory.sol';
+import './Reputation.sol';
 import "./HitchensUnorderedKeySet.sol";
 
 contract TopicFactory {
@@ -13,27 +14,42 @@ contract TopicFactory {
     mapping(bytes32 => address) deployedTopics;
     mapping(bytes32 => address) completedTopics;
     
-    event LogNewTopic(address sender, address topicAddress, uint minInvestment, uint hoursAvailable);
-    // event LogUpdateTopic(address sender, address topicAddress, uint minInvestment, uint hoursAvailable);    
+    mapping(address => bool) isValidTopic;
+    address public owner;    
+    address reputationFactoryAddress;
+    address topicAssignerAddress;
+    mapping(address => bool) isAdmin;
+
+    // Logging events
+    event LogNewTopic(address sender, address topicAddress, uint minInvestment, uint secondsAvailable);
     event LogRemoveTopic(address sender, address topicAddress, bytes32 key);
     
+    modifier _ownerOnly() {
+        require(msg.sender == owner, 'You must be the creator of this Topic Factory in order to do this.');
+        _;
+    }
+
+    modifier _adminOnly() {
+        require(isAdmin[msg.sender] || msg.sender == owner, 'You must be an admin in order to do this.');
+        _;
+    }
+
+    function addAdmin(address newAdminAddress) public _adminOnly {
+        isAdmin[newAdminAddress] = true;
+    }
+
+    function removeAdmin() public {
+        isAdmin[msg.sender] = false;
+    }
+
+    // Helper functions to convert from a 
+    // Topic smart contract's address to byte32 and back
     function addressToBytes32(address a) public pure returns(bytes32) {
       return bytes32(uint(uint160(a)));
     }
     
     function bytes32ToAddress(bytes32 b) public pure returns(address) {
       return address(uint160(uint(b)));
-    }
-    
-    address public owner;
-    //address[] public deployedTopics; // TODO: Remove
-    
-    address reputationFactoryAddress;
-    address topicAssignerAddress;
-    
-    modifier _ownerOnly() {
-        require(msg.sender == owner, 'You must be the creator of this Topic Factory in order to do this.');
-        _;
     }
     
     constructor(address _reputationFactoryAddress) public {
@@ -45,13 +61,12 @@ contract TopicFactory {
         topicAssignerAddress = _topicAssignerAddress;
     }
     
-    function createTopic(string memory topicContent, uint minInvestment, uint hoursAvailable) payable public {
+    function createTopic(string memory topicContent, uint minInvestment, uint secondsAvailable) payable public {
         require(topicAssignerAddress != address(0), "A Topic Assigner contract address must be assigned before being able to create any new topics.");
-        Topic newTopic = new Topic(address(this), reputationFactoryAddress, topicAssignerAddress, topicContent, minInvestment, hoursAvailable, msg.sender);
+        Topic newTopic = new Topic(address(this), reputationFactoryAddress, topicAssignerAddress, topicContent, minInvestment, secondsAvailable, msg.sender);
         address payable newTopicAddress = address(uint160(address(newTopic)));
         newTopicAddress.transfer(address(this).balance);
         
-        //deployedTopics.push(address(newTopic)); //TODO: Remove
         bytes32 key = addressToBytes32(address(newTopic));
         topicSet.insert(key);
         deployedTopics[key] = address(newTopic);
@@ -60,10 +75,15 @@ contract TopicFactory {
         // IMPORTANT NOTE: Must have created reputation object using the reputation factory prior to creating this topic
         ReputationFactory reputationFactory = ReputationFactory(reputationFactoryAddress);
         address reputationAddress = reputationFactory.deployedReputations(msg.sender);
-        Reputation(reputationAddress).addTopic(newTopicAddress, msg.sender);
+        Reputation(reputationAddress).addTopic(newTopicAddress);
         
-        emit LogNewTopic(msg.sender, address(newTopic), minInvestment, hoursAvailable);
+        isValidTopic[address(newTopic)] = true;
 
+        emit LogNewTopic(msg.sender, address(newTopic), minInvestment, secondsAvailable);
+    }
+
+    function checkIfValidTopicAddress(address topicAddress) public view returns (bool) {
+        return isValidTopic[topicAddress];
     }
     
     function markTopicAsCompleted(address topicAddress) public {
@@ -73,8 +93,12 @@ contract TopicFactory {
         completedTopicSet.insert(key);
         completedTopics[key] = topicAddress;
     }
+
+    function adminRemoveDeployedTopic(address topicAddress) public _adminOnly {
+        removeDeployedTopic(topicAddress);
+    }
     
-    function removeDeployedTopic(address topicAddress) public {
+    function removeDeployedTopic(address topicAddress) internal {
         bytes32 key = addressToBytes32(topicAddress);
         topicSet.remove(key); // Note that this will fail automatically if the key doesn't exist
         delete deployedTopics[key];

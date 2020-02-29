@@ -150,7 +150,7 @@ class CreateReputation extends Component {
   };
 
   render() {
-    console.log("Render [CreateReputation.js state]: ", this.state);
+    // console.log("Render [CreateReputation.js state]: ", this.state);
     if (!this.state.finishedLoading) {
       return <React.Fragment></React.Fragment>;
     } else {
@@ -188,7 +188,7 @@ class CreateReputation extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log("New Reputation state: ", state.reputation);
+  // console.log("New Reputation state: ", state.reputation);
   return { reputationAddress: state.reputation.reputationAddress };
 };
 
