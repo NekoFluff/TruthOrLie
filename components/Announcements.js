@@ -9,28 +9,35 @@ class Announcements extends Component {
         <Message warning>
           <Message.Content>
             <Message.Header
-              content={"Alpha Test - Rinkeby Network Only"}
+              content={"Alpha Test - Rinkeby/Main Networks Only"}
             ></Message.Header>
             <Message.List>
               <Message.Item>
-                This application currently only works on the Rinkeby network.
+                This application currently only works on the Rinkeby and Main
+                networks.
               </Message.Item>
               <Message.Item>
-                Please switch on MetaMask if you haven't done so.
+                Please switch on MetaMask if you haven't done so. Use the
+                Rinkeby network when using <b>rinkebytruthorlie.info</b>. Use
+                the Main network when using <b>truthorlie.info</b>.
               </Message.Item>
               <Message.Item>
                 <b>
-                Questions? Check out our{" "}
-                <a href="https://discord.gg/sCNpMAs" target="_blank">
-                  Discord
-                </a>
-                ,{" "}
-                <a href="https://twitter.com/TruthOrLie8" target="_blank">
-                  Twitter
-                </a>, and{" "}
-                <a href="https://github.com/NekoFluff/TruthOrLie" target="_blank">
-                  Github
-                </a>
+                  Questions? Check out our{" "}
+                  <a href="https://discord.gg/sCNpMAs" target="_blank">
+                    Discord
+                  </a>
+                  ,{" "}
+                  <a href="https://twitter.com/TruthOrLie8" target="_blank">
+                    Twitter
+                  </a>
+                  , and{" "}
+                  <a
+                    href="https://github.com/NekoFluff/TruthOrLie"
+                    target="_blank"
+                  >
+                    Github
+                  </a>
                 </b>
               </Message.Item>
               <Message.Item>

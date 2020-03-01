@@ -1,11 +1,12 @@
 import React, { Component, createRef } from "react";
 import { Container, Menu, Grid, Segment } from "semantic-ui-react";
 import { Link } from "../routes";
+import GettingStartedVideo from "./../components/GettingStartedVideo";
 
 class GettingStarted extends Component {
   contextRef = createRef();
 
-  state = {}
+  state = {};
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name });
 
@@ -28,6 +29,12 @@ class GettingStarted extends Component {
           <Menu.Header>Getting Started</Menu.Header>
 
           <Menu.Menu>
+            <Menu.Item
+              href="#video"
+              name="Quick Start Video"
+              active={activeItem === "Quick Start Video"}
+              onClick={this.handleItemClick}
+            />
             <Menu.Item
               href="#step1"
               name="Using Metamask"
@@ -67,6 +74,12 @@ class GettingStarted extends Component {
   renderSteps() {
     return (
       <Segment>
+        <h2 id="video">Quick Start Video</h2>
+        <p>
+          This video summarizes the steps below. If you have any questions, read
+          on.
+        </p>
+        <GettingStartedVideo></GettingStartedVideo>
         <h2>Questions?</h2>
         <p>
           Ask me on{" "}
@@ -93,11 +106,13 @@ class GettingStarted extends Component {
         </p>
         <p>
           <b>
-            WARNING: Make sure switch over to the Rinkeby Testnet in Metamask!
+            WARNING: Make sure switch over to the Rinkeby Testnet or Main in
+            Metamask! (Rinkeby for rinkebytruthorlie.info and Main for
+            truthorlie.info)
           </b>{" "}
           Since this is an Alpha test the smart contracts needed to run this
-          application are only deployed on the Rinkeby network. All transactions
-          will fail on any other network.
+          application are only deployed on the Rinkeby and Main networks. All
+          transactions will fail on any other network.
         </p>
         <p>
           <b>
@@ -109,9 +124,11 @@ class GettingStarted extends Component {
           <b>Connect</b>. You can now use the site!
         </p>
         <p>
-          You can get some ether from <a>faucet.rinkeby.io</a>. This requirees a
-          Twitter account or Facebook account, but it's completely free.
-          Instructions can be found on the page.
+          You can get some ether from <a>faucet.rinkeby.io</a> for the rinkeby
+          version of TruthOrLie. This requirees a Twitter account or Facebook
+          account, but it's completely free. Instructions can be found on the
+          page. For the application on the Main network, you can buy ether on
+          coinbase and transfer it to your metamask wallet.
         </p>
 
         <h2 id="step2">Step 2: Create a Reputation Smart Contract</h2>
@@ -186,12 +203,11 @@ class GettingStarted extends Component {
           at the top right of your screen. There you can view:
         </p>
         <ul>
-            <li>the topics you have posted</li>
-            <li>the topics you have voted on</li>
-            <li>the arguments you have created</li>
-          </ul>
+          <li>the topics you have posted</li>
+          <li>the topics you have voted on</li>
+          <li>the arguments you have created</li>
+        </ul>
         <p>
-
           If the voting period for any of the topics you have voted on have
           ended AND <b>you were on the side of the majority</b>, you will be
           able to claim your share of the reward pool by clicking on the Claim

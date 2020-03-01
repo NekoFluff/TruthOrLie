@@ -144,10 +144,10 @@ class TopicSummary extends Component {
         "ether"
       );
 
-      console.log("Brief Topic Details");
-      console.log(this.props.topicContent.length);
-      console.log(value);
-      console.log(this.props.selectedAccount);
+      // console.log("Brief Topic Details");
+      // console.log(this.props.topicContent.length);
+      // console.log(value);
+      // console.log(this.props.selectedAccount);
 
       logEvent(
         "Topic",
@@ -161,7 +161,6 @@ class TopicSummary extends Component {
         parseInt(value),
         this.props.selectedAccount
       );
-      console.log("Created topic events logged");
 
       await factory.methods
         .createTopic(
