@@ -51,7 +51,7 @@ class TopicForm extends Component {
     event.preventDefault();
     //TODO: Double confirmation button OR Popup https://react.semantic-ui.com/modules/popup/
 
-    if (parseFloat(this.state.data.minimumInvestment) <= 0) {
+    if (parseFloat(this.state.data.minimumInvestment) < 0) {
       this.setState({
         minimumInvestmentError: "Minimum value must be greater than or equal to 0"
       }); 
