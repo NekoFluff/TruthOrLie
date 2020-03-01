@@ -11,10 +11,10 @@ const compiledTopicFactory = require("./build/TopicFactory.json");
 const compiledReputationFactory = require("./build/ReputationFactory.json");
 const compiledTopicAssigner = require("./build/TopicAssigner.json");
 
-const mnemonic = process.env.mnemonic;
+const MNEMONIC = process.env.MNEMONIC;
 const infuraLink = process.env.infuraLink;
 const provider = new HDWalletProvider(
-  mnemonic,
+  MNEMONIC,
   infuraLink
 );
 

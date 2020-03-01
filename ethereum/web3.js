@@ -19,7 +19,7 @@ if (typeof window !== "undefined" && typeof window.web3 !== "undefined") {
   console.log("Using rinkeby.infura web3");
 
   const provider = new Web3.providers.HttpProvider(
-    "https://rinkeby.infura.io/v3/18ff1d353a884068a84b06afb9b5fcf3"
+    "https://" + process.env.ETHEREUM_NETWORK + ".infura.io/v3/" + process.env.INFURA_API_KEY
   );
   web3 = new Web3(provider);
 

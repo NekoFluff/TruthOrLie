@@ -11,14 +11,13 @@ const compiledTopicFactory = require("./build/TopicFactory.json");
 const compiledReputationFactory = require("./build/ReputationFactory.json");
 const compiledTopicAssigner = require("./build/TopicAssigner.json");
 
-const mnemonic = process.env.mnemonic;
-const infuraLink = process.env.infuraLink;
-// console.log("Using mnemonic: " + mnemonic);
+const MNEMONIC = process.env.MNEMONIC;
+const infuraLink = "https://" + process.env.ETHEREUM_NETWORK + ".infura.io/v3/" + process.env.INFURA_API_KEY
+// console.log("Using MNEMONIC: " + MNEMONIC);
 // console.log("Infura Link: " + infuraLink);
 
 const provider = new HDWalletProvider(
-  mnemonic,
-  //"https://rinkeby.infura.io/v3/18ff1d353a884068a84b06afb9b5fcf3"
+  MNEMONIC,
   infuraLink
 );
 
@@ -35,6 +34,7 @@ const getPrimaryAccount = async () => {
 
 const deploy = async (account, contractName, contractJson, arguments = []) => {
   // Create new instance of the contract
+  console.log("Deploying... " + contractName)
   const contractInstance = await new web3.eth.Contract(contractJson.abi)
     .deploy({
       data: "0x" + contractJson.evm.bytecode.object,

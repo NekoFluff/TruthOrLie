@@ -84,8 +84,8 @@ class CreateReputation extends Component {
       console.log("[CreateReputation.js] Error: ", err);
     }
 
-    Router.push("/"); // refresh the page
     this.setState({ creatingReputationContract: false, modalOpen: false });
+    Router.pushRoute("/"); // refresh the page
   };
 
   renderForm = () => {
