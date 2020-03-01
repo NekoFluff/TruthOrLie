@@ -15,16 +15,23 @@ export const logPageView = () => {
   ReactGA.pageview(window.location.pathname);
 };
 
-export const logEvent = (category = "", action = "", value = null, label = "") => {
+export const logEvent = (
+  category = "",
+  action = "",
+  value = -1,
+  label = "default"
+) => {
   if (category && action) {
-    eventData = { category, action }
-    if (value) {
-      eventData[value] = value;
-    }
-    if (label) {
-      eventData[label] = label;
-    }
-    ReactGA.event(eventData);
+    // var eventData = { category, action, value, label };
+    // if (value) {
+    //   eventData[value] = value;
+    // }
+    // if (label) {
+    //   eventData[label] = label;
+    // }
+    console.log("Logging Event:");
+    console.log({ category, action, value, label });
+    ReactGA.event({ category, action, value, label });
   }
 };
 

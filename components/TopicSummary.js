@@ -139,22 +139,44 @@ class TopicSummary extends Component {
       );
 
       const commission = 0.00025;
+      const value = web3.utils.toWei(
+        (parseFloat(this.props.initialTopicValue) + commission).toString(),
+        "ether"
+      );
+
+      console.log("Brief Topic Details");
+      console.log(this.props.topicContent.length);
+      console.log(value);
+      console.log(this.props.selectedAccount);
+
+      logEvent(
+        "Topic",
+        "Created a new Topic (text length))",
+        this.props.topicContent.length || 0,
+        this.props.selectedAccount
+      );
+      logEvent(
+        "Topic",
+        "Created a new Topic (initial ether))",
+        parseInt(value),
+        this.props.selectedAccount
+      );
+      console.log("Created topic events logged");
+
       await factory.methods
         .createTopic(
           this.props.topicContent,
-          web3.utils.toWei((parseFloat(this.props.minimumInvestment)+commission).toString(), "ether") ,
+          web3.utils.toWei(this.props.minimumInvestment, "ether"),
           totalSeconds
         )
         .send({
           from: this.props.selectedAccount,
-          value: web3.utils.toWei(this.props.initialTopicValue + commission, "ether") 
+          value: value
         });
-      logEvent('Topic', 'Created a new Topic', this.props.topicContent.length || 0, this.props.selectedAccount);
-
-      Router.push("/");
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
+    Router.push("/");
     this.setState({ loading: false });
   };
 

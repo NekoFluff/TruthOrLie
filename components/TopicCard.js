@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import { Card, Container, Label, Button } from "semantic-ui-react";
-import {
-  timestampToDate,
-} from "../helpers/date";
+import { timestampToDate } from "../helpers/date";
 import { Link } from "../routes";
 import web3 from "./../ethereum/web3";
 import Topic from "../ethereum/topic";
-import { Router } from '../routes';
+import { Router } from "../routes";
+import { logEvent } from "../helpers/analytics.js";
 
 class TopicCard extends Component {
   state = {};
@@ -37,16 +36,23 @@ class TopicCard extends Component {
           from: accounts[0],
           value: 0
         });
+        logEvent("Claim", "Creator Reclaimed", 1, accounts[0]);
       } else {
         await topicContract.methods.claim().send({
           from: accounts[0],
           value: 0
         });
+        logEvent(
+          "Claim",
+          "Fact-Checker Claimed Ether/Reputation",
+          1,
+          accounts[0]
+        );
+        this.props.topic.hasclaimed = "true";
+        this.props.topic.canclaim = "false";
       }
-
-
     } catch (err) {
-      console.log("[TopicCard.js] Error: " + err)
+      console.log("[TopicCard.js] Error: " + err);
       this.setState({ errorMessage: err.message });
     }
     Router.push("/mine/topics");
@@ -55,17 +61,17 @@ class TopicCard extends Component {
 
   render() {
     const { topic } = this.props;
-    const topicEnded = timestampToDate(topic.timestamp).getTime() < new Date().getTime();
-    const canCreatorClaim = topic.isCreator == "true" && topicEnded && topic.totalVoteCount == 0;
-    const lost = ((topic.yourvote == "Truth" && topic.result == "LIE") || (topic.yourvote == "Lie" && topic.result == "TRUTH"));
-    
+    const topicEnded =
+      timestampToDate(topic.timestamp).getTime() < new Date().getTime();
+    const canCreatorClaim =
+      topic.isCreator == "true" && topicEnded && topic.totalVoteCount == 0;
+    const lost =
+      (topic.yourvote == "Truth" && topic.result == "LIE") ||
+      (topic.yourvote == "Lie" && topic.result == "TRUTH");
+
     return (
       <Card
-        color={
-            !topicEnded
-            ? "green"
-            : "red"
-        }
+        color={!topicEnded ? "green" : "red"}
         fluid
         {...topic}
         extra={
@@ -90,7 +96,6 @@ class TopicCard extends Component {
                     {`${topic.repinvestment} Reputation Invested`}
                   </Label>
                 )}
-
               </Label.Group>
               <Label.Group>
                 {topic.topicrewardpool && (
@@ -129,20 +134,27 @@ class TopicCard extends Component {
             {/* {console.log(topic)} */}
             {/* !((topic.yourvote == "Truth" && topic.result == "LIE") ||
               (topic.yourvote == "Lie" && topic.result == "TRUTH")) && */}
-            { topicEnded && (topic.canclaim == "true" || topic.hasclaimed == "true") && (
-              <Button
-                loading={this.state.loading}
-                floated="right"
-                color="blue"
-                disabled={topic.hasclaimed == "true"}
-                onClick={() => this.onClaim(topic.header, canCreatorClaim)}
-              >
-                {topic.hasclaimed == "false"
-                  ? (topic.majority != 0 ? "Claim Ether/Reputation" : (canCreatorClaim ? "Reclaim as Creator" : "Find Majority and try to Claim Ether"))
-                  : "Already Claimed Ether/Reputation"}
-              </Button>
-            )}
-            
+            {topicEnded &&
+              (canCreatorClaim ||
+                topic.canclaim == "true" ||
+                topic.hasclaimed == "true") && (
+                <Button
+                  loading={this.state.loading}
+                  floated="right"
+                  color="blue"
+                  disabled={topic.hasclaimed == "true"}
+                  onClick={() => this.onClaim(topic.header, canCreatorClaim)}
+                >
+                  {topic.hasclaimed == "false"
+                    ? topic.majority != 0
+                      ? "Claim Ether/Reputation"
+                      : canCreatorClaim
+                      ? "Reclaim as Creator"
+                      : "Find Majority and try to Claim Ether"
+                    : "Already Claimed Ether/Reputation"}
+                </Button>
+              )}
+
             {/* {((topic.yourvote == "Truth" && topic.result == "LIE") ||
               (topic.yourvote == "Lie" && topic.result == "TRUTH")) && (
               <Button

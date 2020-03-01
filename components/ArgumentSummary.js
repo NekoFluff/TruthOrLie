@@ -127,12 +127,17 @@ class TopicSummary extends Component {
           from: this.props.selectedAccount
           // value: this.props.initialTopicValue // We don't send money when making an argument
         });
-      Router.push(`/topics/${this.props.topicAddress}`);
-      logEvent('Argument', 'Created a new Argument', this.props.argument.length || 0, this.props.selectedAccount);
-
+      logEvent(
+        "Argument",
+        "Created a new Argument",
+        this.props.argument.length || 0,
+        this.props.selectedAccount
+      );
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
+
+    Router.push(`/topics/${this.props.topicAddress}`);
     this.setState({ loading: false });
   };
 

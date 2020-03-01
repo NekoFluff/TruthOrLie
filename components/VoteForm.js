@@ -52,14 +52,13 @@ class VoteForm extends Component {
         value: wei
       });
 
-      logEvent('Vote', 'User Voted', wei, this.props.selectedAccount);
+      logEvent("Vote", "User Voted", wei, this.props.selectedAccount);
       if (this.props.onFormSubmit != null) this.props.onFormSubmit();
-
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
-    
-    Router.replace(`/topics/${topicAddress}`);
+
+    Router.push(`/topics/${topicAddress}`);
     this.setState({ loading: false });
   };
 

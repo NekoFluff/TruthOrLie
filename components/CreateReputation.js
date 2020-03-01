@@ -5,9 +5,12 @@ import { Button, Header, Icon, Modal, Message, Label } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { updateReputationAddress } from "./../redux/actions";
 import { Router } from "../routes";
-import Reputation from "../ethereum/reputation"
-import { retrieveReputation, isValidReputationAddress } from './../helpers/reputation';
-import { logEvent } from './../helpers/analytics';
+import Reputation from "../ethereum/reputation";
+import {
+  retrieveReputation,
+  isValidReputationAddress
+} from "./../helpers/reputation";
+import { logEvent } from "./../helpers/analytics";
 class CreateReputation extends Component {
   state = {
     accounts: [],
@@ -37,10 +40,8 @@ class CreateReputation extends Component {
       }
       this.setState({ accounts });
 
-      
-      const {reputationAddress, rep} = await retrieveReputation(accounts[0])
-      this.setState({currentReputation: rep});
-
+      const { reputationAddress, rep } = await retrieveReputation(accounts[0]);
+      this.setState({ currentReputation: rep });
 
       // Only update if the reputation address is different
       if (this.props.reputationAddress != reputationAddress) {
@@ -64,28 +65,32 @@ class CreateReputation extends Component {
   };
 
   onConfirm = async () => {
-    
     // Create a new reputation contract for the user
     try {
       this.setState({ creatingReputationContract: true });
+      logEvent(
+        "Reputation",
+        "Created new Reputation",
+        0,
+        this.state.accounts[0]
+      );
+
       await reputationFactory.methods.createReputation().send({
         from: this.state.accounts[0]
       });
-      logEvent(category='Reputation', action='Created new Reputation', label=this.state.accounts[0]);
 
       await loadReputation();
-      Router.push('/'); // refresh the page
     } catch (err) {
       console.log("[CreateReputation.js] Error: ", err);
     }
 
+    Router.push("/"); // refresh the page
     this.setState({ creatingReputationContract: false, modalOpen: false });
   };
 
   renderForm = () => {
-    if (
-      !isValidReputationAddress(this.props.reputationAddress)
-    ) {
+    if (!isValidReputationAddress(this.props.reputationAddress)) {
+      console.log("Ask user to create reputation.");
       return (
         <React.Fragment>
           <div>
@@ -108,12 +113,14 @@ class CreateReputation extends Component {
               <p>
                 Hi, it seems like you are using a new ethereum address. You will
                 need a new <b>Reputation Contract</b> in order to use this
-                application. Would you like to create one now?  
+                application. Would you like to create one now?
               </p>
               <br />
               <p>
-                (Don't worry, you can always do it later. Check out the <a href="/getting-started">Getting Started</a> page. It will take a small amount of ether to create the Reputation
-                Contract and get started.)
+                (Don't worry, you can always do it later. Check out the{" "}
+                <a href="/getting-started">Getting Started</a> page. It will
+                take a small amount of ether to create the Reputation Contract
+                and get started.)
               </p>
             </Modal.Content>
             <Modal.Actions>
@@ -139,6 +146,8 @@ class CreateReputation extends Component {
           </Modal>
         </React.Fragment>
       );
+    } else {
+      console.log("Is valid address.");
     }
   };
 
@@ -155,10 +164,8 @@ class CreateReputation extends Component {
             list={[this.state.error]}
           />
         );
-      } else if (
-        this.props.reputationAddress !=
-        "0x0000000000000000000000000000000000000000"
-      ) {
+      } else if (isValidReputationAddress(this.props.reputationAddress)) {
+        console.log("Valid return address..." + this.props.reputationAddress);
         return (
           <Label.Group>
             <Label as="a" href="/mine/topics" color="blue" image>
@@ -185,7 +192,6 @@ const mapStateToProps = state => {
   return { reputationAddress: state.reputation.reputationAddress };
 };
 
-export default connect(
-  mapStateToProps,
-  { updateReputationAddress }
-)(CreateReputation);
+export default connect(mapStateToProps, { updateReputationAddress })(
+  CreateReputation
+);

@@ -23,7 +23,7 @@ import {
 } from "./../helpers/date";
 import web3 from "./../ethereum/web3";
 import topicAssigner from "../ethereum/topicAssigner";
-import { logEvent } from './../helpers/analytics';
+import { logEvent } from "./../helpers/analytics";
 export default class InfiniteTopicsList extends Component {
   state = {
     topicSeed: "",
@@ -92,7 +92,12 @@ export default class InfiniteTopicsList extends Component {
         from: this.state.primaryAccount,
         value: web3.utils.toWei("0.005", "ether")
       });
-      logEvent(category='Seed', action='Seed has been refreshed', label=this.state.primaryAccount);
+      logEvent(
+        "Seed",
+        "Seed has been refreshed",
+        0.005,
+        this.state.primaryAccount
+      );
       // Router.push("/");
     }
   };
@@ -195,12 +200,12 @@ export default class InfiniteTopicsList extends Component {
                       {...topic}
                       extra={
                         <React.Fragment>
-                          
                           <Link route={`/topics/${topic.header}`}>
-                            <a><Button>View Topic</Button></a>
+                            <a>
+                              <Button>View Topic</Button>
+                            </a>
                           </Link>
-                          
-                          
+
                           <Container textAlign="right">
                             <Label.Group>
                               {/* <Label>
@@ -214,13 +219,13 @@ export default class InfiniteTopicsList extends Component {
                                   {`${topic.minimuminvestment} Minimum Ether to Vote`}
                                 </Label>
                               )}
-                            
+
                               {topic.topicpool && (
                                 <Label>
                                   {`Topic Pool: ${topic.topicpool} Ether`}
                                 </Label>
                               )}
-                              </Label.Group>
+                            </Label.Group>
                             {/* <Label.Group>
                               {topic.truthcount && (
                                 <Label color="blue">

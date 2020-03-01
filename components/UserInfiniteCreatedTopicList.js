@@ -1,10 +1,6 @@
 import _ from "lodash";
 import React, { Component, createRef } from "react";
-import {
-  Divider,
-  Ref,
-  Visibility,
-} from "semantic-ui-react";
+import { Divider, Ref, Visibility } from "semantic-ui-react";
 
 import Topic from "../ethereum/topic";
 import {
@@ -16,7 +12,7 @@ import Reputation from "../ethereum/reputation";
 import { connect } from "react-redux";
 import web3 from "./../ethereum/web3";
 import FetchingContentMessage from "./FetchingContentMessage";
-import TopicCard from './TopicCard';
+import TopicCard from "./TopicCard";
 class UserInfiniteVotedTopicList extends Component {
   state = {
     topics: [],
@@ -112,8 +108,6 @@ class UserInfiniteVotedTopicList extends Component {
       const accounts = await web3.eth.getAccounts();
 
       // console.log("Available accounts:", accounts);
-      console.log("Retrieved Account #0:", accounts[0]);
-
       // Retrieve user accounts and create a new campaign using the CampaignFactory
       if (accounts[0] == "") {
         throw new Error(
@@ -131,7 +125,7 @@ class UserInfiniteVotedTopicList extends Component {
         const details = await topicContract.methods.getDetails().call({
           from: accounts[0]
         });
-        console.log(details);
+        // console.log(details);
         const { days, hours, minutes, seconds } = approximateTimeTillDate(
           timestampToDate(details[2])
         );
@@ -153,16 +147,15 @@ class UserInfiniteVotedTopicList extends Component {
           // meta: address,
           creator: details[0],
           isCreator: (details[0] == accounts[0]).toString(),
-          totalVoteCount: (details[7] + details[8]),
+          totalVoteCount: details[7] + details[8],
           meta: metaString,
           timestamp: details[2],
           canclaim: details[4].toString(),
           hasclaimed: details[5].toString(),
           result: "Ongoing",
-          topicrewardpool: parseFloat(web3.utils.fromWei(
-            details[6],
-            "ether"
-          )).toFixed(4)
+          topicrewardpool: parseFloat(
+            web3.utils.fromWei(details[6], "ether")
+          ).toFixed(4)
         };
 
         // Get your argument
@@ -172,7 +165,7 @@ class UserInfiniteVotedTopicList extends Component {
         const argument = await topicContract.methods
           .arguments(argumentIndex)
           .call();
-        usableDetails['yourvote'] = (argument["isTrue"] ? 'Truth' : 'Lie')
+        usableDetails["yourvote"] = argument["isTrue"] ? "Truth" : "Lie";
 
         // Get amount invested
         const investment = await topicContract.methods
@@ -240,8 +233,6 @@ class UserInfiniteVotedTopicList extends Component {
     }
   }
 
-  
-
   render() {
     // console.log(this.state.topics);
     return (
@@ -259,7 +250,7 @@ class UserInfiniteVotedTopicList extends Component {
             {/* For every topics... Create a card. */}
             {this.state.topics.map((topic, index, images) => (
               <React.Fragment key={index}>
-                <TopicCard topic={topic}/>
+                <TopicCard topic={topic} />
                 {/* Add a divider... */}
                 {index !== images.length - 1 && <Divider />}
               </React.Fragment>
