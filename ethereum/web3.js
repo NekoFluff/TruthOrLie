@@ -8,9 +8,9 @@ if (typeof window !== "undefined" && typeof window.web3 !== "undefined") {
   console.log("Using browser web3");
   web3 = new Web3(window.web3.currentProvider);
   if (window.ethereum) {
-    window.ethereum.on('accountsChanged', function () {
-      Router.replace('/');// accounts[0]!
-    })
+    // window.ethereum.on('accountsChanged', function () {
+    //   Router.replace('/');// accounts[0]!
+    // })
   }
 
 
