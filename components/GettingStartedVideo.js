@@ -20,20 +20,23 @@ class GettingStartedVideo extends Component {
     logEvent("Getting Started Video", "Finished introduction video", 1, "");
   }
 
+  //https://developers.google.com/youtube/player_parameters#list
   render() {
     const opts = {
       height: "390",
       width: "640",
       playerVars: {
         // https://developers.google.com/youtube/player_parameters
-        autoplay: 0
+        autoplay: 0,
+        list: "PL7kpyTRwZfvjrYMFB1QNEufAFUjOIp2km",
+        listType: "playlist"
       }
     };
 
     return (
       <Container textAlign="center">
         <YouTube
-          videoId="2g811Eo7K8U"
+          // videoId="_GOXqfv8uzI"
           opts={opts}
           onReady={this._onReady}
           onPlay={this._onPlay}
