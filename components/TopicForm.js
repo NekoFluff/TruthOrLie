@@ -50,6 +50,14 @@ class TopicForm extends Component {
 
     event.preventDefault();
     //TODO: Double confirmation button OR Popup https://react.semantic-ui.com/modules/popup/
+
+    if (parseFloat(this.state.data.minimumInvestment) <= 0) {
+      this.setState({
+        minimumInvestmentError: "Minimum value must be greater than or equal to 0"
+      }); 
+      return;                 
+    }
+
     this.setState({ loading: true });
     try {
       this.updateReduxState();
@@ -119,7 +127,7 @@ class TopicForm extends Component {
             label="Minimum Investment per Voter (ether)"
             placeholder="How much should each person be required to invest in order to partipate?"
             type="number"
-            value={minimumInvestment}
+            value={parseFloat(minimumInvestment)}
             onChange={event => {
               this.setState({
                 data: {
@@ -127,6 +135,15 @@ class TopicForm extends Component {
                   minimumInvestment: event.target.value
                 }
               });
+              if (parseFloat(event.target.value) < 0) {
+                this.setState({
+                  minimumInvestmentError: "Minimum value must be greater than or equal to 0"
+                });                  
+              } else {
+                this.setState({
+                  minimumInvestmentError: ""
+                });
+              }
             }}
           />
 

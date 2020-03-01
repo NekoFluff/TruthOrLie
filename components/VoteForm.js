@@ -38,7 +38,7 @@ class VoteForm extends Component {
           `You must contribute at least ${web3.utils.fromWei(
             minimumInvestment,
             "ether"
-          )} ether.`
+          )} ether`
         );
       } else if (reputation < 0) {
         throw new Error("Cannot invest negative reputation.");
@@ -49,7 +49,7 @@ class VoteForm extends Component {
       const topicContract = Topic(topicAddress);
       await topicContract.methods.vote(argumentIndex, reputation).send({
         from: accounts[0],
-        value: wei
+        value: wei + 230000000000000 // 5 cents
       });
 
       logEvent("Vote", "User Voted", wei, this.props.selectedAccount);
@@ -75,11 +75,11 @@ class VoteForm extends Component {
             <Input
               fluid
               required
-              label={`Investment (ether) minimum ${
+              label={`Minimum Eth: ${
                 minimumInvestment
                   ? web3.utils.fromWei(minimumInvestment, "ether")
                   : "INVALID"
-              }`}
+              }` + ' (+5 US cents)'}
               labelPosition="right"
               placeholder="How much are you willing to bet?"
               type="number"
