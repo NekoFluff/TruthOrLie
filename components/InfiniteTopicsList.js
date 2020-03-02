@@ -95,7 +95,7 @@ export default class InfiniteTopicsList extends Component {
       logEvent(
         "Seed",
         "Seed has been refreshed",
-        0.005,
+        1,
         this.state.primaryAccount
       );
       // Router.push("/");
