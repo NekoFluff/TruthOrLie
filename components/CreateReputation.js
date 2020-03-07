@@ -4,13 +4,14 @@ import web3 from "./../ethereum/web3";
 import { Button, Header, Icon, Modal, Message, Label } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { updateReputationAddress } from "./../redux/actions";
-import { Router } from "../routes";
-import Reputation from "../ethereum/reputation";
+import { Router, Link } from "../routes";
+
 import {
   retrieveReputation,
   isValidReputationAddress
 } from "./../helpers/reputation";
 import { logEvent } from "./../helpers/analytics";
+import MetaMaskModal from './MetaMaskModal';
 class CreateReputation extends Component {
   state = {
     accounts: [],
@@ -88,8 +89,29 @@ class CreateReputation extends Component {
     Router.pushRoute("/"); // refresh the page
   };
 
+  isMetamaskInstalled = () => {
+    return web3.currentProvider.isMetaMask === true
+  }
+
   renderForm = () => {
-    if (!isValidReputationAddress(this.props.reputationAddress)) {
+    if (!this.isMetamaskInstalled()) {
+      return (
+        <React.Fragment>
+          <Button
+          as="a"
+          color="red"
+          image
+        >
+        
+          <Link  href="https://www.Metamask.io">
+          <a style={{color: 'white'}}target="_blank"> Download Metamask HERE. (Refresh page after)</a>
+          </Link>
+          </Button>
+          <MetaMaskModal/>
+        </React.Fragment>
+
+      )
+    } else if (!isValidReputationAddress(this.props.reputationAddress)) {
       console.log("Ask user to create reputation.");
       return (
         <React.Fragment>
