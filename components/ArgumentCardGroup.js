@@ -1,18 +1,9 @@
 import React, { Component } from "react";
 import { Card, Divider, Button, Container, Label } from "semantic-ui-react";
 import { Link } from "../routes";
-
+import { renderMultilineText } from './../helpers/multiline';
 class ArgumentCardGroup extends Component {
   state = {};
-
-  renderMultilineText = (text) => {
-    return (
-    <div>
-        {text.split("\n").map((i,key) => {
-            return <p style={{color: 'black'}}key={key}>{i}</p>;
-        })}
-    </div>);
-  }
   
   render() {
     return (
@@ -26,7 +17,7 @@ class ArgumentCardGroup extends Component {
               description=""
               extra={
                 <React.Fragment>
-                  {this.renderMultilineText(props.description)}
+                  {renderMultilineText(props.description)}
                   <hr></hr>
                   <Container textAlign="right">
                     {props.reputation && (

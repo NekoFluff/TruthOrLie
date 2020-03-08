@@ -16,21 +16,13 @@ import {
   Container,
   Message
 } from "semantic-ui-react";
+import { renderMultilineText } from './../helpers/multiline';
 
 class TopicSummary extends Component {
   state = {
     loading: false,
     errorMessage: ""
   };
-
-  renderMultilineText = (text) => {
-    return (
-    <div>
-        {text.split("\n").map((i,key) => {
-            return <p style={{color: 'black'}}key={key}>{i}</p>;
-        })}
-    </div>);
-  }
 
   renderTopicCardGroup = () => {
     const items = [
@@ -55,7 +47,7 @@ class TopicSummary extends Component {
             description=""
             extra={
               <React.Fragment>
-              {this.renderMultilineText(items[1].description)}
+              {renderMultilineText(items[1].description)}
               </React.Fragment>
             }>
             

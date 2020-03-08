@@ -3,6 +3,7 @@ import CommonPage from "../../../components/CommonPage";
 import VoteForm from "../../../components/VoteForm";
 import { Grid, Segment, Divider, Container, Button } from "semantic-ui-react";
 import { Link } from "../../../routes";
+import { renderMultilineText } from './../../../helpers/multiline';
 
 class NewArgument extends Component {
   state = {
@@ -59,7 +60,7 @@ class NewArgument extends Component {
           <Divider></Divider>
           <Container style={{ marginBottom: "20px" }} textAlign="left">
             <b>The topic is {this.state.argumentIsTrue}</b>
-            <p>"{this.state.argumentText}"</p>
+            {renderMultilineText(this.state.argumentText)}
           </Container>
         </Segment>
       </React.Fragment>
@@ -74,6 +75,7 @@ class NewArgument extends Component {
           <Grid.Column width={10}>{this.renderDetails()}</Grid.Column>
 
           <Grid.Column width={6}>
+            
             <VoteForm
               minimumInvestment={minimumInvestment}
               argumentIndex={argumentIndex}
