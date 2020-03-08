@@ -23,7 +23,16 @@ class TopicSummary extends Component {
     errorMessage: ""
   };
 
-  renderTopicCardGroup() {
+  renderMultilineText = (text) => {
+    return (
+    <div>
+        {text.split("\n").map((i,key) => {
+            return <p style={{color: 'black'}}key={key}>{i}</p>;
+        })}
+    </div>);
+  }
+
+  renderTopicCardGroup = () => {
     const items = [
       {
         header: `You said: ${this.props.isTrue}`,
@@ -31,12 +40,28 @@ class TopicSummary extends Component {
       },
       {
         header: `Your argument`,
-        description: `"${this.props.argument}"`,
+        description: `${this.props.argument}`,
         meta: "Make sure it is a sound argument!"
       }
     ];
-
-    return <Card.Group itemsPerRow={1} centered items={items} stackable />;
+    return (
+        <Card.Group itemsPerRow={1} centered stackable>
+          <Card
+            {...items[0]}
+          >
+          </Card>
+          <Card
+            {...items[1]}
+            description=""
+            extra={
+              <React.Fragment>
+              {this.renderMultilineText(items[1].description)}
+              </React.Fragment>
+            }>
+            
+          </Card>
+        </Card.Group>
+    )
   }
 
   renderBillingCardGroup() {
