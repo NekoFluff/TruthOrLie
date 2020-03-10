@@ -2,17 +2,10 @@ import React, { Component } from "react";
 import { Modal, Button, Icon, Header } from "semantic-ui-react";
 
 class MetaMaskModal extends Component {
-  state = {
-    modalOpen: true
-  };
-
-  onConfirm = async () => {
-    this.setState({ modalOpen: false });
-  };
 
   render() {
     return (
-      <Modal open={this.state.modalOpen} basic size="small">
+      <Modal open={this.props.open} basic size="small">
         <Header icon="archive" content="New User" />
         <Modal.Content>
           <p>
@@ -28,7 +21,7 @@ class MetaMaskModal extends Component {
         </Modal.Content>
         <Modal.Actions>
           <Button
-            onClick={this.onConfirm}
+            onClick={this.props.onConfirm}
             color="green"
             inverted
           >

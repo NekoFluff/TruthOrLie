@@ -16,15 +16,20 @@ class CreateReputation extends Component {
   state = {
     accounts: [],
     finishedLoading: false,
-    modalOpen: true,
+    modalOpen: false,
+    metamaskModalOpen: true,
     creatingReputationContract: false,
-    error: "",
+    errors: [],
     currentReputation: "N/A"
   };
 
   async componentDidMount() {
     try {
       await this.loadReputation();
+      console.log('CURRENT PAGE', window.location.pathname)
+      if (typeof window !== "undefined" && window.location.pathname != '/getting-started') {
+        this.setState({modalOpen: true})
+      }
     } catch (err) {
       console.log("[CreateReputation.js] Error: ", err);
     }
@@ -35,8 +40,14 @@ class CreateReputation extends Component {
       const accounts = await web3.eth.getAccounts();
       if (accounts == null || accounts.length == 0) {
         this.setState({
-          error:
-            "There are no available accounts. Please log into your metamask account using the browser plugin and refresh the page."
+          errors:
+            ["Please log into your Metamask account using the Fox icon at the top-right and refresh the page.",
+            "Still having issues? Add this site as an allowed connection:", 
+            "---> While on the truthorlie.info website, click on the Fox Icon at the top-right",
+            "---> Then the circle with abstract art at the top right",
+            "---> Settings",
+            "---> Connections",
+            "---> Connect"]
         });
       }
       this.setState({ accounts });
@@ -93,6 +104,10 @@ class CreateReputation extends Component {
     return web3.currentProvider.isMetaMask === true
   }
 
+  onMetaMaskModalConfirm = async () => {
+    this.setState({ metamaskModalOpen: false });
+  };
+
   renderForm = () => {
     if (!this.isMetamaskInstalled()) {
       return (
@@ -107,7 +122,7 @@ class CreateReputation extends Component {
           <a style={{color: 'white'}}target="_blank"> Download Metamask HERE. (Refresh page after)</a>
           </Link>
           </Button>
-          <MetaMaskModal/>
+          <MetaMaskModal open={this.state.metamaskModalOpen} onConfirm={this.onMetaMaskModalConfirm}/>
         </React.Fragment>
 
       )
@@ -175,15 +190,15 @@ class CreateReputation extends Component {
 
   render() {
     // console.log("Render [CreateReputation.js state]: ", this.state);
-    if (!this.state.finishedLoading) {
+    if (!this.state.finishedLoading) { // Wait to retrieve data
       return <React.Fragment></React.Fragment>;
     } else {
-      if (this.state.error != "") {
+      if (this.state.errors.length > 0) {
         return (
           <Message
             error
             header="Oops! An error has occured"
-            list={[this.state.error]}
+            list={this.state.errors}
           />
         );
       } else if (isValidReputationAddress(this.props.reputationAddress)) {
