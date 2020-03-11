@@ -19,7 +19,7 @@ export default props => {
           <a className="item">Getting Started</a>
         </Link>
         <Link route="/mine/topics">
-          <a className="item">My Topics</a>
+          <a className="item"><b>Claim Rewards</b></a>
         </Link>
         <Link route="/topics/new">
           <a className="item">+</a>
