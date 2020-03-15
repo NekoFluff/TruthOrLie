@@ -100,7 +100,7 @@ export default class InfiniteArgumentsList extends Component {
         const {_, rep} = await retrieveReputation(argument["creator"]);
 
         appendList.push({
-          header: (argument["isTrue"] ? 'Truth' : 'Lie'), //+ `  [${argument["voteCount"]} votes]`,
+          header: (argument["isTrue"] ? 'Truth' : 'Lie') + `  [${argument["voteCount"]} votes]`,
           description: argument["content"],
           meta: "Posted by: " + argument["creator"],
           creator: argument["creator"],
