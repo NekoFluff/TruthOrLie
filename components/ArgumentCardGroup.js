@@ -4,6 +4,18 @@ import { Link } from "../routes";
 
 class ArgumentCardGroup extends Component {
   state = {};
+
+  renderMultilineText = text => {
+    text.split("\n").map(function(item) {
+      return (
+        <span>
+          {item}
+          <br />
+        </span>
+      );
+    });
+  };
+
   render() {
     return (
       <div>
@@ -15,6 +27,9 @@ class ArgumentCardGroup extends Component {
               {...props}
               extra={
                 <React.Fragment>
+                  {this.renderMultilineText(props.description)}
+                  <div />
+
                   <Container textAlign="right">
                     {props.reputation && (
                       <Label.Group>
