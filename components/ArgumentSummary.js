@@ -16,6 +16,7 @@ import {
   Container,
   Message
 } from "semantic-ui-react";
+import { renderMultilineText } from './../helpers/multiline';
 
 class TopicSummary extends Component {
   state = {
@@ -23,7 +24,7 @@ class TopicSummary extends Component {
     errorMessage: ""
   };
 
-  renderTopicCardGroup() {
+  renderTopicCardGroup = () => {
     const items = [
       {
         header: `You said: ${this.props.isTrue}`,
@@ -31,12 +32,28 @@ class TopicSummary extends Component {
       },
       {
         header: `Your argument`,
-        description: `"${this.props.argument}"`,
+        description: `${this.props.argument}`,
         meta: "Make sure it is a sound argument!"
       }
     ];
-
-    return <Card.Group itemsPerRow={1} centered items={items} stackable />;
+    return (
+        <Card.Group itemsPerRow={1} centered stackable>
+          <Card
+            {...items[0]}
+          >
+          </Card>
+          <Card
+            {...items[1]}
+            description=""
+            extra={
+              <React.Fragment>
+              {renderMultilineText(items[1].description)}
+              </React.Fragment>
+            }>
+            
+          </Card>
+        </Card.Group>
+    )
   }
 
   renderBillingCardGroup() {

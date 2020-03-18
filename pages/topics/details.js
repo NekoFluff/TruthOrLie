@@ -251,7 +251,7 @@ class TopicDetails extends Component {
           arguments={[
             {
               header:
-                (this.state.userArgument["isTrue"] ? "Truth" : "Lie"),// + `  [${this.state.userArgument["voteCount"]} votes]`,
+                (this.state.userArgument["isTrue"] ? "Truth" : "Lie") + `  [${this.state.userArgument["voteCount"]} votes]`,
               description: this.state.userArgument["content"],
               meta: "Posted by: " + this.state.userArgument["creator"],
               creator: this.state.userArgument["creator"],

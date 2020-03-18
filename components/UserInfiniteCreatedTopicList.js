@@ -89,12 +89,12 @@ class UserInfiniteVotedTopicList extends Component {
     if (
       (loadingTopicIndex == 0 && totalTopicCount > 0) ||
       (this.state.calculations.bottomVisible &&
-        loadingTopicIndex < totalTopicCount)
+        loadingTopicIndex < totalTopicCount) &&
+        this.state.topics.length + 3 > loadingTopicIndex
     ) {
-      const maxCopies = Math.min(10, totalTopicCount - loadingTopicIndex);
+      const maxCopies = Math.min(5, totalTopicCount - loadingTopicIndex);
 
       // Create a list of the objects to retrieve
-      var appendList = [];
       this.setState({ loadingTopicIndex: loadingTopicIndex + maxCopies });
       const reputationContract = Reputation(this.props.reputationAddress);
 
@@ -118,7 +118,7 @@ class UserInfiniteVotedTopicList extends Component {
       console.log("Metamask account: " + accounts[0]);
 
       console.log("Topic Addresses for User: " + topicAddresses);
-      for (var i = 0; i < maxCopies; i++) {
+      for (var i = maxCopies-1; i >= 0; i--) {
         const address = topicAddresses[i];
         const topicContract = Topic(address);
         const text = await topicContract.methods.content().call();
@@ -159,25 +159,37 @@ class UserInfiniteVotedTopicList extends Component {
         };
 
         // Get your argument
-        const argumentIndex = await topicContract.methods
-          .voted(accounts[0])
-          .call();
-        const argument = await topicContract.methods
-          .arguments(argumentIndex)
-          .call();
-        usableDetails["yourvote"] = argument["isTrue"] ? "Truth" : "Lie";
+        if (details[7] + details[8] > 0) {
+          const argumentIndex = await topicContract.methods
+            .voted(accounts[0])
+            .call();
+          if (argumentIndex != 0) {
+            const argument = await topicContract.methods
+              .arguments(argumentIndex)
+              .call();
+            usableDetails["yourvote"] = argument["isTrue"] ? "Truth" : "Lie";
 
-        // Get amount invested
-        const investment = await topicContract.methods
+          // Get amount invested
+          const investment = await topicContract.methods
           .monetaryInvestment(accounts[0])
           .call();
-        usableDetails["investment"] = web3.utils.fromWei(investment, "ether");
+          usableDetails["investment"] = web3.utils.fromWei(investment, "ether");
 
-        const repinvestment = await topicContract.methods
+          const repinvestment = await topicContract.methods
           .reputationInvestment(accounts[0])
           .call();
-        usableDetails["repinvestment"] = repinvestment;
+          usableDetails["repinvestment"] = repinvestment;
 
+          // Get reputation gain
+          const repgain = await topicContract.methods
+          .calculateReputationGain(repinvestment, accounts[0])
+          .call({
+            from: accounts[0]
+          });
+          usableDetails["repgain"] = repgain;
+          }
+        }
+              
         // Get monetary gain
         // if (investment == 0) {
         //   usableDetails["monetarygain"] = 0;
@@ -192,14 +204,6 @@ class UserInfiniteVotedTopicList extends Component {
         //     "ether"
         //   )).toFixed(4);
         // }
-
-        // Get reputation gain
-        const repgain = await topicContract.methods
-          .calculateReputationGain(repinvestment, accounts[0])
-          .call({
-            from: accounts[0]
-          });
-        usableDetails["repgain"] = repgain;
 
         // Get the result
         if (
@@ -220,16 +224,16 @@ class UserInfiniteVotedTopicList extends Component {
           }
         }
 
-        appendList.push(usableDetails);
         console.log(
-          "[UserInfiniteVotedTopicList.js] End Date:",
+          "[UserInfiniteCreatedTopicList.js] End Date:",
           timestampToDate(details[2])
         );
-      }
 
-      // Combine the lists
-      const newTopicList = this.state.topics.concat(appendList.reverse());
-      this.setState({ topics: newTopicList });
+        // Combine the lists
+        const newTopicList = this.state.topics.concat(usableDetails);
+        this.setState({ topics: newTopicList });
+    }
+
     }
   }
 
@@ -237,8 +241,8 @@ class UserInfiniteVotedTopicList extends Component {
     // console.log(this.state.topics);
     return (
       <React.Fragment>
-        <h4>{`${this.state.loadingTopicIndex} ${
-          this.state.loadingTopicIndex == 1 ? "Topic" : "Topics"
+        <h4>{`${this.state.topics.length} ${
+          this.state.topics.length == 1 ? "Topic" : "Topics"
         } Loaded [${this.state.totalTopicCount} total]`}</h4>
 
         <FetchingContentMessage

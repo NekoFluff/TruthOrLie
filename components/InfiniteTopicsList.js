@@ -24,6 +24,8 @@ import {
 import web3 from "./../ethereum/web3";
 import topicAssigner from "../ethereum/topicAssigner";
 import { logEvent } from "./../helpers/analytics";
+import { ethToUSD } from './../helpers/ethnow';
+
 export default class InfiniteTopicsList extends Component {
   state = {
     topicSeed: "",
@@ -156,6 +158,11 @@ export default class InfiniteTopicsList extends Component {
             details[2]
           )}]`;
         }
+
+        const argumentIndex = await topicContract.methods
+            .voted(primaryAccount)
+            .call();
+
         appendList.push({
           header: address,
           description: text,
@@ -167,16 +174,17 @@ export default class InfiniteTopicsList extends Component {
           truthcount: details[7],
           liecount: details[8],
           truthreputation: details[9],
-          liereputation: details[10]
+          liereputation: details[10],
+          argumentindex: argumentIndex
         });
         console.log(
           "[InfiniteTopicList.js] End Date:",
           timestampToDate(details[2])
         );
+        // Set the new state
+        this.setState({ topics: appendList });
       }
 
-      // Set the new state
-      this.setState({ topics: appendList });
     }
   }
 
@@ -205,7 +213,11 @@ export default class InfiniteTopicsList extends Component {
                               <Button>View Topic</Button>
                             </a>
                           </Link>
-
+                            { topic.argumentindex != 0 && 
+                                <Label  color="blue"> 
+                                {`You already voted on this`}
+                                </Label>
+                              }
                           <Container textAlign="right">
                             <Label.Group>
                               {/* <Label>
@@ -250,6 +262,13 @@ export default class InfiniteTopicsList extends Component {
                                   {`Total Lie Reputation: ${topic.liereputation}`}
                                 </Label>
                               )}
+                            </Label.Group>
+                            <Label.Group>
+                              <Label size='huge' floating color="green">
+                                {`≈$${ethToUSD(topic.topicpool)}`}
+                              </Label>
+                              
+                              
                             </Label.Group>
                           </Container>
                         </React.Fragment>

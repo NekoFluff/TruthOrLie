@@ -6,6 +6,7 @@ import web3 from "./../ethereum/web3";
 import Topic from "../ethereum/topic";
 import { Router } from "../routes";
 import { logEvent } from "../helpers/analytics.js";
+import { ethToUSD } from "../helpers/ethnow";
 
 class TopicCard extends Component {
   state = {};
@@ -83,9 +84,13 @@ class TopicCard extends Component {
                     <a>View Topic</a>
                   </Link>
                 </Label>
-                <Label color={topic.yourvote == "Truth" ? "blue" : "red"}>
-                  {`You Voted: ${topic.yourvote}`}
-                </Label>
+                {
+                  topic.yourvote && 
+                  <Label color={topic.yourvote == "Truth" ? "blue" : "red"}>
+                    {`You Voted: ${topic.yourvote}`}
+                  </Label>
+                }
+                
                 {topic.investment && (
                   <Label color="red">
                     {`${topic.investment} Ether Invested`}
@@ -118,6 +123,15 @@ class TopicCard extends Component {
                     {`Reputation Returned: ~${topic.repgain} Rep`}
                   </Label>
                 )}
+              </Label.Group>
+              <Label.Group>
+                {
+                  topic.monetarygain && <Label color="green" size='big'>
+                    {!topicEnded && 'Potential'}
+                  {` Reward: ≈$${ethToUSD(topic.monetarygain)}`}
+                  </Label>
+                }
+                
               </Label.Group>
             </Container>
 

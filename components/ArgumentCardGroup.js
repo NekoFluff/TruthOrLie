@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Card, Divider, Button, Container, Label } from "semantic-ui-react";
 import { Link } from "../routes";
-
+import { renderMultilineText } from "./../helpers/multiline";
 class ArgumentCardGroup extends Component {
   state = {};
 
@@ -25,6 +25,7 @@ class ArgumentCardGroup extends Component {
               raised
               fluid
               {...props}
+              description=""
               extra={
                 <React.Fragment>
                   {this.renderMultilineText(props.description)}

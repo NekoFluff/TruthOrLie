@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Button, Message, Segment, Input } from "semantic-ui-react";
+import { Form, Button, Message, Segment, Input, Label, Card } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { newArgument } from "../redux/actions";
 import { Router } from "../routes";
@@ -54,11 +54,12 @@ class VoteForm extends Component {
 
       logEvent("Vote", "User Voted", wei, this.props.selectedAccount);
       if (this.props.onFormSubmit != null) this.props.onFormSubmit();
+      Router.push(`/topics/${topicAddress}`);
+      
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
 
-    Router.push(`/topics/${topicAddress}`);
     this.setState({ loading: false });
   };
 
@@ -66,20 +67,36 @@ class VoteForm extends Component {
     const { ether, reputation, account } = this.state.data;
     const { minimumInvestment } = this.props;
     return (
+      <React.Fragment>
+
+            <Card header={'How it works'} color='green' description={<div>
+              <br></br>
+              <b>Ether:</b> The more ether you pay during the voting phase, the more ether you'll get when claiming
+              <br/>
+              <br/>
+              <b>Reputation:</b> Add more reputation to influence other users to taking your side.
+            </div>}>
+              
+            </Card>
+
+
       <Segment raised>
         <Form onSubmit={this.onFormSubmit} error={!!this.state.errorMessage}>
           <Form.Field>
             <b>Voting Details</b>
           </Form.Field>
           <Form.Field>
-            <Input
-              fluid
-              required
-              label={`Minimum Eth: ${
+            <Message warning>
+            {`Minimum ETH required to vote: ${
                 minimumInvestment
                   ? web3.utils.fromWei(minimumInvestment, "ether")
                   : "INVALID"
               }` + ' (+5 US cents)'}
+            </Message>
+            <Input
+              fluid
+              required
+              label='Ether'
               labelPosition="right"
               placeholder="How much are you willing to bet?"
               type="number"
@@ -98,7 +115,7 @@ class VoteForm extends Component {
             <Input
               fluid
               required
-              label="Investment (reputation)"
+              label="Reputation"
               labelPosition="right"
               placeholder="Put your reputation at stake."
               type="number"
@@ -118,6 +135,16 @@ class VoteForm extends Component {
             header="Oops! Something went wrong"
             content={this.state.errorMessage}
           />
+          {/* <Button secondary>Check Potential Reward</Button>
+
+          <Label.Group>
+                 {
+                  topic.monetarygain && <Label color="green" size='big'>
+                  {`Potential Reward: ≈$${ethToUSD(topic.monetarygain)}`}
+                  </Label>
+                }
+          </Label.Group> */}
+
           <Button
             primary
             style={{ marginBottom: "20px", marginTop: "33px" }}
@@ -129,6 +156,8 @@ class VoteForm extends Component {
           </Button>
         </Form>
       </Segment>
+      </React.Fragment>
+
     );
   }
 }
